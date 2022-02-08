@@ -1,0 +1,1 @@
+from . import CellularAutomaton as CA
