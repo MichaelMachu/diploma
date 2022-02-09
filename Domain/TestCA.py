@@ -45,7 +45,8 @@ class TestCA:
         #for (int i = 1; i < ruleCt; i++) {
         for i in range(1, ruleCt):
             #self.rule[i] = (1 + abs(random.randint(-2147483648, 2147483647)) % (self.numberOfStates-1)).to_bytes(10, "big")
-            self.rule[i] = (1 + abs(random.randint(-2147483648, 2147483647)) % (self.numberOfStates-1))
+            #self.rule[i] = (1 + abs(random.randint(-2147483648, 2147483647)) % (self.numberOfStates-1))    # works same as below
+            self.rule[i] = random.randint(0, self.numberOfStates - 1)
             if self.isIsotropic:
                 self.rule[self.__isotropicMate(i)] = self.rule[i]
 

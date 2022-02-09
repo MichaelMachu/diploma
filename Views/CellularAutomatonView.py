@@ -91,12 +91,12 @@ class CellularAutomatonView(GraphicalUserInterface):
 
         #self.cellularAutomaton = CellularAutomaton(size, rule, sizeK)
         self.cellularAutomaton = CellularAutomaton(size, rule, 4, 5, 0.2) # rule = 100  544
-        testCa = TestCA(5, 4, size, True, True, randint(-2147483648, 2147483647))    # 123
-        print("val = ", testCa.getRulesUsed())
-        print("max = ", testCa.getRuleCount())
-        print("lambda = ", testCa.getLambda())
-        testCa.setRulesUsed(100) # 189
-        print("lambda = ", testCa.getLambda())
+        #testCa = TestCA(5, 4, size, False, True, randint(-2147483648, 2147483647))    # 123
+        #print("val = ", testCa.getRulesUsed())
+        #print("max = ", testCa.getRuleCount())
+        #print("lambda = ", testCa.getLambda())
+        #testCa.setRulesUsed(100) # 189
+        #print("lambda = ", testCa.getLambda())
 
         # Check if given parameters are valid
         if not self.cellularAutomaton.is_rule_valid():
@@ -116,9 +116,9 @@ class CellularAutomatonView(GraphicalUserInterface):
         self.applicationView.buttonAnimContinue.configure(state=DISABLED)
 
         self.applicationView.cellularAutomaton = self.cellularAutomaton
-        self.applicationView.testCa = testCa
+        #self.applicationView.testCa = testCa
 
-        self.on_closing()
+        #self.on_closing()
 
     def on_closing(self) -> None:
         self.applicationView.isCaMenuExists = False

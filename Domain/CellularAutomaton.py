@@ -1,5 +1,6 @@
 import numpy as np
 from math import ceil
+from random import seed, randint
 
 class CellularAutomaton:
 
@@ -18,7 +19,13 @@ class CellularAutomaton:
         self.possibleStates = 8 if K == 2 else 3 * K - 2    # 8 = 2^3
         #self.possibleStates = K**N
         self.ruleNumber = rule
-        self.rule = self.__rule_calculation_binary(rule) if K == 2 else self.__rule_calculation(rule)
+        if λ is None:
+            self.rule = self.__rule_calculation_binary(rule) if K == 2 else self.__rule_calculation(rule)
+        else:
+            seed(randint(-2147483648, 2147483647)) # self.randomSeed
+            self.rule = [randint(0, self.K - 1) for _ in range(self.K**self.N)]
+            #self.ruleUsed = [randint(0, 1) for _ in range(self.K**self.N)]
+            self.isQuiscentState = [self.is_state_quiescent() for _ in range(self.K**self.N)]
         self.cellHistory = np.empty((0, self.size), dtype=np.int8)
         self.currentState = np.zeros(self.size, dtype=np.int8)
 
@@ -130,6 +137,25 @@ class CellularAutomaton:
         #print(stackOfNeighbors)
         stackOfNeighbors = np.vstack(neighborhood).astype(np.int8)
 
+        if self.λ is not None:
+            result = []
+            i, j, c = 0, 0, 0
+            while j < self.size:
+                c = c * self.K + neighborhood[i][j]
+
+                i += 1
+
+                if i >= self.N:
+                    if not self.isQuiscentState[c]:
+                        result.append(self.rule[c])
+                    else:
+                        result.append(self.quiescentState)
+                    j += 1
+                    i = 0
+                    c = 0
+                
+            return result
+
         # Indexes for the next step are calculated by two ways:
         # - if state of cells is binary, then the stack of all neighbors is multiplied by power of two
         # - if state of cells is ternary or bigger then it is used summary of neighbors, 
@@ -160,7 +186,7 @@ class CellularAutomaton:
     def execute(self) -> np.ndarray:
         self.currentState = self.__calculate_next_step()
         print(self.currentState)
-        if self.λ is not None:
-            self.__solver_random_table()
+        #if self.λ is not None:
+        #    self.__solver_random_table()
         self.__insert_into_history()
         return self.currentState
