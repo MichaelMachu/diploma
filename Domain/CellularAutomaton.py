@@ -129,14 +129,6 @@ class CellularAutomaton:
         #x = np.vstack(neighborhood).astype(np.int8)
         #print(x)
 
-        #print(neighborhood)
-        #rightShift = np.roll(self.currentState, 1)
-        #leftShift = np.roll(self.currentState, -1)
-        #stackOfNeighbors = np.vstack((rightShift, self.currentState, leftShift)).astype(np.int8)
-
-        #print(stackOfNeighbors)
-        stackOfNeighbors = np.vstack(neighborhood).astype(np.int8)
-
         if self.λ is not None:
             result = []
             i, j, c = 0, 0, 0
@@ -155,6 +147,14 @@ class CellularAutomaton:
                     c = 0
                 
             return result
+
+        #print(neighborhood)
+        #rightShift = np.roll(self.currentState, 1)
+        #leftShift = np.roll(self.currentState, -1)
+        #stackOfNeighbors = np.vstack((rightShift, self.currentState, leftShift)).astype(np.int8)
+
+        #print(stackOfNeighbors)
+        stackOfNeighbors = np.vstack(neighborhood).astype(np.int8)
 
         # Indexes for the next step are calculated by two ways:
         # - if state of cells is binary, then the stack of all neighbors is multiplied by power of two

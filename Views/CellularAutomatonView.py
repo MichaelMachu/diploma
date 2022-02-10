@@ -90,7 +90,7 @@ class CellularAutomatonView(GraphicalUserInterface):
         #print(size, rule, sizeK, random, selection)
 
         #self.cellularAutomaton = CellularAutomaton(size, rule, sizeK)
-        self.cellularAutomaton = CellularAutomaton(size, rule, 4, 5, 0.2) # rule = 100  544
+        self.cellularAutomaton = CellularAutomaton(size, rule, 4, 5, 0.5) # rule = 100  544
         #testCa = TestCA(5, 4, size, False, True, randint(-2147483648, 2147483647))    # 123
         #print("val = ", testCa.getRulesUsed())
         #print("max = ", testCa.getRuleCount())
