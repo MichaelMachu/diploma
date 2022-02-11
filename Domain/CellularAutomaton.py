@@ -30,7 +30,7 @@ class CellularAutomaton:
             seed(self.seedNumber)
             np.random.seed(self.seedNumber)
             print("seed: ", self.seedNumber)
-            self.rule = [randint(0, self.K - 1) for _ in range(self.K**self.N)]
+            self.rule = [randint(1, self.K - 1) for _ in range(self.K**self.N)]
             #self.ruleUsed = [randint(0, 1) for _ in range(self.K**self.N)]
             self.isQuiscentState = [self.is_state_quiescent() for _ in range(self.K**self.N)]
         self.cellHistory = np.empty((0, self.size), dtype=np.int8)
