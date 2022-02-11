@@ -185,7 +185,7 @@ class CellularAutomaton:
 
     def execute(self) -> np.ndarray:
         self.currentState = self.__calculate_next_step()
-        print(self.currentState)
+        #print(self.currentState)
         #if self.λ is not None:
         #    self.__solver_random_table()
         self.__insert_into_history()

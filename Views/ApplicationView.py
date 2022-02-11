@@ -111,6 +111,7 @@ class ApplicationView(GraphicalUserInterface):
 
         self.animationSettings.color.get_colors_by_K(self.cellularAutomatonView.cellularAutomaton.K - 1, True)
 
+        self.continueDraw = True
         self.draw()
 
     def re_draw(self) -> None:
