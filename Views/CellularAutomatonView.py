@@ -201,10 +201,19 @@ class CellularAutomatonView(GraphicalUserInterface):
                 return
 
             size = int(sizeStr)
+            size = 1 if size < 1 else size
             sizeK = int(KStr)
+            sizeK = 2 if sizeK < 2 else sizeK
             sizeN = int(NStr)
+            sizeN = 3 if sizeN < 3 else sizeN
             lambdaValue = float(lambdaStr)
-            seedNumber = int(seedStr) if seedStr.isnumeric() else None # seed can support only positive values because of numpy
+            lambdaValue = 0.0 if lambdaValue < 0.0 else 1.0 if lambdaValue > 1.0 else lambdaValue
+            if seedStr.isnumeric():
+                seedNumber = int(seedStr)
+                seedNumber = 0 if seedNumber < 0 else seedNumber
+            else:
+                seedNumber = None
+            #seedNumber = int(seedStr) if seedStr.isnumeric() else None # seed can support only positive values because of numpy
             random = self.comboboxRandom.get() == "True"
             selection = self.comboboxSelection.get()
 
