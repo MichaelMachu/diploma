@@ -11,9 +11,9 @@ class DataProcess:
     def save_to_json_file(filename: str, jsonStr: str) -> None:
         """filename should also contains a path to the location where the file will be saved"""
         with open("{}.json".format(filename), 'w') as file:
-            file.write(json_string)
+            file.write(jsonStr)
 
-    def load_from_json_file(filename: str) -> str:
+    def load_from_json_file(filename: str) -> dict:
         """filename should also contains a path to the location where the file is saved"""
         data = ""
         with open("{}.json".format(filename)) as file:

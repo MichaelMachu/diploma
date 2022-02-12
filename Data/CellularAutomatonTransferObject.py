@@ -48,6 +48,6 @@ class CellularAutomatonTransferObject:
             "seedNumber": self.seedNumber,
             "rule": self.rule,
             "isQuiscentState": self.isQuiscentState,
-            "cellHistory": self.cellHistory,
+            "cellHistory": self.cellHistory.tolist(),
             "currentState": self.currentState,
         }

@@ -1,3 +1,9 @@
+from tkinter import *
+from tkinter import ttk
+
+from Interfaces.GraphicalUserInterface import GraphicalUserInterface
+from . import ApplicationView
+
 from Data.CellularAutomatonTransferObject import CellularAutomatonTransferObject
 from Data.DataProcess import DataProcess
 
@@ -48,3 +54,7 @@ class SaveCellularAutomatonView(GraphicalUserInterface):
         jsonData = DataProcess.to_json(CATransferObject.get_as_dict())
 
         DataProcess.save_to_json_file(filename, jsonData)
+
+    def on_closing(self) -> None:
+        self.applicationView.isSaveCaExists = False
+        self.mainWindow.destroy()

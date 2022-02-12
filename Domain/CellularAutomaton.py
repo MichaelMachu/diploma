@@ -67,7 +67,7 @@ class CellularAutomaton:
         """Returns false for a random value or true for a quiescent state based on probability of λ"""
         if self.λ is None:
             raise ValueError("λ is not set")
-        return np.random.choice(a=[False, True], p=[self.λ, 1 - self.λ])
+        return bool(np.random.choice(a=[False, True], p=[self.λ, 1 - self.λ]))
 
     def __solver_random_table(self) -> None:
         """neighborhood = []
