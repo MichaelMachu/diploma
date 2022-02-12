@@ -19,7 +19,7 @@ class CellularAutomatonTransferObject:
         self.currentState = cellularAutomaton.currentState
 
     # Class functions
-    def set_by_dict(dictValue: dict) -> CellularAutomatonTransferObject:
+    def set_by_dict(dictValue: dict) -> "CellularAutomatonTransferObject":
         result = CellularAutomatonTransferObject()
         result.size = dictValue["size"]
         result.K = dictValue["K"]
