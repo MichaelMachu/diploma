@@ -17,12 +17,12 @@ class CellularAutomaton:
         self.λ = λ                      # Lambda
         self.quiescentState = None      # Arbitrary state
         self.possibleStates = 8 if K == 2 else 3 * K - 2    # 8 = 2^3
-        #self.possibleStates = K**N
         self.ruleNumber = rule
         if λ is None:
             self.rule = self.__rule_calculation_binary(rule) if K == 2 else self.__rule_calculation(rule)
         else:
-            self.ruleNumber = K**N
+            self.ruleNumber = CellularAutomaton.get_quiescent_trainsitions(self.λ, self.K, self.N)
+            self.possibleStates = N     # possible states for the neighborhood pattern -> is_rule_valid returns K^N
             self.seedNumber = seedNumber
             if seedNumber is None:
                 #self.seedNumber = randint(-2147483648, 2147483647) # self.randomSeed
