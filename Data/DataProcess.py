@@ -1,4 +1,5 @@
 from json import dumps, loads, load
+from os import path
 
 class DataProcess:
 
@@ -15,7 +16,10 @@ class DataProcess:
 
     def load_from_json_file(filename: str) -> dict:
         """filename should also contains a path to the location where the file is saved"""
+        filename = "{}.json".format(filename)
+        if not path.exists(filename):
+            return None
         data = ""
-        with open("{}.json".format(filename)) as file:
+        with open(filename) as file:
             data = load(file)
         return data

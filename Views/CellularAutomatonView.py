@@ -206,7 +206,7 @@ class CellularAutomatonView(GraphicalUserInterface):
             if not self.cellularAutomaton.is_rule_valid():
                 return
 
-            self.cellularAutomaton.generate_start(random, selection)
+            self.__set_ca(random, selection)
         elif self.comboboxCAType.get() == "Edge of chaos":
             sizeStr = self.entrySize.get()
             KStr = self.entryK.get()
@@ -242,13 +242,15 @@ class CellularAutomatonView(GraphicalUserInterface):
             #testCa.setRulesUsed(100) # 189
             #print("lambda = ", testCa.getLambda())
 
-            self.cellularAutomaton.generate_start(random, selection)
+            self.__set_ca(random, selection)
         else:
             filename = self.entryFileName.get()
             if (not (filename and not filename.isspace())):
                 return
 
             dictData = DataProcess.load_from_json_file(filename)
+            if dictData is None:
+                return
             #dictData = DataProcess.to_dict(jsonData)
             CATransferObject = CellularAutomatonTransferObject.set_by_dict(dictData)
 
@@ -258,30 +260,17 @@ class CellularAutomatonView(GraphicalUserInterface):
             self.cellularAutomaton.quiescentState = CATransferObject.quiescentState
             self.cellularAutomaton.currentState = CATransferObject.currentState
             self.cellularAutomaton.cellHistory = CATransferObject.cellHistory
-            print(self.cellularAutomaton.currentState)
-            #self.applicationView.start_draw()
+            
+            self.applicationView.re_draw()
+            self.applicationView.buttonAnim.configure(state=DISABLED)
+            self.applicationView.buttonAnimPause.configure(state=ACTIVE)
+            self.applicationView.buttonAnimContinue.configure(state=ACTIVE)
             
 
 
         #self.cellularAutomaton.generate_start(random, selection)
 
         #print(self.cellularAutomaton.rule)
-
-        
-        if len(self.cellularAutomaton.cellHistory) > 1:
-            self.applicationView.re_draw()
-            self.applicationView.buttonAnim.configure(state=DISABLED)
-            self.applicationView.buttonAnimPause.configure(state=ACTIVE)
-            self.applicationView.buttonAnimContinue.configure(state=ACTIVE)
-        else:
-            self.applicationView.continueDraw = False
-            self.applicationView.offsetY = 0
-            self.applicationView.canvas.delete("all")
-            self.applicationView.buttonAnim.configure(state=ACTIVE)
-            self.applicationView.buttonAnimPause.configure(state=DISABLED)
-            self.applicationView.buttonAnimContinue.configure(state=DISABLED)
-            self.applicationView.draw_step(self.cellularAutomaton.currentState)
-
         
 
         self.applicationView.buttonCaSave.configure(state=ACTIVE)
@@ -290,6 +279,17 @@ class CellularAutomatonView(GraphicalUserInterface):
         #self.applicationView.testCa = testCa
 
         #self.on_closing()
+    
+    def __set_ca(self, random: bool, selection: str) -> None:
+        self.cellularAutomaton.generate_start(random, selection)
+
+        self.applicationView.continueDraw = False
+        self.applicationView.offsetY = 0
+        self.applicationView.canvas.delete("all")
+        self.applicationView.buttonAnim.configure(state=ACTIVE)
+        self.applicationView.buttonAnimPause.configure(state=DISABLED)
+        self.applicationView.buttonAnimContinue.configure(state=DISABLED)
+        self.applicationView.draw_step(self.cellularAutomaton.currentState)
 
     def on_closing(self) -> None:
         self.applicationView.isCaMenuExists = False
