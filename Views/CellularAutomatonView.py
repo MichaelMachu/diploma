@@ -6,6 +6,8 @@ from . import ApplicationView
 #from . import CellularAutomaton
 from Domain.CellularAutomaton import CellularAutomaton
 from Domain.TestCA import TestCA
+from Data.DataProcess import DataProcess
+from Data.CellularAutomatonTransferObject import CellularAutomatonTransferObject
 
 from random import randint
 
@@ -37,7 +39,7 @@ class CellularAutomatonView(GraphicalUserInterface):
         self.labelCAType = Label(self.frame, text="Type of CA", anchor='w', bg=self.frameBG)
         self.labelCAType.grid(column=0, row=0, padx=5, pady=10, sticky=W)
         self.comboboxCAType = ttk.Combobox(self.frame)
-        self.comboboxCAType['values'] = ("Elementary / Totalistic", "Edge of chaos")
+        self.comboboxCAType['values'] = ("Elementary / Totalistic", "Edge of chaos", "Load from file")
         self.comboboxCAType['state'] = 'readonly'
         self.comboboxCAType.set("Elementary / Totalistic")
         self.comboboxCAType.bind("<<ComboboxSelected>>", self.__selection_CA_type)
@@ -140,11 +142,23 @@ class CellularAutomatonView(GraphicalUserInterface):
         self.__create_random_selection(5)   # It takes two rows
         self.__create_button_create(7)
 
+    def __build_frame_CA_FromFile(self) -> None:
+        self.__clear_frame()
+        self.labelFileName = Label(self.frameCA, text="Filename or full path with a filename\n - without file suffix name (string)", anchor='w', bg=self.frameBG)
+        self.labelFileName.grid(column=0, row=0, sticky=W)
+        self.entryFileName = Entry(self.frameCA)
+        self.entryFileName.grid(column=1, row=0, padx=10, pady=5, sticky=W)
+
+        self.__create_button_create(1)
+
     def __selection_CA_type(self, event) -> None:
         if self.comboboxCAType.get() == "Elementary / Totalistic":
             self.__build_frame_CA()
-        else:
+        elif self.comboboxCAType.get() == "Edge of chaos":
             self.__build_frame_CA_EdgeOfChaos()
+        else:
+            self.__build_frame_CA_FromFile()
+
 
     def __selection_change_status(self, event) -> None:
         state = "disabled" if self.comboboxRandom.get() == "True" else "readonly"
@@ -191,7 +205,7 @@ class CellularAutomatonView(GraphicalUserInterface):
             # Check if given parameters are valid
             if not self.cellularAutomaton.is_rule_valid():
                 return
-        else:
+        elif self.comboboxCAType.get() == "Edge of chaos":
             sizeStr = self.entrySize.get()
             KStr = self.entryK.get()
             NStr = self.entryN.get()
@@ -225,6 +239,18 @@ class CellularAutomatonView(GraphicalUserInterface):
             #print("lambda = ", testCa.getLambda())
             #testCa.setRulesUsed(100) # 189
             #print("lambda = ", testCa.getLambda())
+        else:
+            filename = self.entryFileName.get()
+            if (not (filename and not filename.isspace())):
+                return
+
+            jsonData = DataProcess.load_from_json_file(filename)
+            dictData = DataProcess.to_dict(jsonData)
+            CATransferObject = CellularAutomatonTransferObject.set_by_dict(dictData)
+
+            self.cellularAutomaton = CellularAutomaton(
+                CATransferObject.size, CATransferObject.rule, CATransferObject.K, 
+                CATransferObject.N, CATransferObject.λ, CATransferObject.seedNumber)
 
 
         self.cellularAutomaton.generate_start(random, selection)
