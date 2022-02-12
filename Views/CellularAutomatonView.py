@@ -21,6 +21,37 @@ class CellularAutomatonView(GraphicalUserInterface):
 
         self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_closing)
 
+        # Create object variables
+        # Frames
+        self.frame = None
+        self.frameCA = None
+        # Labels
+        self.labelCAType = None
+        self.labelSize = None
+        self.labelRule = None
+        self.labelK = None
+        self.labelN = None
+        self.labelLambda = None
+        self.labelSeed = None
+        self.labelRandom = None
+        self.labelSelection = None
+        self.labelFileName = None
+        # Entries
+        self.entrySize = None
+        self.entryRule = None
+        self.entryK = None
+        self.entryN = None
+        self.entryLambda = None
+        self.entrySeed = None
+        self.entryFileName = None
+        # Buttons
+        self.buttonCreate = None
+        # Comboboxes
+        self.comboboxCAType = None
+        self.comboboxRandom = None
+        self.comboboxSelection = None
+
+
         self.__build()
 
     def __run(self) -> None:
@@ -51,6 +82,7 @@ class CellularAutomatonView(GraphicalUserInterface):
 
         # Build CA form
         self.__build_frame_CA()
+        self.__set_values_to_entries()
         
 
     def __clear_frame(self) -> None:
@@ -151,13 +183,43 @@ class CellularAutomatonView(GraphicalUserInterface):
 
         self.__create_button_create(1)
 
-    def __selection_CA_type(self, event) -> None:
+    def __entry_set_value(self, entry: Entry, value: str) -> None:
+        if not entry.winfo_exists():
+            return
+
+        entry.delete(0, "end")
+        entry.insert(0, value)
+
+    def __combobox_set_value(self, combobox: ttk.Combobox, value: str) -> None:
+        if not combobox.winfo_exists():
+            return
+        
+        combobox.set(value)
+
+    def __set_values_to_entries(self) -> None:
+        if self.cellularAutomaton is not None:
+            if self.cellularAutomaton.λ is None:
+                self.__entry_set_value(self.entrySize, self.cellularAutomaton.size)
+                self.__entry_set_value(self.entryRule, self.cellularAutomaton.rule)
+                self.__entry_set_value(self.entryK, self.cellularAutomaton.K)
+                #self.__combobox_set_value(self.comboboxRandom, self.cellularAutomaton.K)
+                #self.__combobox_set_value(self.comboboxSelection, self.cellularAutomaton.K)
+            else:
+                self.__entry_set_value(self.entrySize, self.cellularAutomaton.size)
+                self.__entry_set_value(self.entryK, self.cellularAutomaton.K)
+                self.__entry_set_value(self.entryN, self.cellularAutomaton.N)
+                self.__entry_set_value(self.entryLambda, self.cellularAutomaton.λ)
+                self.__entry_set_value(self.entrySeed, self.cellularAutomaton.seedNumber)
+
+    def __selection_CA_type(self, event: EventType) -> None:
         if self.comboboxCAType.get() == "Elementary / Totalistic":
             self.__build_frame_CA()
         elif self.comboboxCAType.get() == "Edge of chaos":
             self.__build_frame_CA_EdgeOfChaos()
         else:
             self.__build_frame_CA_FromFile()
+
+        self.__set_values_to_entries()
 
 
     def __selection_change_status(self, event) -> None:
