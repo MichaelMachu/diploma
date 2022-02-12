@@ -23,6 +23,8 @@ class ApplicationView(GraphicalUserInterface):
 
         # Control parameters
         self.isCaMenuExists = False
+        self.isAnimationSettingsExists = False
+        self.isSaveCaExists = False
         self.isAnimationRunning = False
         self.continueDraw = False
 
@@ -92,6 +94,11 @@ class ApplicationView(GraphicalUserInterface):
         
     # Other windows for specific configuration
     def __show_animation_settings_menu(self) -> None:
+        if self.isAnimationSettingsExists:
+            return
+
+        self.isAnimationSettingsExists = True
+
         self.animationSettingsView = AnimationSettingsView(self)
 
     def __show_cellular_automaton_menu(self) -> None:

@@ -67,5 +67,5 @@ class AnimationSettingsView(GraphicalUserInterface):
         self.mainWindow.destroy()
 
     def on_closing(self) -> None:
-        self.applicationView.isCaMenuExists = False
+        self.applicationView.isAnimationSettingsExists = False
         self.mainWindow.destroy()
