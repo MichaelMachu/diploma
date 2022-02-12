@@ -184,6 +184,9 @@ class CellularAutomatonView(GraphicalUserInterface):
         self.__create_button_create(1)
 
     def __entry_set_value(self, entry: Entry, value: str) -> None:
+        if entry is None:
+            return
+
         if not entry.winfo_exists():
             return
 
@@ -191,6 +194,9 @@ class CellularAutomatonView(GraphicalUserInterface):
         entry.insert(0, value)
 
     def __combobox_set_value(self, combobox: ttk.Combobox, value: str) -> None:
+        if combobox is None:
+            return
+
         if not combobox.winfo_exists():
             return
         
