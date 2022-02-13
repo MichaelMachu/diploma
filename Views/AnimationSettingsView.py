@@ -63,9 +63,10 @@ class AnimationSettingsView(GraphicalUserInterface):
         self.applicationView.animationSettings.color = Color(self.colorCode)
 
         self.applicationView.re_draw()
-
-        self.mainWindow.destroy()
+        
+        self.on_closing()
+        #self.mainWindow.destroy()
 
     def on_closing(self) -> None:
-        self.applicationView.isCaMenuExists = False
+        self.applicationView.isAnimationSettingsExists = False
         self.mainWindow.destroy()

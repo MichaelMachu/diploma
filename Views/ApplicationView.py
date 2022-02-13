@@ -6,6 +6,7 @@ from Domain.AnimationSettings import AnimationSettings
 from Interfaces.GraphicalUserInterface import GraphicalUserInterface
 from .CellularAutomatonView import CellularAutomatonView
 from .AnimationSettingsView import AnimationSettingsView
+from .SaveCellularAutomatonView import SaveCellularAutomatonView
 
 class ApplicationView(GraphicalUserInterface):
     
@@ -18,11 +19,15 @@ class ApplicationView(GraphicalUserInterface):
         self.animationSettings = AnimationSettings()
         self.cellularAutomaton = None
         self.cellularAutomatonView = None
+        self.animationSettingsView = None
+        self.saveCellularAutomatonView = None
 
         self.testCa = None
 
         # Control parameters
         self.isCaMenuExists = False
+        self.isAnimationSettingsExists = False
+        self.isSaveCaExists = False
         self.isAnimationRunning = False
         self.continueDraw = False
 
@@ -56,6 +61,10 @@ class ApplicationView(GraphicalUserInterface):
 
         self.buttonCa = Button(self.frameSplitUpper, text="Cellular Automaton", command=self.__show_cellular_automaton_menu)
         self.buttonCa.pack(fill='x')
+
+        self.buttonCaSave = Button(self.frameSplitUpper, text="Save Cellular Automaton", command=self.__show_save_cellular_automaton_menu)
+        self.buttonCaSave.configure(state=DISABLED)
+        self.buttonCaSave.pack(fill='x')
 
         self.buttonAnim = Button(self.frameSplitLower, text="Start animation", command=self.start_draw)
         self.buttonAnim.configure(state=DISABLED)
@@ -92,6 +101,10 @@ class ApplicationView(GraphicalUserInterface):
         
     # Other windows for specific configuration
     def __show_animation_settings_menu(self) -> None:
+        if self.isAnimationSettingsExists:
+            return
+
+        self.isAnimationSettingsExists = True
         self.animationSettingsView = AnimationSettingsView(self)
 
     def __show_cellular_automaton_menu(self) -> None:
@@ -99,9 +112,14 @@ class ApplicationView(GraphicalUserInterface):
             return
 
         self.isCaMenuExists = True
-        
         self.cellularAutomatonView = CellularAutomatonView(self)
-        self.caMenu = self.cellularAutomatonView.mainWindow
+
+    def __show_save_cellular_automaton_menu(self) -> None:
+        if self.isSaveCaExists:
+            return
+
+        self.isSaveCaExists = True
+        self.saveCellularAutomatonView = SaveCellularAutomatonView(self)
     
     # Draw and animation methods
     def start_draw(self) -> None:
@@ -111,14 +129,17 @@ class ApplicationView(GraphicalUserInterface):
 
         self.animationSettings.color.get_colors_by_K(self.cellularAutomatonView.cellularAutomaton.K - 1, True)
 
+        self.continueDraw = True
         self.draw()
 
     def re_draw(self) -> None:
         """Clears the whole canvas and do redrawing based on the history"""
         if self.cellularAutomatonView is None:
+            print("CA view not exists")
             return
 
         if self.cellularAutomatonView.cellularAutomaton is None:
+            print("CA not exists")
             return
 
         self.continueDraw = False
@@ -164,10 +185,10 @@ class ApplicationView(GraphicalUserInterface):
 
     def on_closing_root(self) -> None:
         if self.isCaMenuExists:
-            self.caMenu.quit()
+            self.cellularAutomatonView.mainWindow.quit()
         self.root.quit()
 
     def on_closing_ca_menu(self) -> None:
         if self.isCaMenuExists:
             self.isCaMenuExists = False
-            self.caMenu.destroy()
+            self.cellularAutomatonView.mainWindow.destroy()

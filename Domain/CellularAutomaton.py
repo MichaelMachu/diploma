@@ -4,7 +4,7 @@ from random import seed, randint
 
 class CellularAutomaton:
 
-    def __init__(self, size: int, rule: int, K: int = 2, N: int = 3, λ: float = None) -> None:
+    def __init__(self, size: int, rule: int = None, K: int = 2, N: int = 3, λ: float = None, seedNumber: int = None) -> None:
         """
         Cellular Automaton creates one step by method execute.
         Params:
@@ -17,20 +17,27 @@ class CellularAutomaton:
         self.λ = λ                      # Lambda
         self.quiescentState = None      # Arbitrary state
         self.possibleStates = 8 if K == 2 else 3 * K - 2    # 8 = 2^3
-        #self.possibleStates = K**N
         self.ruleNumber = rule
         if λ is None:
             self.rule = self.__rule_calculation_binary(rule) if K == 2 else self.__rule_calculation(rule)
         else:
-            seed(randint(-2147483648, 2147483647)) # self.randomSeed
-            self.rule = [randint(0, self.K - 1) for _ in range(self.K**self.N)]
+            self.ruleNumber = CellularAutomaton.get_quiescent_trainsitions(self.λ, self.K, self.N)
+            self.possibleStates = N     # possible states for the neighborhood pattern -> is_rule_valid returns K^N
+            self.seedNumber = seedNumber
+            if seedNumber is None:
+                #self.seedNumber = randint(-2147483648, 2147483647) # self.randomSeed
+                self.seedNumber = randint(0, 2**32 - 1)
+            seed(self.seedNumber)
+            np.random.seed(self.seedNumber)
+            print("seed: ", self.seedNumber)
+            self.rule = [randint(1, self.K - 1) for _ in range(self.K**self.N)]
             #self.ruleUsed = [randint(0, 1) for _ in range(self.K**self.N)]
             self.isQuiscentState = [self.is_state_quiescent() for _ in range(self.K**self.N)]
         self.cellHistory = np.empty((0, self.size), dtype=np.int8)
         self.currentState = np.zeros(self.size, dtype=np.int8)
 
     # Class functions
-    def get_lambda(K: int, N: int, n: int):
+    def get_lambda(K: int, N: int, n: int) -> float:
         """
         Returns value of characterized paramater λ
         Params:
@@ -41,7 +48,7 @@ class CellularAutomaton:
         KN = K**N
         return (KN - n) / KN
 
-    def get_quiescent_trainsitions(λ: float, K: int, N: int):
+    def get_quiescent_trainsitions(λ: float, K: int, N: int) -> int:
         """
         Returns value of a transition to special quiescent state
         Params:
@@ -50,7 +57,7 @@ class CellularAutomaton:
             - N: size of the neighborhood
         """
         KN = K**N
-        return -((λ * KN) - KN)
+        return -int((λ * KN) - KN)
 
     # Object functions
     def is_rule_valid(self) -> bool:
@@ -60,7 +67,7 @@ class CellularAutomaton:
         """Returns false for a random value or true for a quiescent state based on probability of λ"""
         if self.λ is None:
             raise ValueError("λ is not set")
-        return np.random.choice(a=[False, True], p=[self.λ, 1 - self.λ])
+        return bool(np.random.choice(a=[False, True], p=[self.λ, 1 - self.λ]))
 
     def __solver_random_table(self) -> None:
         """neighborhood = []
@@ -185,7 +192,7 @@ class CellularAutomaton:
 
     def execute(self) -> np.ndarray:
         self.currentState = self.__calculate_next_step()
-        print(self.currentState)
+        #print(self.currentState)
         #if self.λ is not None:
         #    self.__solver_random_table()
         self.__insert_into_history()
