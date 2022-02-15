@@ -169,8 +169,6 @@ class ApplicationView(GraphicalUserInterface):
     def draw(self) -> None:
         if self.cellularAutomatonView.cellularAutomaton is not None:
             step = self.cellularAutomatonView.cellularAutomaton.execute()
-            #step = self.testCa.getWorld()
-            #self.testCa.nextGeneration()
             self.draw_step(step)
             self.canvas.configure(scrollregion=self.canvas.bbox("all"))
             

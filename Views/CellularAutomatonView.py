@@ -303,13 +303,6 @@ class CellularAutomatonView(GraphicalUserInterface):
 
             self.cellularAutomaton = CellularAutomaton(size=size, K=sizeK, N=sizeN, λ=lambdaValue, seedNumber=seedNumber)
 
-            #testCa = TestCA(5, 4, size, False, True, randint(-2147483648, 2147483647))    # 123
-            #print("val = ", testCa.getRulesUsed())
-            #print("max = ", testCa.getRuleCount())
-            #print("lambda = ", testCa.getLambda())
-            #testCa.setRulesUsed(100) # 189
-            #print("lambda = ", testCa.getLambda())
-
             self.__set_ca(random, selection)
         else:
             filename = self.entryFileName.get()
@@ -319,7 +312,7 @@ class CellularAutomatonView(GraphicalUserInterface):
             dictData = DataProcess.load_from_json_file(filename)
             if dictData is None:
                 return
-            #dictData = DataProcess.to_dict(jsonData)
+            
             CATransferObject = CellularAutomatonTransferObject.set_by_dict(dictData)
 
             self.cellularAutomaton = CellularAutomaton(
@@ -335,16 +328,9 @@ class CellularAutomatonView(GraphicalUserInterface):
             self.applicationView.buttonAnimContinue.configure(state=ACTIVE)
             
 
-
-        #self.cellularAutomaton.generate_start(random, selection)
-
-        #print(self.cellularAutomaton.rule)
-        
-
         self.applicationView.buttonCaSave.configure(state=ACTIVE)
 
         self.applicationView.cellularAutomaton = self.cellularAutomaton
-        #self.applicationView.testCa = testCa
 
         #self.on_closing()
     
