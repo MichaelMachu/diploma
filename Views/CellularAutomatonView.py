@@ -5,7 +5,6 @@ from Interfaces.GraphicalUserInterface import GraphicalUserInterface
 from . import ApplicationView
 #from . import CellularAutomaton
 from Domain.CellularAutomaton import CellularAutomaton
-from Domain.TestCA import TestCA
 from Data.DataProcess import DataProcess
 from Data.CellularAutomatonTransferObject import CellularAutomatonTransferObject
 
