@@ -149,6 +149,8 @@ class ApplicationView(GraphicalUserInterface):
         for step in self.cellularAutomatonView.cellularAutomaton.cellHistory:
             self.draw_step(step)
 
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+
     def draw_step(self, step: list) -> None:
         offsetX = 0
         for item in step:
