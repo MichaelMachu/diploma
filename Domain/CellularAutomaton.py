@@ -171,6 +171,71 @@ class CellularAutomaton:
 
         return self.rule[self.possibleStates - 1 - indexesOfNextStep]
 
+    def __calculate_next_step_2D(self) -> np.ndarray:
+        stateSize = len(self.currentState)
+        nextState = np.zeros(self.size, dtype=np.int8)
+
+        if self.pattern2D == "neuman":
+            for i in range(stateSize):
+                # Previous states
+                if i == 0:
+                    previousStates = self.currentState[stateSize - 1]
+                else:
+                    previousStates = self.currentState[i - 1]
+
+                # Next states
+                if i == stateSize - 1:
+                    nextStates = self.currentState[0]
+                else:
+                    nextStates = self.currentState[i + 1]
+
+                #  Middle states
+                middleStateRightShift = np.roll(self.currentState[i], 1)
+                middleStateleftShift = np.roll(self.currentState[i], -1)
+
+                stackOfNeighbors = np.vstack((previousStates, middleStateRightShift, self.currentState[i], middleStateleftShift, nextStates)).astype(np.int8)
+                indexesOfNextStep = np.sum(stackOfNeighbors, axis=0).astype(np.int8)
+            
+                nextState[i,:] = self.rule[self.possibleStates - 1 - indexesOfNextStep]
+            
+            return nextState
+        
+        if self.pattern2D == "moore":
+            for i in range(stateSize):
+                index = i
+                # Previous states
+                if i == 0:
+                    index = stateSize - 1
+                else:
+                    index = i - 1
+                previousStates = self.currentState[index]
+                previousStateRightShift = np.roll(self.currentState[index], 1)
+                previousStateleftShift = np.roll(self.currentState[index], -1)
+
+                # Next states
+                if i == stateSize - 1:
+                    index = 0
+                else:
+                    index = i + 1
+                nextStates = self.currentState[index]
+                nextStateRightShift = np.roll(self.currentState[index], 1)
+                nextStateleftShift = np.roll(self.currentState[index], -1)
+
+                #  Middle states
+                middleStateRightShift = np.roll(self.currentState[i], 1)
+                middleStateleftShift = np.roll(self.currentState[i], -1)
+
+                stackOfNeighbors = np.vstack((previousStateRightShift, previousStates, previousStateleftShift, 
+                                            middleStateRightShift, self.currentState[i], middleStateleftShift, 
+                                            nextStateRightShift, nextStates, nextStateleftShift)).astype(np.int8)
+                indexesOfNextStep = np.sum(stackOfNeighbors, axis=0).astype(np.int8)
+
+                nextState[i,:] = self.rule[self.possibleStates - 1 - indexesOfNextStep]
+            
+            return nextState
+        
+        return None     # Pattern2D is not defined
+
     def generate_start(self, random: bool = True, selection: str = "center") -> None:
         """If random is set to False value, then it is needed to set also the type of selection, default value is center"""
         #self.quiescentState = np.random.randint(self.K)
