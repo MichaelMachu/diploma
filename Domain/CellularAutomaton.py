@@ -42,7 +42,7 @@ class CellularAutomaton:
             self.rule = [randint(1, self.K - 1) for _ in range(self.K**self.N)]
             #self.ruleUsed = [randint(0, 1) for _ in range(self.K**self.N)]
             self.isQuiscentState = [self.is_state_quiescent() for _ in range(self.K**self.N)]
-        self.cellHistory = np.empty((0, self.size), dtype=np.int8)
+        self.cellHistory = np.empty((0, self.size) if self.dimension == 1 else self.size, dtype=np.int8)
         self.currentState = np.zeros(self.size, dtype=np.int8)
 
     # Class functions
@@ -103,6 +103,9 @@ class CellularAutomaton:
         pass
 
     def __insert_into_history(self) -> None:
+        if self.dimension == 2:
+            self.cellHistory = np.dstack((self.cellHistory, self.currentState))
+            return
         self.cellHistory = np.append(self.cellHistory, np.array([self.currentState]), axis=0) 
 
     def __rule_calculation_binary(self, number: int) -> np.ndarray:
@@ -249,6 +252,17 @@ class CellularAutomaton:
         """If random is set to False value, then it is needed to set also the type of selection, default value is center"""
         #self.quiescentState = np.random.randint(self.K)
         self.quiescentState = 0
+
+        if self.dimension == 2:
+            if random:
+                #self.currentState[:] = np.array(np.random.rand(self.size) < 0.5, dtype=np.int8)
+                self.currentState = np.random.randint(2, size=self.size)
+                self.__insert_into_history()
+                print(self.currentState)
+                return
+
+            self.currentState[self.size[0] // 2:self.size[1] // 2] = 1
+            return
         
         if random:
             self.currentState[:] = np.array(np.random.rand(self.size) < 0.5, dtype=np.int8)
@@ -270,4 +284,5 @@ class CellularAutomaton:
         #if self.λ is not None:
         #    self.__solver_random_table()
         self.__insert_into_history()
+        print(self.currentState)
         return self.currentState

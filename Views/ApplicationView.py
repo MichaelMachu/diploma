@@ -152,6 +152,10 @@ class ApplicationView(GraphicalUserInterface):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def draw_step(self, step: list) -> None:
+        if self.cellularAutomatonView.cellularAutomaton.dimension == 2:
+            self.__draw_step_2D(step)
+            return
+        
         offsetX = 0
         for item in step:
             color = self.animationSettings.color.get_colors_by_K(self.cellularAutomatonView.cellularAutomaton.K - 1)
@@ -165,6 +169,22 @@ class ApplicationView(GraphicalUserInterface):
                 )
             offsetX += self.animationSettings.cellSize
         self.offsetY += self.animationSettings.cellSize
+
+    def __draw_step_2D(self, step: list) -> None:
+        offsetX = 0
+        for row in step:
+            for item in row:
+                color = self.animationSettings.color.get_colors_by_K(self.cellularAutomatonView.cellularAutomaton.K - 1)
+                
+                # if cell is not in a state of "death" then draw state by color
+                if item > 0:
+                    self.canvas.create_rectangle(
+                        0 + offsetX, 0 + self.offsetY, 
+                        self.animationSettings.cellSize + offsetX, self.animationSettings.cellSize + self.offsetY, 
+                        outline=color[item - 1], fill=color[item - 1]
+                    )
+                offsetX += self.animationSettings.cellSize
+            self.offsetY += self.animationSettings.cellSize
 
     def draw(self) -> None:
         if self.cellularAutomatonView.cellularAutomaton is not None:

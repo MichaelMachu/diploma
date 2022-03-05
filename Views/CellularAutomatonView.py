@@ -337,7 +337,25 @@ class CellularAutomatonView(GraphicalUserInterface):
 
             self.__set_ca(random, selection)
         elif self.comboboxCAType.get() == "2D":
-            # TO DO
+            sizeXStr = self.entrySizeX.get()
+            sizeYStr = self.entrySizeY.get()
+            ruleStr = self.entryRule.get()
+            if not sizeXStr.isnumeric() or not sizeYStr.isnumeric() or not ruleStr.isnumeric():
+                return
+
+            sizeX = int(sizeXStr)
+            sizeY = int(sizeYStr)
+            rule = int(ruleStr)
+            random = self.comboboxRandom.get() == "True"
+            selection = self.comboboxSelection.get()
+
+            #print(size, rule, sizeK, random, selection)
+
+            self.cellularAutomaton = CellularAutomaton((sizeX, sizeY), rule)
+
+            # Check if given parameters are valid
+            if not self.cellularAutomaton.is_rule_valid():
+                return
 
             self.__set_ca(random, selection)
         else:
