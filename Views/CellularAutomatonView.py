@@ -84,18 +84,20 @@ class CellularAutomatonView(GraphicalUserInterface):
         self.__set_values_to_entries()
         
 
-    def __clear_frame(self) -> None:
+    def __clear_frame(self) -> int:
         for widget in self.frameCA.winfo_children():
             widget.destroy()
+        return 0
 
-    def __create_entry_size(self, row: int) -> None:
+    def __create_entry_size(self, row: int) -> int:
         # Size of the neighborhood (1 dimension)
         self.labelSize = Label(self.frameCA, text="Size of the world (int)", anchor='w', bg=self.frameBG)
         self.labelSize.grid(column=0, row=row, sticky=W)
         self.entrySize = Entry(self.frameCA)
         self.entrySize.grid(column=1, row=row, padx=10, pady=5, sticky=W)
+        return row + 1
 
-    def __create_entry_size_2D(self, row: int) -> None:
+    def __create_entry_size_2D(self, row: int) -> int:
         # Size of the neighborhood (2 dimension)
         self.labelSizeX = Label(self.frameCA, text="Width of the world (int)", anchor='w', bg=self.frameBG)
         self.labelSizeX.grid(column=0, row=row, sticky=W)
@@ -106,43 +108,49 @@ class CellularAutomatonView(GraphicalUserInterface):
         self.labelSizeY.grid(column=0, row=row, sticky=W)
         self.entrySizeY = Entry(self.frameCA)
         self.entrySizeY.grid(column=1, row=row, padx=10, pady=5, sticky=W)
+        return row + 1
 
-    def __create_entry_rule(self, row: int) -> None:
+    def __create_entry_rule(self, row: int) -> int:
         # Rule number for generating the next generation
         self.labelRule = Label(self.frameCA, text="Rule value (int)", anchor='w', bg=self.frameBG)
         self.labelRule.grid(column=0, row=row, sticky=W)
         self.entryRule = Entry(self.frameCA)
         self.entryRule.grid(column=1, row=row, padx=10, pady=5, sticky=W)
+        return row + 1
 
-    def __create_entry_K(self, row: int) -> None:
+    def __create_entry_K(self, row: int) -> int:
         # Number of states for a cell (color)
         self.labelK = Label(self.frameCA, text="Number of states K (int)", anchor='w', bg=self.frameBG)
         self.labelK.grid(column=0, row=row, sticky=W)
         self.entryK = Entry(self.frameCA)
         self.entryK.grid(column=1, row=row, padx=10, pady=5, sticky=W)
+        return row + 1
 
-    def __create_entry_N(self, row: int) -> None:
+    def __create_entry_N(self, row: int) -> int:
         # Number of pattern of neighborhood
         self.labelN = Label(self.frameCA, text="Neighborhood pattern N (int)", anchor='w', bg=self.frameBG)
         self.labelN.grid(column=0, row=row, sticky=W)
         self.entryN = Entry(self.frameCA)
         self.entryN.grid(column=1, row=row, padx=10, pady=5, sticky=W)
+        return row + 1
 
-    def __create_entry_lambda(self, row: int) -> None:
+    def __create_entry_lambda(self, row: int) -> int:
         # Number of pattern of neighborhood
         self.labelLambda = Label(self.frameCA, text="Lambda value λ (float)", anchor='w', bg=self.frameBG)
         self.labelLambda.grid(column=0, row=row, sticky=W)
         self.entryLambda = Entry(self.frameCA)
         self.entryLambda.grid(column=1, row=row, padx=10, pady=5, sticky=W)
+        return row + 1
 
-    def __create_entry_seed(self, row: int) -> None:
+    def __create_entry_seed(self, row: int) -> int:
         # Number of pattern of neighborhood
         self.labelSeed = Label(self.frameCA, text="Seed value - optional (int)", anchor='w', bg=self.frameBG)
         self.labelSeed.grid(column=0, row=row, sticky=W)
         self.entrySeed = Entry(self.frameCA)
         self.entrySeed.grid(column=1, row=row, padx=10, pady=5, sticky=W)
+        return row + 1
 
-    def __create_random_selection(self, row: int) -> None:
+    def __create_random_selection(self, row: int) -> int:
         # Selection of the creation of the first generation
         # random base on the posibility
         self.labelRandom = Label(self.frameCA, text="Random start generation", anchor='w', bg=self.frameBG)
@@ -153,54 +161,57 @@ class CellularAutomatonView(GraphicalUserInterface):
         self.comboboxRandom.set("True")
         self.comboboxRandom.bind("<<ComboboxSelected>>", self.__selection_change_status)
         self.comboboxRandom.grid(column=1, row=row, padx=10, pady=5, sticky=W)
+        row = row + 1
         # generate first cell at center, left or right side (in the middle of the dimension, first position of the dimension or last position)
         self.labelSelection = Label(self.frameCA, text="Selection (it is set only, if random is False)", anchor='w', bg=self.frameBG)
-        self.labelSelection.grid(column=0, row=row+1, sticky=W)
+        self.labelSelection.grid(column=0, row=row, sticky=W)
         self.comboboxSelection = ttk.Combobox(self.frameCA)
         self.comboboxSelection['values'] = ("center", "left", "right")
         self.comboboxSelection['state'] = "disabled"
         self.comboboxSelection.set("center")
-        self.comboboxSelection.grid(column=1, row=row+1, padx=10, pady=5, sticky=W)
+        self.comboboxSelection.grid(column=1, row=row, padx=10, pady=5, sticky=W)
+        return row + 1
 
-    def __create_button_create(self, row: int) -> None:
+    def __create_button_create(self, row: int) -> int:
         # Create button
         self.buttonCreate = Button(self.frameCA, text="Create a new Cellular Automaton", command=self.__create_ca)
         self.buttonCreate.grid(column=0, row=row, columnspan=2, padx=10, pady=5)
+        return row + 1
 
     def __build_frame_CA(self) -> None:
-        self.__clear_frame()
-        self.__create_entry_size(0)
-        self.__create_entry_rule(1)
-        self.__create_entry_K(2)
-        self.__create_random_selection(3)   # It takes two rows
-        self.__create_button_create(5)
+        row = self.__clear_frame()
+        row = self.__create_entry_size(row)
+        row = self.__create_entry_rule(row)
+        row = self.__create_entry_K(row)
+        row = self.__create_random_selection(row)   # It takes two rows
+        row = self.__create_button_create(row)
 
     def __build_frame_CA_EdgeOfChaos(self) -> None:
-        self.__clear_frame()
-        self.__create_entry_size(0)
-        self.__create_entry_K(1)
-        self.__create_entry_N(2)
-        self.__create_entry_lambda(3)
-        self.__create_entry_seed(4)
-        self.__create_random_selection(5)   # It takes two rows
-        self.__create_button_create(7)
+        row = self.__clear_frame()
+        row = self.__create_entry_size(row)
+        row = self.__create_entry_K(row)
+        row = self.__create_entry_N(row)
+        row = self.__create_entry_lambda(row)
+        row = self.__create_entry_seed(row)
+        row = self.__create_random_selection(row)   # It takes two rows
+        row = self.__create_button_create(row)
 
     def __build_frame_CA_2D(self) -> None:
-        self.__clear_frame()
-        self.__create_entry_size_2D(0)  # It takes two rows
-        self.__create_entry_rule(2)
-        #self.__create_entry_K(2)
-        self.__create_random_selection(3)   # It takes two rows
-        self.__create_button_create(4)
+        row = self.__clear_frame()
+        row = self.__create_entry_size_2D(row)  # It takes two rows
+        row = self.__create_entry_rule(row)
+        #row = self.__create_entry_K(row)
+        row = self.__create_random_selection(row)   # It takes two rows
+        row = self.__create_button_create(row)
 
     def __build_frame_CA_FromFile(self) -> None:
-        self.__clear_frame()
+        row = self.__clear_frame()
         self.labelFileName = Label(self.frameCA, text="Filename or full path with a filename\n - without file suffix name (string)", anchor='w', bg=self.frameBG)
-        self.labelFileName.grid(column=0, row=0, sticky=W)
+        self.labelFileName.grid(column=0, row=row, sticky=W)
         self.entryFileName = Entry(self.frameCA)
-        self.entryFileName.grid(column=1, row=0, padx=10, pady=5, sticky=W)
-
-        self.__create_button_create(1)
+        self.entryFileName.grid(column=1, row=row, padx=10, pady=5, sticky=W)
+        row = row + 1
+        row = self.__create_button_create(row)
 
     def __entry_set_value(self, entry: Entry, value: str) -> None:
         if entry is None:
