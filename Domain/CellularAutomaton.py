@@ -26,6 +26,7 @@ class CellularAutomaton:
                 self.pattern2D = "moore"
                 self.possibleStates = 18
                 self.rule = self.__rule_calculation_binary(rule)
+                #print("rule", self.rule)
             # Set CA to 1D
             else:
                 self.rule = self.__rule_calculation_binary(rule) if K == 2 else self.__rule_calculation(rule)

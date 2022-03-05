@@ -166,8 +166,15 @@ class ApplicationView(GraphicalUserInterface):
         self.offsetY = 0
         self.canvas.delete("all")
 
-        for step in self.cellularAutomatonView.cellularAutomaton.cellHistory:
-            self.draw_step(step)
+        if self.cellularAutomatonView.cellularAutomaton.dimension == 2:
+            self.world = []
+            self.create_world()
+            self.draw_step(self.cellularAutomatonView.cellularAutomaton.currentState)
+            #for step in self.cellularAutomatonView.cellularAutomaton.currentState:
+            #    self.draw_step(step)
+        else:
+            for step in self.cellularAutomatonView.cellularAutomaton.cellHistory:
+                self.draw_step(step)
 
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
