@@ -4,7 +4,7 @@ from random import seed, randint
 
 class CellularAutomaton:
 
-    def __init__(self, size: int, rule: int = None, K: int = 2, N: int = 3, λ: float = None, seedNumber: int = None) -> None:
+    def __init__(self, size: int or tuple, rule: int = None, K: int = 2, N: int = 3, λ: float = None, seedNumber: int = None) -> None:
         """
         Cellular Automaton creates one step by method execute.
         Params:
@@ -17,9 +17,18 @@ class CellularAutomaton:
         self.λ = λ                      # Lambda
         self.quiescentState = None      # Arbitrary state
         self.possibleStates = 8 if K == 2 else 3 * K - 2    # 8 = 2^3
-        self.ruleNumber = rule
+        self.ruleNumber = rule          # Rule represented as number
+        self.dimension = 1              # Dimension of the world
         if λ is None:
-            self.rule = self.__rule_calculation_binary(rule) if K == 2 else self.__rule_calculation(rule)
+            # Set CA to 2D
+            if type(size) is tuple and len(size) > 1:
+                self.dimension = 2
+                self.pattern2D = "moore"
+                self.possibleStates = 18
+                self.rule = self.__rule_calculation_binary(rule)
+            # Set CA to 1D
+            else:
+                self.rule = self.__rule_calculation_binary(rule) if K == 2 else self.__rule_calculation(rule)
         else:
             self.ruleNumber = CellularAutomaton.get_quiescent_trainsitions(self.λ, self.K, self.N)
             self.possibleStates = N     # possible states for the neighborhood pattern -> is_rule_valid returns K^N
@@ -256,7 +265,7 @@ class CellularAutomaton:
         self.__insert_into_history()
 
     def execute(self) -> np.ndarray:
-        self.currentState = self.__calculate_next_step()
+        self.currentState = self.__calculate_next_step() if self.dimension == 1 else self.__calculate_next_step_2D()
         #print(self.currentState)
         #if self.λ is not None:
         #    self.__solver_random_table()

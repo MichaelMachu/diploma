@@ -69,7 +69,7 @@ class CellularAutomatonView(GraphicalUserInterface):
         self.labelCAType = Label(self.frame, text="Type of CA", anchor='w', bg=self.frameBG)
         self.labelCAType.grid(column=0, row=0, padx=5, pady=10, sticky=W)
         self.comboboxCAType = ttk.Combobox(self.frame)
-        self.comboboxCAType['values'] = ("Elementary / Totalistic", "Edge of chaos", "Load from file")
+        self.comboboxCAType['values'] = ("Elementary / Totalistic", "Edge of chaos", "2D", "Load from file")
         self.comboboxCAType['state'] = 'readonly'
         self.comboboxCAType.set("Elementary / Totalistic")
         self.comboboxCAType.bind("<<ComboboxSelected>>", self.__selection_CA_type)
@@ -94,6 +94,18 @@ class CellularAutomatonView(GraphicalUserInterface):
         self.labelSize.grid(column=0, row=row, sticky=W)
         self.entrySize = Entry(self.frameCA)
         self.entrySize.grid(column=1, row=row, padx=10, pady=5, sticky=W)
+
+    def __create_entry_size_2D(self, row: int) -> None:
+        # Size of the neighborhood (2 dimension)
+        self.labelSizeX = Label(self.frameCA, text="Width of the world (int)", anchor='w', bg=self.frameBG)
+        self.labelSizeX.grid(column=0, row=row, sticky=W)
+        self.entrySizeX = Entry(self.frameCA)
+        self.entrySizeX.grid(column=1, row=row, padx=10, pady=5, sticky=W)
+        row += 1
+        self.labelSizeY = Label(self.frameCA, text="Height of the world (int)", anchor='w', bg=self.frameBG)
+        self.labelSizeY.grid(column=0, row=row, sticky=W)
+        self.entrySizeY = Entry(self.frameCA)
+        self.entrySizeY.grid(column=1, row=row, padx=10, pady=5, sticky=W)
 
     def __create_entry_rule(self, row: int) -> None:
         # Rule number for generating the next generation
@@ -173,6 +185,14 @@ class CellularAutomatonView(GraphicalUserInterface):
         self.__create_random_selection(5)   # It takes two rows
         self.__create_button_create(7)
 
+    def __build_frame_CA_2D(self) -> None:
+        self.__clear_frame()
+        self.__create_entry_size_2D(0)  # It takes two rows
+        self.__create_entry_rule(2)
+        #self.__create_entry_K(2)
+        self.__create_random_selection(3)   # It takes two rows
+        self.__create_button_create(4)
+
     def __build_frame_CA_FromFile(self) -> None:
         self.__clear_frame()
         self.labelFileName = Label(self.frameCA, text="Filename or full path with a filename\n - without file suffix name (string)", anchor='w', bg=self.frameBG)
@@ -221,6 +241,8 @@ class CellularAutomatonView(GraphicalUserInterface):
             self.__build_frame_CA()
         elif self.comboboxCAType.get() == "Edge of chaos":
             self.__build_frame_CA_EdgeOfChaos()
+        elif self.comboboxCAType.get() == "2D":
+            self.__build_frame_CA_2D()
         else:
             self.__build_frame_CA_FromFile()
 
@@ -301,6 +323,10 @@ class CellularAutomatonView(GraphicalUserInterface):
             selection = self.comboboxSelection.get()
 
             self.cellularAutomaton = CellularAutomaton(size=size, K=sizeK, N=sizeN, λ=lambdaValue, seedNumber=seedNumber)
+
+            self.__set_ca(random, selection)
+        elif self.comboboxCAType.get() == "2D":
+            # TO DO
 
             self.__set_ca(random, selection)
         else:
