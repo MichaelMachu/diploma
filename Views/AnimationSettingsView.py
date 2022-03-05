@@ -65,7 +65,6 @@ class AnimationSettingsView(GraphicalUserInterface):
         self.applicationView.re_draw()
         
         self.on_closing()
-        #self.mainWindow.destroy()
 
     def on_closing(self) -> None:
         self.applicationView.isAnimationSettingsExists = False
