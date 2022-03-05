@@ -339,7 +339,7 @@ class CellularAutomatonView(GraphicalUserInterface):
         elif self.comboboxCAType.get() == "2D":
             sizeXStr = self.entrySizeX.get()
             sizeYStr = self.entrySizeY.get()
-            ruleStr = self.entryRule.get()
+            ruleStr = self.entryRule.get()  # 224 => Game of life
             if not sizeXStr.isnumeric() or not sizeYStr.isnumeric() or not ruleStr.isnumeric():
                 return
 

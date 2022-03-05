@@ -207,7 +207,7 @@ class CellularAutomaton:
                 middleStateleftShift = np.roll(self.currentState[i], -1)
 
                 stackOfNeighbors = np.vstack((previousStates, middleStateRightShift, self.currentState[i], middleStateleftShift, nextStates)).astype(np.int8)
-                indexesOfNextStep = np.sum(stackOfNeighbors, axis=0).astype(np.int8)
+                indexesOfNextStep = np.sum([2] * stackOfNeighbors, axis=0).astype(np.int8)
             
                 nextState[i,:] = self.rule[self.possibleStates - 1 - indexesOfNextStep]
             
@@ -241,7 +241,7 @@ class CellularAutomaton:
                 stackOfNeighbors = np.vstack((previousStateRightShift, previousStates, previousStateleftShift, 
                                             middleStateRightShift, self.currentState[i], middleStateleftShift, 
                                             nextStateRightShift, nextStates, nextStateleftShift)).astype(np.int8)
-                indexesOfNextStep = np.sum(stackOfNeighbors, axis=0).astype(np.int8)
+                indexesOfNextStep = np.sum([2] * stackOfNeighbors, axis=0).astype(np.int8)
 
                 nextState[i,:] = self.rule[self.possibleStates - 1 - indexesOfNextStep]
             
