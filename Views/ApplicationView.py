@@ -31,6 +31,8 @@ class ApplicationView(GraphicalUserInterface):
         self.isAnimationRunning = False
         self.continueDraw = False
 
+        self.world = [] # World for 2D
+
         # Y offset used as history for 1 dimensional Cellular Automaton
         self.offsetY = 0
 
@@ -121,6 +123,24 @@ class ApplicationView(GraphicalUserInterface):
         self.isSaveCaExists = True
         self.saveCellularAutomatonView = SaveCellularAutomatonView(self)
     
+    def create_world(self) -> None:
+        if self.cellularAutomatonView.cellularAutomaton.dimension == 2:
+            self.offsetY = 0
+            for y in range(self.cellularAutomatonView.cellularAutomaton.size[0]):
+                color = self.animationSettings.color.get_colors_by_K(self.cellularAutomatonView.cellularAutomaton.K - 1)
+                offsetX = 0
+                self.world.append([])
+                for x in range(self.cellularAutomatonView.cellularAutomaton.size[1]):
+                    item = self.canvas.create_rectangle(
+                        0 + offsetX, 0 + self.offsetY, 
+                        self.animationSettings.cellSize + offsetX, self.animationSettings.cellSize + self.offsetY, 
+                        #outline=color[x - 1], fill=color[x - 1]
+                        outline="#ffffff", fill="#ffffff"
+                    )
+                    self.world[y].append(item)
+                    offsetX += self.animationSettings.cellSize
+                self.offsetY += self.animationSettings.cellSize
+
     # Draw and animation methods
     def start_draw(self) -> None:
         self.buttonAnim.configure(state=DISABLED)
@@ -171,20 +191,25 @@ class ApplicationView(GraphicalUserInterface):
         self.offsetY += self.animationSettings.cellSize
 
     def __draw_step_2D(self, step: list) -> None:
-        offsetX = 0
-        for row in step:
-            for item in row:
-                color = self.animationSettings.color.get_colors_by_K(self.cellularAutomatonView.cellularAutomaton.K - 1)
+        #offsetX = 0
+        #print(self.world)
+        for y in range(len(step)):
+            for x in range(len(step[y])):
+                item = step[y][x]
+                color = "#ffffff" if item == 0 else self.animationSettings.color.get_colors_by_K(self.cellularAutomatonView.cellularAutomaton.K - 1)[item - 1]
                 
                 # if cell is not in a state of "death" then draw state by color
-                if item > 0:
-                    self.canvas.create_rectangle(
-                        0 + offsetX, 0 + self.offsetY, 
-                        self.animationSettings.cellSize + offsetX, self.animationSettings.cellSize + self.offsetY, 
-                        outline=color[item - 1], fill=color[item - 1]
-                    )
-                offsetX += self.animationSettings.cellSize
-            self.offsetY += self.animationSettings.cellSize
+                #if x > 0:
+                
+                #print(self.world[y][x], y, x, item, color)
+                    #self.canvas.create_rectangle(
+                    #    0 + offsetX, 0 + self.offsetY, 
+                    #    self.animationSettings.cellSize + offsetX, self.animationSettings.cellSize + self.offsetY, 
+                    #    outline=color[item - 1], fill=color[item - 1]
+                    #)
+                self.canvas.itemconfig(self.world[y][x], outline=color, fill=color)#color[item]
+                #offsetX += self.animationSettings.cellSize
+            #self.offsetY += self.animationSettings.cellSize
 
     def draw(self) -> None:
         if self.cellularAutomatonView.cellularAutomaton is not None:

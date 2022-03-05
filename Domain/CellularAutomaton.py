@@ -258,7 +258,7 @@ class CellularAutomaton:
                 #self.currentState[:] = np.array(np.random.rand(self.size) < 0.5, dtype=np.int8)
                 self.currentState = np.random.randint(2, size=self.size)
                 self.__insert_into_history()
-                print(self.currentState)
+                #print(self.currentState)
                 return
 
             self.currentState[self.size[0] // 2:self.size[1] // 2] = 1
@@ -284,5 +284,5 @@ class CellularAutomaton:
         #if self.λ is not None:
         #    self.__solver_random_table()
         self.__insert_into_history()
-        print(self.currentState)
+        #print(self.currentState)
         return self.currentState

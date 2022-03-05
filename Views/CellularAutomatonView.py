@@ -357,7 +357,18 @@ class CellularAutomatonView(GraphicalUserInterface):
             if not self.cellularAutomaton.is_rule_valid():
                 return
 
-            self.__set_ca(random, selection)
+            #self.__set_ca(random, selection)
+            self.cellularAutomaton.generate_start(random, selection)
+
+            self.applicationView.continueDraw = False
+            self.applicationView.offsetY = 0
+            self.applicationView.canvas.delete("all")
+            self.applicationView.world = []
+            self.applicationView.buttonAnim.configure(state=ACTIVE)
+            self.applicationView.buttonAnimPause.configure(state=DISABLED)
+            self.applicationView.buttonAnimContinue.configure(state=DISABLED)
+            self.applicationView.create_world()
+            self.applicationView.draw_step(self.cellularAutomaton.currentState)
         else:
             filename = self.entryFileName.get()
             if (not (filename and not filename.isspace())):
