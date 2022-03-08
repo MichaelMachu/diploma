@@ -381,11 +381,13 @@ class CellularAutomatonView(GraphicalUserInterface):
             CATransferObject = CellularAutomatonTransferObject.set_by_dict(dictData)
 
             self.cellularAutomaton = CellularAutomaton(
-                CATransferObject.size, CATransferObject.rule, CATransferObject.K, 
+                CATransferObject.size, CATransferObject.ruleNumber, CATransferObject.K, 
                 CATransferObject.N, CATransferObject.λ, CATransferObject.seedNumber)
             self.cellularAutomaton.quiescentState = CATransferObject.quiescentState
             self.cellularAutomaton.currentState = CATransferObject.currentState
             self.cellularAutomaton.cellHistory = CATransferObject.cellHistory
+
+            self.applicationView.animationSettings.color.get_colors_by_K(CATransferObject.K, True)      # Force to rebuild colors based on the loaded CA
             
             self.applicationView.re_draw()
             self.applicationView.buttonAnim.configure(state=DISABLED)

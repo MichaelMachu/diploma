@@ -21,7 +21,7 @@ class CellularAutomatonTransferObject:
     # Class functions
     def set_by_dict(dictValue: dict) -> "CellularAutomatonTransferObject":
         result = CellularAutomatonTransferObject()
-        result.size = dictValue["size"]
+        result.size = tuple(dictValue["size"]) if type(dictValue["size"]) is list else dictValue["size"]
         result.K = dictValue["K"]
         result.N = dictValue["N"]
         result.λ = dictValue["λ"]
@@ -46,8 +46,8 @@ class CellularAutomatonTransferObject:
             "possibleStates": self.possibleStates,
             "ruleNumber": self.ruleNumber,
             "seedNumber": self.seedNumber,
-            "rule": self.rule,
+            "rule": self.rule.tolist(),
             "isQuiscentState": self.isQuiscentState,
             "cellHistory": self.cellHistory.tolist(),
-            "currentState": self.currentState,
+            "currentState": self.currentState.tolist(),
         }
