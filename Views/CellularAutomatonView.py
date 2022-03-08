@@ -235,8 +235,12 @@ class CellularAutomatonView(GraphicalUserInterface):
     def __set_values_to_entries(self) -> None:
         if self.cellularAutomaton is not None:
             if self.cellularAutomaton.λ is None:
-                self.__entry_set_value(self.entrySize, self.cellularAutomaton.size)
-                self.__entry_set_value(self.entryRule, self.cellularAutomaton.rule)
+                if self.cellularAutomaton.dimension == 2:
+                    self.__entry_set_value(self.entrySizeX, self.cellularAutomaton.size[0])
+                    self.__entry_set_value(self.entrySizeY, self.cellularAutomaton.size[1])
+                else:
+                    self.__entry_set_value(self.entrySize, self.cellularAutomaton.size)
+                self.__entry_set_value(self.entryRule, self.cellularAutomaton.ruleNumber)
                 self.__entry_set_value(self.entryK, self.cellularAutomaton.K)
                 #self.__combobox_set_value(self.comboboxRandom, self.cellularAutomaton.K)
                 #self.__combobox_set_value(self.comboboxSelection, self.cellularAutomaton.K)
