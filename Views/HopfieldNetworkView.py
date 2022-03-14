@@ -30,7 +30,7 @@ class HopfieldNetworkView(GraphicalUserInterface):
         #self.mainWindow.minsize(self.minHeight, self.minWidth)
         #self.mainWindow.maxsize(self.maxHeight, self.maxWidth)
 
-        self.n = self.m = 25 # 10
+        self.n = self.m = 10 # 10
         self.max_patterns = int((self.n * self.m) / (2 * math.sqrt(self.n * self.m)))
         self.size = 30 # 30
         self.main_matrix = np.zeros((self.n, self.m))

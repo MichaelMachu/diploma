@@ -1,7 +1,9 @@
 import copy
 
+from numpy import ndarray
+
 class NeuronMatrix:
-    def __init__(self, matrix: list) -> None:
+    def __init__(self, matrix: ndarray or list) -> None:
         self.matrix = matrix
         self.matrixWithoutZeros = self.__remove_zeros_from_matrix(copy.deepcopy(self.matrix))
         self.vector = self.__serialized_matrix(copy.deepcopy(self.matrixWithoutZeros))
@@ -9,7 +11,7 @@ class NeuronMatrix:
         self.fullPattern = self.__create_full_pattern(copy.deepcopy(self.weightMatrix))
 
     # Odstranění nulových hodnot z matice na hodnoty mínus jedna
-    def __remove_zeros_from_matrix(self, matrix: list) -> list:
+    def __remove_zeros_from_matrix(self, matrix: ndarray or list) -> ndarray or list:
         for i in range(len(matrix)):
             for j in range(len(matrix[i])):
                 if matrix[i][j] == 0:

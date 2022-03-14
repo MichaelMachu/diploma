@@ -25,8 +25,8 @@ class NeuronMatrixTransferObject(TransferObject):
     # Object functions
     def get_as_dict(self) -> dict:
         return {
-            "matrix": self.matrix,
-            "matrixWithoutZeros": self.matrixWithoutZeros,
+            "matrix": self.matrix.tolist(),
+            "matrixWithoutZeros": self.matrixWithoutZeros.tolist(),
             "vector": self.vector,
             "weightMatrix": self.weightMatrix,
             "fullPattern": self.fullPattern,
