@@ -27,8 +27,8 @@ class HopfieldNetworkView(GraphicalUserInterface):
         self.minHeight = 500
         self.maxWidth = 304
         self.maxHeight = 500
-        self.mainWindow.minsize(self.minHeight, self.minWidth)
-        self.mainWindow.maxsize(self.maxHeight, self.maxWidth)
+        #self.mainWindow.minsize(self.minHeight, self.minWidth)
+        #self.mainWindow.maxsize(self.maxHeight, self.maxWidth)
 
         self.n = self.m = 25 # 10
         self.max_patterns = int((self.n * self.m) / (2 * math.sqrt(self.n * self.m)))
@@ -45,62 +45,103 @@ class HopfieldNetworkView(GraphicalUserInterface):
     
     # Sestavení layoutu včetně tlačítek a canvasu
     def __build(self) -> None:
-        self.btn1 = Button(self.mainWindow, bg = "#b9ffad")
+        # Right menu
+        self.frameRight = Frame(self.mainWindow, width=150, height=100, bg="#ababab")
+        self.frameRight.grid(column=1, row=0, sticky="nsew")
+
+        self.frameRight.rowconfigure(0, weight=1)
+        self.frameRight.rowconfigure(1, weight=1)
+
+        # Buttons
+        self.btn1 = Button(self.frameRight, bg = "#b9ffad")
         self.btn1["text"] = "Save pattern"
         self.btn1["command"] = self.save_matrix
-        self.btn1.grid(row = 0, column = 1)
+        #self.btn1.grid(row = 0, column = 0)
+        self.btn1.pack(fill='x', pady=(0, 10))
 
-        self.btn2 = Button(self.mainWindow, bg = "#fff4ad")
+        self.btn2 = Button(self.frameRight, bg = "#fff4ad")
         self.btn2["text"] = "Repair pattern Sync"
         self.btn2["command"] = self.repair_pattern_sync
-        self.btn2.grid(row = 1, column = 1, padx = 5)
+        #self.btn2.grid(row = 1, column = 0, padx = 5)
+        self.btn2.pack(fill='x')
 
-        self.btn3 = Button(self.mainWindow, bg = "#fff4ad")
+        self.btn3 = Button(self.frameRight, bg = "#fff4ad")
         self.btn3["text"] = "Repair pattern Async"
         self.btn3["command"] = self.repair_pattern_async
-        self.btn3.grid(row = 2, column = 1, padx = 5)
+        #self.btn3.grid(row = 2, column = 0, padx = 5)
+        self.btn3.pack(fill='x')
 
-        self.btn4 = Button(self.mainWindow, bg = "#ade4ff")
+        self.btn4 = Button(self.frameRight, bg = "#ade4ff")
         self.btn4["text"] = "Show saved patterns"
         self.btn4["command"] = self.show_matrices
-        self.btn4.grid(row = 3, column = 1, padx = 5)
+        #self.btn4.grid(row = 3, column = 0, padx = 5)
+        self.btn4.pack(fill='x', pady=10)
 
-        self.btn5 = Button(self.mainWindow, bg = "#ffb7ad")
+        self.btn5 = Button(self.frameRight, bg = "#ffb7ad")
         self.btn5["text"] = "Clear grid"
         self.btn5["command"] = self.clear_grid
-        self.btn5.grid(row = 4, column = 1)
+        #self.btn5.grid(row = 4, column = 0)
+        self.btn5.pack(fill='x', pady=10)
 
-        self.label = Label(self.mainWindow, bg=self.mainBG)
+        self.label = Label(self.frameRight, bg=self.mainBG)
         self.label["text"] = "Max recommended amount\n of saved patterns is " + str(self.max_patterns)
-        self.label.grid(row = 5, column = 1)
+        #self.label.grid(row = 5, column = 0)
+        self.label.pack(fill='x', pady=10)
 
-        self.canvas = Canvas(self.mainWindow, width = 301, height = 301, bg = "white")
-        self.canvas.grid(row = 0, column = 0, rowspan = 6)
+        # Canvas
+        self.frameCanvas = Frame(self.mainWindow, bg="#ababab")
+        self.frameCanvas.grid(column=0, row=0, sticky="nsew")
+        self.frameCanvas.grid_rowconfigure(0, weight=1)
+        self.frameCanvas.grid_columnconfigure(0, weight=1)
+
+        self.canvas = Canvas(self.frameCanvas, width = 301, height = 301, bg = "#fff")
+        self.canvas.grid(row = 0, column = 0, sticky="nsew")
+
+        # Link a scrollbar to the canvas
+        self.scrollbarVerticalCanvas = Scrollbar(self.frameCanvas, orient="vertical", command=self.canvas.yview)
+        self.scrollbarVerticalCanvas.grid(row=0, column=1, sticky='ns')
+        self.canvas.configure(yscrollcommand=self.scrollbarVerticalCanvas.set)
+
+        self.scrollbarHorizontalCanvas = Scrollbar(self.frameCanvas, orient="horizontal", command=self.canvas.xview)
+        self.scrollbarHorizontalCanvas.grid(row=1, column=0, sticky='ew')
+        self.canvas.configure(xscrollcommand=self.scrollbarHorizontalCanvas.set)
+
+        self.mainWindow.grid_rowconfigure(0, weight=1)
+        self.mainWindow.grid_columnconfigure(0, weight=1)
 
         self.create_grid()
 
     # Vytvoření gridu na canvasu
     def create_grid(self) -> None:
         offset = 2
+        offsetY = 0
         for i in range(self.n):
             array = []
+            offsetX = 0
             for j in range(self.m):
-                block_name = "block" + str(i) + str(j)
+                blockName = "block-" + str(i) + "-" + str(j)
                 array.append(self.canvas.create_rectangle(
-                    offset + j * self.size, 
-                    offset + i * self.size, 
-                    offset + (j + 1) * self.size, 
-                    offset + (i + 1) * self.size, 
-                    fill = "white", outline = "black", tags = block_name))
-                self.canvas.tag_bind(block_name, "<Button-1>", lambda event, i=i, j=j: self.change_value(i, j))
+                    #offset + j * self.size, 
+                    #offset + i * self.size, 
+                    #offset + (j + 1) * self.size, 
+                    #offset + (i + 1) * self.size,
+                    offsetX + offset, offsetY + offset,
+                    offsetX + self.size + offset, offsetY + self.size + offset,
+                    fill = "white", outline = "black", tags = blockName))
+                self.canvas.tag_bind(blockName, "<Button-1>", lambda event, i=i, j=j: self.change_value(event, i, j))
+                offsetX += self.size
             self.main_matrix_rectangles.append(array)
+            offsetY += self.size
+
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def draw(self) -> None:
         """Drawing method used for canvas"""
         pass
 
     # Event změny hodnoty na canvasu a matici
-    def change_value(self, i: int, j: int) -> None:
+    def change_value(self, event: EventType, i: int, j: int) -> None:
+        print(i, j)
         if self.main_matrix[i][j] == 0:
             self.main_matrix[i][j] = 1
             color = "black"
@@ -115,9 +156,8 @@ class HopfieldNetworkView(GraphicalUserInterface):
     # Opravení paternu synchronním způsobem
     def repair_pattern_sync(self) -> None:
         algorithms = HopfieldNetwork()
-        activationFunctions = ActivationFunctions()
         vector = self.serialized_matrix(self.main_matrix)
-        result_vector = algorithms.HopfieldNetworkSync(2, activationFunctions.Signum, vector, self.saved_matrices, self.n, self.m)
+        result_vector = algorithms.HopfieldNetworkSync(2, ActivationFunctions.Signum, vector, self.saved_matrices, self.n, self.m)
 
         #print("result_vector", result_vector)
         for i in range(len(self.main_matrix)):
@@ -129,9 +169,8 @@ class HopfieldNetworkView(GraphicalUserInterface):
     # Opravení paternu asynchronním způsobem
     def repair_pattern_async(self) -> None:
         algorithms = HopfieldNetwork()
-        activationFunctions = ActivationFunctions()
         vector = self.serialized_matrix(self.main_matrix)
-        result_vector = algorithms.HopfieldNetworkAsync(2, activationFunctions.Signum, vector, self.saved_matrices, self.n, self.m)
+        result_vector = algorithms.HopfieldNetworkAsync(2, ActivationFunctions.Signum, vector, self.saved_matrices, self.n, self.m)
 
         #print("result_vector", result_vector)
         for i in range(len(self.main_matrix)):
@@ -158,6 +197,8 @@ class HopfieldNetworkView(GraphicalUserInterface):
             for j in range(self.m):
                 self.main_matrix[i][j] = 0
                 self.canvas.itemconfig(self.main_matrix_rectangles[i][j], fill = "white")
+
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     # Serializování matice do vektoru
     def serialized_matrix(self, matrix: list) -> list:
