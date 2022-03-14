@@ -33,7 +33,7 @@ class ApplicationView(GraphicalUserInterface):
         self.isAnimationSettingsExists = False
         self.isSaveCaExists = False
         self.isAnimationRunning = False
-        self.isHopfiledNetworkExists = False
+        self.isHopfieldNetworkExists = False
         self.continueDraw = False
 
         self.world = [] # World for 2D
@@ -139,10 +139,10 @@ class ApplicationView(GraphicalUserInterface):
         self.saveCellularAutomatonView = SaveCellularAutomatonView(self)
     
     def __show_hopfield_network(self) -> None:
-        if self.isHopfiledNetworkExists:
+        if self.isHopfieldNetworkExists:
             return
 
-        self.isHopfiledNetworkExists = True
+        self.isHopfieldNetworkExists = True
         self.hopfieldNetworkView = HopfieldNetworkView(self)
 
     def create_world(self) -> None:

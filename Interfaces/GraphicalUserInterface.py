@@ -6,6 +6,8 @@ class GraphicalUserInterface():
     def __init__(self, appWindow: Tk or Toplevel, width: int, height: int, title: str, backgroundColor: str = "#ababab") -> None:
         self.mainWindow = appWindow
 
+        self.mainBG = backgroundColor
+
         self.mainWindow.minsize(width, height)
         self.mainWindow.title(title)
         self.mainWindow.configure(background=backgroundColor)
