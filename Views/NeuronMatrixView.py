@@ -70,7 +70,7 @@ class NeuronMatrixView(GraphicalUserInterface):
                 self.canvas.create_rectangle(offset + j * self.size, offset + i * self.size, offset + (j + 1) * self.size, offset + (i + 1) * self.size, fill = color, outline = "black")
 
     # Vypsání matice a její délky
-    def print_matrix(self, matrix, typeOfMatrix):
+    def print_matrix(self, matrix: list, typeOfMatrix: str) -> None:
         matrix_size = len(matrix)
         print("--------------------------------------------------------")
         print("Size:", str(matrix_size)+"x"+str(matrix_size))
@@ -81,7 +81,7 @@ class NeuronMatrixView(GraphicalUserInterface):
             print(matrix)
         print("--------------------------------------------------------")
 
-    def print_matrix_head_tail(self, matrix, first, last) -> None:
+    def print_matrix_head_tail(self, matrix: list, first: int, last: int) -> None:
         print("[")
         for i in range(first):
             self.print_part_of_matrix(matrix[i][:first])
@@ -90,7 +90,7 @@ class NeuronMatrixView(GraphicalUserInterface):
             self.print_part_of_matrix(matrix[-i][:last])
         print("]")
 
-    def print_part_of_matrix(self, matrix) -> None:
+    def print_part_of_matrix(self, matrix: list) -> None:
         result = "["
         for val in matrix:
             result += str(val) + " "

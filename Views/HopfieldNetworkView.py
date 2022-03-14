@@ -80,13 +80,18 @@ class HopfieldNetworkView(GraphicalUserInterface):
         self.create_grid()
 
     # Vytvoření gridu na canvasu
-    def create_grid(self):
+    def create_grid(self) -> None:
         offset = 2
         for i in range(self.n):
             array = []
             for j in range(self.m):
                 block_name = "block" + str(i) + str(j)
-                array.append(self.canvas.create_rectangle(offset + j * self.size, offset + i * self.size, offset + (j + 1) * self.size, offset + (i + 1) * self.size, fill = "white", outline = "black", tags = block_name))
+                array.append(self.canvas.create_rectangle(
+                    offset + j * self.size, 
+                    offset + i * self.size, 
+                    offset + (j + 1) * self.size, 
+                    offset + (i + 1) * self.size, 
+                    fill = "white", outline = "black", tags = block_name))
                 self.canvas.tag_bind(block_name, "<Button-1>", lambda event, i=i, j=j: self.change_value(i, j))
             self.main_matrix_rectangles.append(array)
 
@@ -95,7 +100,7 @@ class HopfieldNetworkView(GraphicalUserInterface):
         pass
 
     # Event změny hodnoty na canvasu a matici
-    def change_value(self, i, j):
+    def change_value(self, i: int, j: int) -> None:
         if self.main_matrix[i][j] == 0:
             self.main_matrix[i][j] = 1
             color = "black"
@@ -108,7 +113,7 @@ class HopfieldNetworkView(GraphicalUserInterface):
         #self.canvas.itemconfig(self.main_matrix_rectangles[i][j], fill = color, outline = outColor)
 
     # Opravení paternu synchronním způsobem
-    def repair_pattern_sync(self):
+    def repair_pattern_sync(self) -> None:
         algorithms = HopfieldNetwork()
         activationFunctions = ActivationFunctions()
         vector = self.serialized_matrix(self.main_matrix)
@@ -122,7 +127,7 @@ class HopfieldNetworkView(GraphicalUserInterface):
         self.refresh_grid()
 
     # Opravení paternu asynchronním způsobem
-    def repair_pattern_async(self):
+    def repair_pattern_async(self) -> None:
         algorithms = HopfieldNetwork()
         activationFunctions = ActivationFunctions()
         vector = self.serialized_matrix(self.main_matrix)
@@ -138,7 +143,7 @@ class HopfieldNetworkView(GraphicalUserInterface):
         print("iterations:", algorithms.iter)
 
     # Obnovení gridu
-    def refresh_grid(self):
+    def refresh_grid(self) -> None:
         for i in range(self.n):
             for j in range(self.m):
                 if self.main_matrix[i][j] == 0:
@@ -148,14 +153,14 @@ class HopfieldNetworkView(GraphicalUserInterface):
                 self.canvas.itemconfig(self.main_matrix_rectangles[i][j], fill = color)
 
     # Vyčištění gridu
-    def clear_grid(self):
+    def clear_grid(self) -> None:
         for i in range(self.n):
             for j in range(self.m):
                 self.main_matrix[i][j] = 0
                 self.canvas.itemconfig(self.main_matrix_rectangles[i][j], fill = "white")
 
     # Serializování matice do vektoru
-    def serialized_matrix(self, matrix):
+    def serialized_matrix(self, matrix: list) -> list:
         array = []
         for i in range(len(matrix)):
             for j in range(len(matrix[i])):
@@ -164,12 +169,12 @@ class HopfieldNetworkView(GraphicalUserInterface):
         return array
 
     # Uložení matice skrze objekt NeuronMatrix do seznamu matic
-    def save_matrix(self):
+    def save_matrix(self) -> None:
         specificMatrix = NeuronMatrix(copy.deepcopy(self.main_matrix))
         self.saved_matrices.append(specificMatrix)
 
     # Zobrazení všech uložených paternů
-    def show_matrices(self):
+    def show_matrices(self) -> None:
         if self.neuronMatrixViews:
             return
 
@@ -178,7 +183,7 @@ class HopfieldNetworkView(GraphicalUserInterface):
             self.neuronMatrixViews.append(neuronMatrixView)
 
     # Odstranění paternu z uložených paternů
-    def forget_pattern(self, ids, window):
+    def forget_pattern(self, ids: int, window: Tk) -> None:
         self.saved_matrices.pop(ids)
         window.destroy()
 
