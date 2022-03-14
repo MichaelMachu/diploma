@@ -1,12 +1,15 @@
 #import tkinter as tk
 from tkinter import *
 
+from click import command
+
 from Domain.AnimationSettings import AnimationSettings
 
 from Interfaces.GraphicalUserInterface import GraphicalUserInterface
 from .CellularAutomatonView import CellularAutomatonView
 from .AnimationSettingsView import AnimationSettingsView
 from .SaveCellularAutomatonView import SaveCellularAutomatonView
+from .HopfieldNetworkView import HopfieldNetworkView
 
 class ApplicationView(GraphicalUserInterface):
     
@@ -21,6 +24,7 @@ class ApplicationView(GraphicalUserInterface):
         self.cellularAutomatonView = None
         self.animationSettingsView = None
         self.saveCellularAutomatonView = None
+        self.hopfieldNetworkView = None
 
         self.testCa = None
 
@@ -29,6 +33,7 @@ class ApplicationView(GraphicalUserInterface):
         self.isAnimationSettingsExists = False
         self.isSaveCaExists = False
         self.isAnimationRunning = False
+        self.isHopfiledNetworkExists = False
         self.continueDraw = False
 
         self.world = [] # World for 2D
@@ -43,6 +48,16 @@ class ApplicationView(GraphicalUserInterface):
         self.root.mainloop()
 
     def __build(self) -> None:
+        # Top menu
+        self.menu = Menu(self.root)
+        self.root.config(menu=self.menu)
+        self.menuModules = Menu(self.menu, tearoff=False)
+        self.menuModules.add_command(
+            label="Hopfield Network",
+            command=self.__show_hopfield_network
+        )
+        self.menu.add_cascade(label="Modules", menu=self.menuModules)
+
         # Right menu
         self.frameRight = Frame(self.root, width=150, height=100, bg="#ababab")
         self.frameRight.grid(column=1, row=0, sticky="nsew")
@@ -123,6 +138,13 @@ class ApplicationView(GraphicalUserInterface):
         self.isSaveCaExists = True
         self.saveCellularAutomatonView = SaveCellularAutomatonView(self)
     
+    def __show_hopfield_network(self) -> None:
+        if self.isHopfiledNetworkExists:
+            return
+
+        self.isHopfiledNetworkExists = True
+        self.hopfieldNetworkView = HopfieldNetworkView(self)
+
     def create_world(self) -> None:
         if self.cellularAutomatonView.cellularAutomaton.dimension == 2:
             self.offsetY = 0
