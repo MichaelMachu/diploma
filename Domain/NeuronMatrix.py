@@ -3,8 +3,8 @@ import copy
 class NeuronMatrix:
     def __init__(self, matrix: list) -> None:
         self.matrix = matrix
-        self.matrix_without_zeros = self.__remove_zeros_from_matrix(copy.deepcopy(self.matrix))
-        self.vector = self.__serialized_matrix(copy.deepcopy(self.matrix_without_zeros))
+        self.matrixWithoutZeros = self.__remove_zeros_from_matrix(copy.deepcopy(self.matrix))
+        self.vector = self.__serialized_matrix(copy.deepcopy(self.matrixWithoutZeros))
         self.weightMatrix = self.__create_weighted_matrix(copy.deepcopy(self.vector))
         self.fullPattern = self.__create_full_pattern(copy.deepcopy(self.weightMatrix))
 

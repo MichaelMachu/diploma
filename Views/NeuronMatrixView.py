@@ -41,7 +41,7 @@ class NeuronMatrixView(GraphicalUserInterface):
 
         self.btn1 = Button(self.frameRight, bg = "#ade4ff")
         self.btn1["text"] = "Show matrix without zeros"
-        self.btn1["command"] = lambda matrix = self.applicationView.saved_matrices[self.ids].matrix_without_zeros, typeOfMatrix = "Matrix without zeros:": Print.print_matrix_2d(matrix, typeOfMatrix)
+        self.btn1["command"] = lambda matrix = self.applicationView.saved_matrices[self.ids].matrixWithoutZeros, typeOfMatrix = "Matrix without zeros:": Print.print_matrix_2d(matrix, typeOfMatrix)
         #self.btn1.grid(row = 1, column = 1, padx = 5)
         self.btn1.pack(fill='x')
 

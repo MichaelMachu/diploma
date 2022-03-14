@@ -1,6 +1,7 @@
+from Interfaces.TransferObject import TransferObject
 from Domain.CellularAutomaton import CellularAutomaton
 
-class CellularAutomatonTransferObject:
+class CellularAutomatonTransferObject(TransferObject):
 
     def __init__(self, cellularAutomaton: CellularAutomaton = None) -> None:
         if cellularAutomaton is None:
