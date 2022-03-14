@@ -141,7 +141,6 @@ class HopfieldNetworkView(GraphicalUserInterface):
 
     # Event změny hodnoty na canvasu a matici
     def change_value(self, event: EventType, i: int, j: int) -> None:
-        print(i, j)
         if self.main_matrix[i][j] == 0:
             self.main_matrix[i][j] = 1
             color = "black"
