@@ -6,9 +6,6 @@ from . import ApplicationView
 
 from Domain.Print import Print
 
-from Data.CellularAutomatonTransferObject import CellularAutomatonTransferObject
-from Data.DataProcess import DataProcess
-
 class NeuronMatrixView(GraphicalUserInterface):
 
     def __init__(self, applicationView: ApplicationView, ids: int, n: int, m: int, size: int) -> None:

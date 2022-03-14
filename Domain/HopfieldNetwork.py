@@ -1,16 +1,18 @@
-import random
+from types import MethodType
 import numpy as np
 import copy
 
+from .NeuronMatrix import NeuronMatrix
+
 class HopfieldNetwork:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.iter = 0
 
     # Sečtení všech matic
-    def SumMatrices(self, matrices, n, m):
+    def SumMatrices(self, matrices: NeuronMatrix, n: int, m: int) -> list:
         rows, cols = (n*m, n*m) 
-        array = [[0 for i in range(cols)] for j in range(rows)]
+        array = [[0 for _ in range(cols)] for _ in range(rows)]
         # Procházení všech matic
         for i in range(len(matrices)):
             # Procházení paternu konkrétní matice
@@ -21,21 +23,21 @@ class HopfieldNetwork:
         return array
 
     # Hopfieldova sít synchroním způsobem
-    def HopfieldNetworkSync(self, dimension, func, input_vector, patterns, n, m):
+    def HopfieldNetworkSync(self, dimension: int, func: MethodType, inputVector: list, patterns: NeuronMatrix, n: int, m: int) -> list:
         # Sečtu všechny paterny aneb vytvořím celkovou váhu všech matic
         summedPatterns = self.SumMatrices(patterns, n, m)
 
         # Vstupnímu vektoru převedu nuly na mínus jedničky
-        for i in range(len(input_vector)):
-            if input_vector[i] == 0:
-                input_vector[i] = -1
+        for i in range(len(inputVector)):
+            if inputVector[i] == 0:
+                inputVector[i] = -1
 
         result = []
         # Násobící fáze
         for i in range(len(summedPatterns)):
             pom = 0
             for j in range(len(summedPatterns[i])):
-                pom = summedPatterns[i][j] * input_vector[j]
+                pom = summedPatterns[i][j] * inputVector[j]
             pom = func(pom)    # not sure
             result.append(pom)
 
@@ -47,19 +49,19 @@ class HopfieldNetwork:
         return result
 
     # Hopfieldova sít asynchroním způsobem
-    def HopfieldNetworkAsync(self, dimension, func, input_vector, patterns, n, m):
+    def HopfieldNetworkAsync(self, dimension: int, func: MethodType, inputVector: list, patterns: NeuronMatrix, n: int, m: int) -> list:
         # Sečtu všechny paterny aneb vytvořím celkovou váhu všech matic
         summedPatterns = self.SumMatrices(patterns, n, m)
 
         # Vstupnímu vektoru převedu nuly na mínus jedničky
-        for i in range(len(input_vector)):
-            if input_vector[i] == 0:
-                input_vector[i] = -1
+        for i in range(len(inputVector)):
+            if inputVector[i] == 0:
+                inputVector[i] = -1
 
         check = 0
-        change = copy.deepcopy(input_vector)
-        are_same = False
-        print(input_vector)
+        change = copy.deepcopy(inputVector)
+        areSame = False
+        print(inputVector)
         self.iter = 0
         size = m*n
         
@@ -69,29 +71,29 @@ class HopfieldNetwork:
             for i in np.random.permutation(size): #np.random.permutation(size) #range(size):
                 summary = 0
                 for j in range(size): #np.random.permutation(m*n): #range(m*n):
-                    summary += input_vector[j] * summedPatterns[i][j] #summedPatterns[i][j] #summedPatterns[j][i] => original a blbě
+                    summary += inputVector[j] * summedPatterns[i][j] #summedPatterns[i][j] #summedPatterns[j][i] => original a blbě
                 summary = func(summary)
-                input_vector[i] = summary
+                inputVector[i] = summary
 
             # Kontrola, jestli se výsledek nezměnil
             for i in range(len(change)):
-                if change[i] != input_vector[i]:
-                    are_same = False
+                if change[i] != inputVector[i]:
+                    areSame = False
                     break
                 else:
-                    are_same = True
+                    areSame = True
 
-            if are_same:
+            if areSame:
                 check += 1
             else:
                 check = 0
-                change = copy.deepcopy(input_vector)
+                change = copy.deepcopy(inputVector)
 
             self.iter += 1
 
         # Výslednému vektoru převedu mínus jedničky na nuly
-        for i in range(len(input_vector)):
-            if input_vector[i] == -1:
-                input_vector[i] = 0
+        for i in range(len(inputVector)):
+            if inputVector[i] == -1:
+                inputVector[i] = 0
 
-        return input_vector
+        return inputVector
