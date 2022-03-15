@@ -18,8 +18,6 @@ class CellularAutomatonView(ViewBase):
 
         self.cellularAutomaton = self.applicationView.cellularAutomaton
 
-        self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_closing)
-
         # Create object variables
         # Frames
         self.frame = None
@@ -415,7 +413,3 @@ class CellularAutomatonView(ViewBase):
         self.applicationView.buttonAnimPause.configure(state=DISABLED)
         self.applicationView.buttonAnimContinue.configure(state=DISABLED)
         self.applicationView.draw_step(self.cellularAutomaton.currentState)
-
-    def on_closing(self) -> None:
-        self.applicationView.isCaMenuExists = False
-        self.mainWindow.destroy()

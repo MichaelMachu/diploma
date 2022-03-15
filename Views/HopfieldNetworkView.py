@@ -20,8 +20,6 @@ class HopfieldNetworkView(ViewBase):
         self.applicationView = applicationView
 
         self.neuronMatrixViews = []
-
-        self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_closing)
         
         self.minWidth = 304
         self.minHeight = 500
@@ -241,7 +239,3 @@ class HopfieldNetworkView(ViewBase):
     def forget_pattern(self, ids: int, window: Tk) -> None:
         self.saved_matrices.pop(ids)
         window.destroy()
-
-    #def on_closing(self) -> None:
-    #    self.applicationView.isHopfieldNetworkExists = False
-    #    self.mainWindow.destroy()

@@ -54,7 +54,3 @@ class ExportCellularAutomatonView(ViewBase):
         jsonData = DataProcess.to_json(CATransferObject.get_as_dict())
 
         DataProcess.save_to_json_file(filename, jsonData)
-
-    def on_closing(self) -> None:
-        self.applicationView.isSaveCaExists = False
-        self.mainWindow.destroy()

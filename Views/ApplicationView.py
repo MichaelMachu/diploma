@@ -21,7 +21,6 @@ class ApplicationView(ViewBase):
         
         # Singletons objects
         self.windowHandler = WindowHandler()
-
         self.animationSettings = AnimationSettings()
         self.cellularAutomaton = None
         self.cellularAutomatonView = None
@@ -32,11 +31,6 @@ class ApplicationView(ViewBase):
         self.testCa = None
 
         # Control parameters
-        self.isCaMenuExists = False
-        self.isAnimationSettingsExists = False
-        self.isExportCaExists = False
-        self.isAnimationRunning = False
-        self.isHopfieldNetworkExists = False
         self.continueDraw = False
 
         self.world = [] # World for 2D
@@ -121,25 +115,25 @@ class ApplicationView(ViewBase):
         
     # Other windows for specific configuration
     def __show_animation_settings_menu(self) -> None:
-        if self.isAnimationSettingsExists:
+        if self.windowHandler.exists(self.animationSettingsView):
             return
 
-        self.isAnimationSettingsExists = True
         self.animationSettingsView = AnimationSettingsView(self)
+        self.windowHandler.register(self.animationSettingsView)
 
     def __show_cellular_automaton_menu(self) -> None:
-        if self.isCaMenuExists:
+        if self.windowHandler.exists(self.cellularAutomatonView):
             return
 
-        self.isCaMenuExists = True
         self.cellularAutomatonView = CellularAutomatonView(self)
+        self.windowHandler.register(self.cellularAutomatonView)
 
     def __show_export_cellular_automaton_menu(self) -> None:
-        if self.isExportCaExists:
+        if self.windowHandler.exists(self.exportCellularAutomatonView):
             return
 
-        self.isExportCaExists = True
         self.exportCellularAutomatonView = ExportCellularAutomatonView(self)
+        self.windowHandler.register(self.exportCellularAutomatonView)
     
     def __show_hopfield_network(self) -> None:
         if self.windowHandler.exists(self.hopfieldNetworkView):
@@ -147,12 +141,6 @@ class ApplicationView(ViewBase):
 
         self.hopfieldNetworkView = HopfieldNetworkView(self)
         self.windowHandler.register(self.hopfieldNetworkView)
-
-        """if self.isHopfieldNetworkExists:
-            return
-
-        self.isHopfieldNetworkExists = True
-        self.hopfieldNetworkView = HopfieldNetworkView(self)"""
 
     def create_world(self) -> None:
         if self.cellularAutomatonView.cellularAutomaton.dimension == 2:
@@ -265,13 +253,3 @@ class ApplicationView(ViewBase):
         if not self.continueDraw:
             self.continueDraw = True
             self.root.after(100, self.draw)
-
-    def on_closing_root(self) -> None:
-        if self.isCaMenuExists:
-            self.cellularAutomatonView.mainWindow.quit()
-        self.root.quit()
-
-    def on_closing_ca_menu(self) -> None:
-        if self.isCaMenuExists:
-            self.isCaMenuExists = False
-            self.cellularAutomatonView.mainWindow.destroy()

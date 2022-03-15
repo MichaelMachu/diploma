@@ -2,15 +2,15 @@ from tkinter import *
 from tkinter import ttk
 
 from Bases.ViewBase import ViewBase
-from Interfaces.TransferObjectInterface import TransferObject
+from Interfaces.TransferObjectInterface import TransferObjectInterface
 from . import ApplicationView
 
 from Data.DataProcess import DataProcess
 
 class ImportView(ViewBase):
 
-    def __init__(self, applicationView: ApplicationView, transferObject: TransferObject) -> None:
-        super().__init__(Toplevel(applicationView.mainWindow), 500, 400, "Save Neuron Matrix to a file", applicationView.windowHandler)
+    def __init__(self, applicationView: ApplicationView, transferObject: TransferObjectInterface, name: str = "") -> None:
+        super().__init__(Toplevel(applicationView.mainWindow), 500, 400, "Import "+ name +" from a file", applicationView.windowHandler)
         self.applicationView = applicationView
 
         self.transferObject = transferObject
@@ -38,7 +38,7 @@ class ImportView(ViewBase):
         self.entryFileName.grid(column=1, row=0, padx=10, pady=5, sticky=W)
 
         # Create button
-        self.buttonCreate = Button(self.frame, text="Import a Neuron Matrix", command=self.__import)
+        self.buttonCreate = Button(self.frame, text="Import", command=self.__import)
         self.buttonCreate.grid(column=0, row=1, columnspan=2, padx=10, pady=5)
 
     def draw(self) -> None:
@@ -50,10 +50,20 @@ class ImportView(ViewBase):
         if (not (filename and not filename.isspace())):
             return
 
-        jsonData = DataProcess.to_json(self.transferObject.get_as_dict())
+        dictData = DataProcess.load_from_json_file(filename)
+        if dictData is None:
+            return
+        
 
-        DataProcess.save_to_json_file(filename, jsonData)
+        transferObject = type(self.transferObject).set_by_dict(dictData)
 
-    def on_closing(self) -> None:
-        self.applicationView.isSaveNeuronMatrixExists = False
-        self.mainWindow.destroy()
+        """self.cellularAutomaton = CellularAutomaton(
+            CATransferObject.size, CATransferObject.ruleNumber, CATransferObject.K, 
+            CATransferObject.N, CATransferObject.λ, CATransferObject.seedNumber)
+        self.cellularAutomaton.quiescentState = CATransferObject.quiescentState
+        self.cellularAutomaton.currentState = CATransferObject.currentState
+        self.cellularAutomaton.cellHistory = CATransferObject.cellHistory"""
+
+        #jsonData = DataProcess.to_json(self.transferObject.get_as_dict())
+
+        #DataProcess.save_to_json_file(filename, jsonData)

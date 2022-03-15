@@ -54,7 +54,3 @@ class ImportNeuronMatrixView(ViewBase):
         jsonData = DataProcess.to_json(CATransferObject.get_as_dict())
 
         DataProcess.save_to_json_file(filename, jsonData)
-
-    def on_closing(self) -> None:
-        self.applicationView.isSaveNeuronMatrixExists = False
-        self.mainWindow.destroy()

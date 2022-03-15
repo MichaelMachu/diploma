@@ -12,8 +12,6 @@ class AnimationSettingsView(ViewBase):
         self.applicationView = applicationView
         self.mainWindow.attributes("-topmost", True)
 
-        self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_closing)
-
         self.colorCode = self.applicationView.animationSettings.color.colorObject
 
         self.__build()
@@ -65,7 +63,3 @@ class AnimationSettingsView(ViewBase):
         self.applicationView.re_draw()
         
         self.on_closing()
-
-    def on_closing(self) -> None:
-        self.applicationView.isAnimationSettingsExists = False
-        self.mainWindow.destroy()

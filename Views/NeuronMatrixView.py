@@ -3,9 +3,10 @@ from tkinter import ttk
 
 from Bases.ViewBase import ViewBase
 from . import ApplicationView
-from .ExportNeuronMatrixView import ExportNeuronMatrixView
+from .ExportView import ExportView
 
 from Domain.Print import Print
+from Data.NeuronMatrixTransferObject import NeuronMatrixTransferObject
 
 class NeuronMatrixView(ViewBase):
 
@@ -15,6 +16,8 @@ class NeuronMatrixView(ViewBase):
 
         # Singletons objects
         self.exportNeuronMatrixView = None
+        self.exportView = None
+        self.importView = None
 
         # Control parameters
         self.isExportNeuronMatrixExists = False
@@ -118,11 +121,17 @@ class NeuronMatrixView(ViewBase):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def __show_export_neuron_matrix_menu(self) -> None:
-        if self.isExportNeuronMatrixExists:
+        if self.windowHandler.exists(self.exportView):
+            return
+
+        self.exportView = ExportView(self, NeuronMatrixTransferObject(self.neuronMatrix), "Neuron Matrix")
+        self.windowHandler.register(self.exportView)
+
+        """if self.isExportNeuronMatrixExists:
             return
 
         self.isExportNeuronMatrixExists = True
-        self.exportNeuronMatrixView = ExportNeuronMatrixView(self)
+        self.exportNeuronMatrixView = ExportNeuronMatrixView(self)"""
 
     def on_closing(self) -> None:
         self.mainWindow.destroy()
