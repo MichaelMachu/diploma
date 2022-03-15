@@ -53,40 +53,46 @@ class HopfieldNetworkView(GraphicalUserInterface):
         self.frameRight.rowconfigure(1, weight=1)
 
         # Buttons
-        self.btn1 = Button(self.frameRight, bg = "#b9ffad")
-        self.btn1["text"] = "Save pattern"
-        self.btn1["command"] = self.save_matrix
-        #self.btn1.grid(row = 0, column = 0)
-        self.btn1.pack(fill='x', pady=(0, 10))
+        self.buttonnSave = Button(self.frameRight, bg = "#b9ffad")
+        self.buttonnSave["text"] = "Save pattern"
+        self.buttonnSave["command"] = self.save_matrix
+        #self.buttonnSave.grid(row = 0, column = 0)
+        self.buttonnSave.pack(fill='x', pady=(0, 10))
 
-        self.btn2 = Button(self.frameRight, bg = "#fff4ad")
-        self.btn2["text"] = "Repair pattern Sync"
-        self.btn2["command"] = self.repair_pattern_sync
-        #self.btn2.grid(row = 1, column = 0, padx = 5)
-        self.btn2.pack(fill='x')
+        self.buttonImport = Button(self.frameRight, bg = "#b9ffad")
+        self.buttonImport["text"] = "Import pattern"
+        self.buttonImport["command"] = self.save_matrix
+        #self.buttonImport.grid(row = 0, column = 0)
+        self.buttonImport.pack(fill='x', pady=(0, 10))
 
-        self.btn3 = Button(self.frameRight, bg = "#fff4ad")
-        self.btn3["text"] = "Repair pattern Async"
-        self.btn3["command"] = self.repair_pattern_async
-        #self.btn3.grid(row = 2, column = 0, padx = 5)
-        self.btn3.pack(fill='x')
+        self.buttonRepairSync = Button(self.frameRight, bg = "#fff4ad")
+        self.buttonRepairSync["text"] = "Repair pattern Sync"
+        self.buttonRepairSync["command"] = self.repair_pattern_sync
+        #self.buttonRepairSync.grid(row = 1, column = 0, padx = 5)
+        self.buttonRepairSync.pack(fill='x')
 
-        self.btn4 = Button(self.frameRight, bg = "#ade4ff")
-        self.btn4["text"] = "Show saved patterns"
-        self.btn4["command"] = self.show_matrices
-        #self.btn4.grid(row = 3, column = 0, padx = 5)
-        self.btn4.pack(fill='x', pady=10)
+        self.buttonRepairAsync = Button(self.frameRight, bg = "#fff4ad")
+        self.buttonRepairAsync["text"] = "Repair pattern Async"
+        self.buttonRepairAsync["command"] = self.repair_pattern_async
+        #self.buttonRepairAsync.grid(row = 2, column = 0, padx = 5)
+        self.buttonRepairAsync.pack(fill='x')
 
-        self.btn5 = Button(self.frameRight, bg = "#ffb7ad")
-        self.btn5["text"] = "Clear grid"
-        self.btn5["command"] = self.clear_grid
-        #self.btn5.grid(row = 4, column = 0)
-        self.btn5.pack(fill='x', pady=10)
+        self.buttonShowSavedPatterns = Button(self.frameRight, bg = "#ade4ff")
+        self.buttonShowSavedPatterns["text"] = "Show saved patterns"
+        self.buttonShowSavedPatterns["command"] = self.show_matrices
+        #self.buttonShowSavedPatterns.grid(row = 3, column = 0, padx = 5)
+        self.buttonShowSavedPatterns.pack(fill='x', pady=10)
 
-        self.label = Label(self.frameRight, bg=self.mainBG)
-        self.label["text"] = "Max recommended amount\n of saved patterns is " + str(self.max_patterns)
-        #self.label.grid(row = 5, column = 0)
-        self.label.pack(fill='x', pady=10)
+        self.buttonClearGrid = Button(self.frameRight, bg = "#ffb7ad")
+        self.buttonClearGrid["text"] = "Clear grid"
+        self.buttonClearGrid["command"] = self.clear_grid
+        #self.buttonClearGrid.grid(row = 4, column = 0)
+        self.buttonClearGrid.pack(fill='x', pady=10)
+
+        self.labelMaxPatterns = Label(self.frameRight, bg=self.mainBG)
+        self.labelMaxPatterns["text"] = "Max recommended amount\n of saved patterns is " + str(self.max_patterns)
+        #self.labelMaxPatterns.grid(row = 5, column = 0)
+        self.labelMaxPatterns.pack(fill='x', pady=10)
 
         # Canvas
         self.frameCanvas = Frame(self.mainWindow, bg="#ababab")

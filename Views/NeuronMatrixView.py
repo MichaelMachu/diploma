@@ -43,47 +43,47 @@ class NeuronMatrixView(GraphicalUserInterface):
         self.frameRight.rowconfigure(1, weight=1)
 
         # Buttons
-        self.btnSave = Button(self.frameRight, bg = "#b9ffad")
-        self.btnSave["text"] = "Export pattern"
-        self.btnSave["command"] = self.__show_save_neuron_matrix_menu
-        #self.btn1.grid(row = 0, column = 0)
-        self.btnSave.pack(fill='x', pady=(0, 20))
+        self.buttonSave = Button(self.frameRight, bg = "#b9ffad")
+        self.buttonSave["text"] = "Export pattern"
+        self.buttonSave["command"] = self.__show_save_neuron_matrix_menu
+        #self.buttonSave.grid(row = 0, column = 0)
+        self.buttonSave.pack(fill='x', pady=(0, 20))
 
-        self.btn0 = Button(self.frameRight, bg = "#ade4ff")
-        self.btn0["text"] = "Show matrix"
-        self.btn0["command"] = lambda matrix = self.neuronMatrix.matrix, typeOfMatrix = "Matrix:": Print.print_matrix_2d(matrix, typeOfMatrix)
-        #self.btn0.grid(row = 0, column = 1)
-        self.btn0.pack(fill='x')
+        self.buttonMatrix = Button(self.frameRight, bg = "#ade4ff")
+        self.buttonMatrix["text"] = "Show matrix"
+        self.buttonMatrix["command"] = lambda matrix = self.neuronMatrix.matrix, typeOfMatrix = "Matrix:": Print.print_matrix_2d(matrix, typeOfMatrix)
+        #self.buttonMatrix.grid(row = 0, column = 1)
+        self.buttonMatrix.pack(fill='x')
 
-        self.btn1 = Button(self.frameRight, bg = "#ade4ff")
-        self.btn1["text"] = "Show matrix without zeros"
-        self.btn1["command"] = lambda matrix = self.neuronMatrix.matrixWithoutZeros, typeOfMatrix = "Matrix without zeros:": Print.print_matrix_2d(matrix, typeOfMatrix)
-        #self.btn1.grid(row = 1, column = 1, padx = 5)
-        self.btn1.pack(fill='x')
+        self.buttonMatrixWithoutZeros = Button(self.frameRight, bg = "#ade4ff")
+        self.buttonMatrixWithoutZeros["text"] = "Show matrix without zeros"
+        self.buttonMatrixWithoutZeros["command"] = lambda matrix = self.neuronMatrix.matrixWithoutZeros, typeOfMatrix = "Matrix without zeros:": Print.print_matrix_2d(matrix, typeOfMatrix)
+        #self.buttonMatrixWithoutZeros.grid(row = 1, column = 1, padx = 5)
+        self.buttonMatrixWithoutZeros.pack(fill='x')
 
-        self.btn2 = Button(self.frameRight, bg = "#ade4ff")
-        self.btn2["text"] = "Show vector"
-        self.btn2["command"] = lambda vector = self.neuronMatrix.vector: Print.print_vector(vector)
-        #self.btn2.grid(row = 2, column = 1)
-        self.btn2.pack(fill='x')
+        self.buttonVector = Button(self.frameRight, bg = "#ade4ff")
+        self.buttonVector["text"] = "Show vector"
+        self.buttonVector["command"] = lambda vector = self.neuronMatrix.vector: Print.print_vector(vector)
+        #self.buttonVector.grid(row = 2, column = 1)
+        self.buttonVector.pack(fill='x')
 
-        self.btn3 = Button(self.frameRight, bg = "#ade4ff")
-        self.btn3["text"] = "Show weighted matrix"
-        self.btn3["command"] = lambda matrix = self.neuronMatrix.weightMatrix, typeOfMatrix = "Weighted matrix:": Print.print_matrix_2d(matrix, typeOfMatrix)
-        #self.btn3.grid(row = 3, column = 1, padx = 5)
-        self.btn3.pack(fill='x')
+        self.buttonWeightedMatrix = Button(self.frameRight, bg = "#ade4ff")
+        self.buttonWeightedMatrix["text"] = "Show weighted matrix"
+        self.buttonWeightedMatrix["command"] = lambda matrix = self.neuronMatrix.weightMatrix, typeOfMatrix = "Weighted matrix:": Print.print_matrix_2d(matrix, typeOfMatrix)
+        #self.buttonWeightedMatrix.grid(row = 3, column = 1, padx = 5)
+        self.buttonWeightedMatrix.pack(fill='x')
 
-        self.btn4 = Button(self.frameRight, bg = "#ade4ff")
-        self.btn4["text"] = "Show full pattern"
-        self.btn4["command"] = lambda matrix = self.neuronMatrix.fullPattern, typeOfMatrix = "Full pattern matrix:": Print.print_matrix_2d(matrix, typeOfMatrix)
-        #self.btn4.grid(row = 4, column = 1)
-        self.btn4.pack(fill='x')
+        self.buttonFullPattern = Button(self.frameRight, bg = "#ade4ff")
+        self.buttonFullPattern["text"] = "Show full pattern"
+        self.buttonFullPattern["command"] = lambda matrix = self.neuronMatrix.fullPattern, typeOfMatrix = "Full pattern matrix:": Print.print_matrix_2d(matrix, typeOfMatrix)
+        #self.buttonFullPattern.grid(row = 4, column = 1)
+        self.buttonFullPattern.pack(fill='x')
 
-        self.btn5 = Button(self.frameRight, bg = "#ffb7ad")
-        self.btn5["text"] = "Forget the pattern"
-        self.btn5["command"] = lambda ids = self.ids, window = self.mainWindow: self.applicationView.forget_pattern(ids, window)
-        #self.btn5.grid(row = 5, column = 1)
-        self.btn5.pack(fill='x', pady=(20, 0))
+        self.buttonForgetPattern = Button(self.frameRight, bg = "#ffb7ad")
+        self.buttonForgetPattern["text"] = "Forget the pattern"
+        self.buttonForgetPattern["command"] = lambda ids = self.ids, window = self.mainWindow: self.applicationView.forget_pattern(ids, window)
+        #self.buttonForgetPattern.grid(row = 5, column = 1)
+        self.buttonForgetPattern.pack(fill='x', pady=(20, 0))
 
         # Canvas
         self.frameCanvas = Frame(self.mainWindow, bg="#ababab")
