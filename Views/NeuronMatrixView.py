@@ -1,16 +1,16 @@
 from tkinter import *
 from tkinter import ttk
 
-from Interfaces.GraphicalUserInterface import GraphicalUserInterface
+from Bases.ViewBase import ViewBase
 from . import ApplicationView
 from .ExportNeuronMatrixView import ExportNeuronMatrixView
 
 from Domain.Print import Print
 
-class NeuronMatrixView(GraphicalUserInterface):
+class NeuronMatrixView(ViewBase):
 
     def __init__(self, applicationView: ApplicationView, ids: int, n: int, m: int, size: int) -> None:
-        super().__init__(Toplevel(applicationView.mainWindow), 500, 304, str(ids + 1) + ". matrix")
+        super().__init__(Toplevel(applicationView.mainWindow), 500, 304, str(ids + 1) + ". matrix", applicationView.windowHandler)
         self.applicationView = applicationView
 
         # Singletons objects

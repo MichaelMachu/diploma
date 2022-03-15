@@ -1,16 +1,16 @@
 from tkinter import *
 from tkinter import ttk
 
-from Interfaces.GraphicalUserInterface import GraphicalUserInterface
+from Bases.ViewBase import ViewBase
 from . import ApplicationView
 
 from Data.CellularAutomatonTransferObject import CellularAutomatonTransferObject
 from Data.DataProcess import DataProcess
 
-class ExportCellularAutomatonView(GraphicalUserInterface):
+class ExportCellularAutomatonView(ViewBase):
 
     def __init__(self, applicationView: ApplicationView) -> None:
-        super().__init__(Toplevel(applicationView.mainWindow), 500, 400, "Export Cellular Automaton to a file")
+        super().__init__(Toplevel(applicationView.mainWindow), 500, 400, "Export Cellular Automaton to a file", applicationView.windowHandler)
         self.applicationView = applicationView
 
         self.cellularAutomaton = self.applicationView.cellularAutomaton

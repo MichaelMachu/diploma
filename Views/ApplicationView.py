@@ -4,14 +4,15 @@ from tkinter import *
 from click import command
 
 from Domain.AnimationSettings import AnimationSettings
+from Domain.WindowsHandler import WindowHandler
 
-from Interfaces.GraphicalUserInterface import GraphicalUserInterface
+from Bases.ViewBase import ViewBase
 from .CellularAutomatonView import CellularAutomatonView
 from .AnimationSettingsView import AnimationSettingsView
 from .ExportCellularAutomatonView import ExportCellularAutomatonView
 from .HopfieldNetworkView import HopfieldNetworkView
 
-class ApplicationView(GraphicalUserInterface):
+class ApplicationView(ViewBase):
     
     def __init__(self) -> None:
         """The main thread of the application"""
@@ -19,6 +20,8 @@ class ApplicationView(GraphicalUserInterface):
         self.root = self.mainWindow
         
         # Singletons objects
+        self.windowHandler = WindowHandler()
+
         self.animationSettings = AnimationSettings()
         self.cellularAutomaton = None
         self.cellularAutomatonView = None
@@ -139,11 +142,17 @@ class ApplicationView(GraphicalUserInterface):
         self.exportCellularAutomatonView = ExportCellularAutomatonView(self)
     
     def __show_hopfield_network(self) -> None:
-        if self.isHopfieldNetworkExists:
+        if self.windowHandler.exists(self.hopfieldNetworkView):
+            return
+
+        self.hopfieldNetworkView = HopfieldNetworkView(self)
+        self.windowHandler.register(self.hopfieldNetworkView)
+
+        """if self.isHopfieldNetworkExists:
             return
 
         self.isHopfieldNetworkExists = True
-        self.hopfieldNetworkView = HopfieldNetworkView(self)
+        self.hopfieldNetworkView = HopfieldNetworkView(self)"""
 
     def create_world(self) -> None:
         if self.cellularAutomatonView.cellularAutomaton.dimension == 2:

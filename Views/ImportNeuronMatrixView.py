@@ -1,16 +1,16 @@
 from tkinter import *
 from tkinter import ttk
 
-from Interfaces.GraphicalUserInterface import GraphicalUserInterface
+from Bases.ViewBase import ViewBase
 from . import ApplicationView
 
 from Data.NeuronMatrixTransferObject import NeuronMatrixTransferObject
 from Data.DataProcess import DataProcess
 
-class ImportNeuronMatrixView(GraphicalUserInterface):
+class ImportNeuronMatrixView(ViewBase):
 
     def __init__(self, applicationView: ApplicationView) -> None:
-        super().__init__(Toplevel(applicationView.mainWindow), 500, 400, "Save Neuron Matrix to a file")
+        super().__init__(Toplevel(applicationView.mainWindow), 500, 400, "Save Neuron Matrix to a file", applicationView.windowHandler)
         self.applicationView = applicationView
 
         self.neuronMatrix = self.applicationView.neuronMatrix

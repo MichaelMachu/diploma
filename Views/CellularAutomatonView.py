@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 
-from Interfaces.GraphicalUserInterface import GraphicalUserInterface
+from Bases.ViewBase import ViewBase
 from . import ApplicationView
 #from . import CellularAutomaton
 from Domain.CellularAutomaton import CellularAutomaton
@@ -10,10 +10,10 @@ from Data.CellularAutomatonTransferObject import CellularAutomatonTransferObject
 
 from random import randint
 
-class CellularAutomatonView(GraphicalUserInterface):
+class CellularAutomatonView(ViewBase):
 
     def __init__(self, applicationView: ApplicationView) -> None: # aw.ApplicationView
-        super().__init__(Toplevel(applicationView.mainWindow), 500, 400, "Cellular Automaton settings")
+        super().__init__(Toplevel(applicationView.mainWindow), 500, 400, "Cellular Automaton settings", applicationView.windowHandler)
         self.applicationView = applicationView
 
         self.cellularAutomaton = self.applicationView.cellularAutomaton

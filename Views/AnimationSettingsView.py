@@ -2,13 +2,13 @@ from tkinter import *
 from tkinter.colorchooser import askcolor
 from Domain.Color import Color
 
-from Interfaces.GraphicalUserInterface import GraphicalUserInterface
+from Bases.ViewBase import ViewBase
 from . import ApplicationView
 
-class AnimationSettingsView(GraphicalUserInterface):
+class AnimationSettingsView(ViewBase):
 
     def __init__(self, applicationView: ApplicationView) -> None:
-        super().__init__(Toplevel(applicationView.mainWindow), 500, 400, "Animation settings")
+        super().__init__(Toplevel(applicationView.mainWindow), 500, 400, "Animation settings", applicationView.windowHandler)
         self.applicationView = applicationView
         self.mainWindow.attributes("-topmost", True)
 

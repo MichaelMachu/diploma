@@ -1,8 +1,8 @@
 
-class TransferObject:
+class TransferObjectInterface:
 
     # Class functions
-    def set_by_dict(dictValue: dict) -> "TransferObject":
+    def set_by_dict(dictValue: dict) -> "TransferObjectInterface":
         """Returns new instance of TransferObject set by dictValue."""
         pass
 

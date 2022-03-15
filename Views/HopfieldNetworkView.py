@@ -5,7 +5,7 @@ from Domain.NeuronMatrix import NeuronMatrix
 from Domain.HopfieldNetwork import HopfieldNetwork
 from Domain.ActivationFunctions import ActivationFunctions
 
-from Interfaces.GraphicalUserInterface import GraphicalUserInterface
+from Bases.ViewBase import ViewBase
 from . import ApplicationView
 from .NeuronMatrixView import NeuronMatrixView
 
@@ -13,10 +13,10 @@ import numpy as np
 import copy as copy
 import math as math
 
-class HopfieldNetworkView(GraphicalUserInterface):
+class HopfieldNetworkView(ViewBase):
     
     def __init__(self, applicationView: ApplicationView) -> None:
-        super().__init__(Toplevel(applicationView.mainWindow), 500, 304, "Hopfield Network")
+        super().__init__(Toplevel(applicationView.mainWindow), 500, 304, "Hopfield Network", applicationView.windowHandler)
         self.applicationView = applicationView
 
         self.neuronMatrixViews = []
@@ -61,7 +61,7 @@ class HopfieldNetworkView(GraphicalUserInterface):
 
         self.buttonImport = Button(self.frameRight, bg = "#b9ffad")
         self.buttonImport["text"] = "Import pattern"
-        self.buttonImport["command"] = self.import_matrix
+        self.buttonImport["command"] = self.__show_import_neuron_matrix_menu
         #self.buttonImport.grid(row = 0, column = 0)
         self.buttonImport.pack(fill='x', pady=(0, 10))
 
@@ -225,7 +225,7 @@ class HopfieldNetworkView(GraphicalUserInterface):
             return
 
         self.isExportNeuronMatrixExists = True
-        self.exportNeuronMatrixView = ImportNeuronMatrixView(self)
+        #self.exportNeuronMatrixView = ImportNeuronMatrixView(self)
 
 
     # Zobrazení všech uložených paternů
@@ -242,6 +242,6 @@ class HopfieldNetworkView(GraphicalUserInterface):
         self.saved_matrices.pop(ids)
         window.destroy()
 
-    def on_closing(self) -> None:
-        self.applicationView.isHopfieldNetworkExists = False
-        self.mainWindow.destroy()
+    #def on_closing(self) -> None:
+    #    self.applicationView.isHopfieldNetworkExists = False
+    #    self.mainWindow.destroy()

@@ -1,7 +1,7 @@
-from Interfaces.TransferObject import TransferObject
+from Interfaces.TransferObjectInterface import TransferObjectInterface
 from Domain.NeuronMatrix import NeuronMatrix
 
-class NeuronMatrixTransferObject(TransferObject):
+class NeuronMatrixTransferObject(TransferObjectInterface):
 
     def __init__(self, neuronMatrix: NeuronMatrix = None) -> None:
         if neuronMatrix is None:
