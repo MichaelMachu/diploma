@@ -26,14 +26,14 @@ class AnimationSettingsView(ViewBase):
         self.frame.pack(side=TOP, fill=None, expand=False, padx=10, pady=10)
         
         # Set size of cells (for increasing and decreasing size it works like a zoom)
-        self.labelSize = Label(self.frame, text="Cell size (int)", anchor='w')
+        self.labelSize = Label(self.frame, text="Cell size (int)", anchor='w', bg=self.frameBG)
         self.labelSize.grid(column=0, row=0, sticky=W)
         self.entrySize = Entry(self.frame)
         self.entrySize.grid(column=1, row=0, padx=10, pady=5, sticky=W)
         self.entrySize.insert(0, self.applicationView.animationSettings.cellSize)
 
         # Set a main color of a cell, if cell has a more than two states it makes other colors automatically based on the main color
-        self.labelRule = Label(self.frame, text="Cell color", anchor='w')
+        self.labelRule = Label(self.frame, text="Cell color", anchor='w', bg=self.frameBG)
         self.labelRule.grid(column=0, row=1, sticky=W)
         self.entryColor = Button(self.frame, text="", width=5, background=self.applicationView.animationSettings.color.get_hex(), command=self.__choose_color)
         self.entryColor.grid(column=1, row=1, padx=10, pady=5, sticky=W)

@@ -6,10 +6,12 @@ from click import command
 from Domain.AnimationSettings import AnimationSettings
 from Domain.WindowsHandler import WindowHandler
 
+from Data.CellularAutomatonTransferObject import CellularAutomatonTransferObject
+
 from Bases.ViewBase import ViewBase
 from .CellularAutomatonView import CellularAutomatonView
 from .AnimationSettingsView import AnimationSettingsView
-from .ExportCellularAutomatonView import ExportCellularAutomatonView
+from .ExportView import ExportView
 from .HopfieldNetworkView import HopfieldNetworkView
 
 class ApplicationView(ViewBase):
@@ -25,7 +27,6 @@ class ApplicationView(ViewBase):
         self.cellularAutomaton = None
         self.cellularAutomatonView = None
         self.animationSettingsView = None
-        self.exportCellularAutomatonView = None
         self.hopfieldNetworkView = None
 
         self.testCa = None
@@ -129,11 +130,11 @@ class ApplicationView(ViewBase):
         self.windowHandler.register(self.cellularAutomatonView)
 
     def __show_export_cellular_automaton_menu(self) -> None:
-        if self.windowHandler.exists(self.exportCellularAutomatonView):
+        if self.windowHandler.exists(self.exportView):
             return
 
-        self.exportCellularAutomatonView = ExportCellularAutomatonView(self)
-        self.windowHandler.register(self.exportCellularAutomatonView)
+        self.exportView = ExportView(self, CellularAutomatonTransferObject(self.cellularAutomaton), "Cellular Automaton")
+        self.windowHandler.register(self.exportView)
     
     def __show_hopfield_network(self) -> None:
         if self.windowHandler.exists(self.hopfieldNetworkView):

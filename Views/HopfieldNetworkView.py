@@ -26,13 +26,6 @@ class HopfieldNetworkView(ViewBase):
         self.importView = None
 
         self.neuronMatrixViews = []
-        
-        self.minWidth = 304
-        self.minHeight = 500
-        self.maxWidth = 304
-        self.maxHeight = 500
-        #self.mainWindow.minsize(self.minHeight, self.minWidth)
-        #self.mainWindow.maxsize(self.maxHeight, self.maxWidth)
 
         self.n = self.m = 10 # 10
         self.max_patterns = int((self.n * self.m) / (2 * math.sqrt(self.n * self.m)))
@@ -230,12 +223,6 @@ class HopfieldNetworkView(ViewBase):
 
         self.importView = ImportView(self, "Neuron Matrix")
         self.windowHandler.register(self.importView)
-
-        """if self.isExportNeuronMatrixExists:
-            return
-
-        self.isExportNeuronMatrixExists = True
-        #self.exportNeuronMatrixView = ImportNeuronMatrixView(self)"""
 
     def set_import_data(self, data: dict) -> None:
         super().set_import_data(data)

@@ -5,13 +5,17 @@ from Interfaces.GraphicalUserInterface import GraphicalUserInterface
 
 class ViewBase(GraphicalUserInterface):
 
-    def __init__(self, appWindow: Tk or Toplevel, width: int, height: int, title: str, windowHandler: WindowHandler = None, backgroundColor: str = "#ababab") -> None:
+    def __init__(self, appWindow: Tk or Toplevel, width: int, height: int, title: str, windowHandler: WindowHandler = None, backgroundColor: str = "#ababab", frameBackgroundColor: str = "#ffffff") -> None:
         self.mainWindow = appWindow
         self.id = -1
         self.windowHandler = windowHandler
         self._importData = None
 
+        self.exportView = None
+        self.importView = None
+
         self.mainBG = backgroundColor
+        self.frameBG = frameBackgroundColor
 
         self.mainWindow.minsize(width, height)
         self.mainWindow.title(title)

@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter import ttk
 
 from Bases.ViewBase import ViewBase
-from Interfaces.TransferObjectInterface import TransferObjectInterface
 from . import ApplicationView
 
 from Data.DataProcess import DataProcess
@@ -22,8 +21,6 @@ class ImportView(ViewBase):
         pass
 
     def __build(self) -> None:
-        self.frameBG = "#fff"
-
         # Main frame
         self.frame = Frame(self.mainWindow, bg=self.frameBG)
         self.frame.pack(side=TOP, fill=None, expand=False, padx=1, pady=1)
