@@ -3,7 +3,9 @@ import copy
 from numpy import ndarray
 
 class NeuronMatrix:
-    def __init__(self, matrix: ndarray or list) -> None:
+    def __init__(self, matrix: ndarray or list = None) -> None:
+        if matrix is None:
+            return
         self.matrix = matrix
         self.matrixWithoutZeros = self.__remove_zeros_from_matrix(copy.deepcopy(self.matrix))
         self.vector = self.__serialized_matrix(copy.deepcopy(self.matrixWithoutZeros))

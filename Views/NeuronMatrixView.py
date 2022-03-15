@@ -17,7 +17,6 @@ class NeuronMatrixView(ViewBase):
         # Singletons objects
         self.exportNeuronMatrixView = None
         self.exportView = None
-        self.importView = None
 
         # Control parameters
         self.isExportNeuronMatrixExists = False

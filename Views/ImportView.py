@@ -9,11 +9,9 @@ from Data.DataProcess import DataProcess
 
 class ImportView(ViewBase):
 
-    def __init__(self, applicationView: ApplicationView, transferObject: TransferObjectInterface, name: str = "") -> None:
+    def __init__(self, applicationView: ApplicationView, name: str = "") -> None:
         super().__init__(Toplevel(applicationView.mainWindow), 500, 400, "Import "+ name +" from a file", applicationView.windowHandler)
         self.applicationView = applicationView
-
-        self.transferObject = transferObject
 
         self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_closing)
 
@@ -50,20 +48,7 @@ class ImportView(ViewBase):
         if (not (filename and not filename.isspace())):
             return
 
-        dictData = DataProcess.load_from_json_file(filename)
-        if dictData is None:
-            return
-        
+        dataDict = DataProcess.load_from_json_file(filename)
+        self.applicationView.set_import_data(dataDict)
 
-        transferObject = type(self.transferObject).set_by_dict(dictData)
-
-        """self.cellularAutomaton = CellularAutomaton(
-            CATransferObject.size, CATransferObject.ruleNumber, CATransferObject.K, 
-            CATransferObject.N, CATransferObject.λ, CATransferObject.seedNumber)
-        self.cellularAutomaton.quiescentState = CATransferObject.quiescentState
-        self.cellularAutomaton.currentState = CATransferObject.currentState
-        self.cellularAutomaton.cellHistory = CATransferObject.cellHistory"""
-
-        #jsonData = DataProcess.to_json(self.transferObject.get_as_dict())
-
-        #DataProcess.save_to_json_file(filename, jsonData)
+        self.on_closing()

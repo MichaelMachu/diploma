@@ -53,3 +53,5 @@ class ExportView(ViewBase):
         jsonData = DataProcess.to_json(self.transferObject.get_as_dict())
 
         DataProcess.save_to_json_file(filename, jsonData)
+
+        self.on_closing()

@@ -9,6 +9,7 @@ class ViewBase(GraphicalUserInterface):
         self.mainWindow = appWindow
         self.id = -1
         self.windowHandler = windowHandler
+        self._importData = None
 
         self.mainBG = backgroundColor
 
@@ -33,3 +34,9 @@ class ViewBase(GraphicalUserInterface):
 
     def on_closing(self) -> None:
         self.windowHandler.destroy(self)
+
+    def set_import_data(self, data: dict) -> None:
+        self._importData = data
+
+    def get_import_data(self) -> dict:
+        return self._importData

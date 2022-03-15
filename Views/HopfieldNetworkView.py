@@ -5,9 +5,12 @@ from Domain.NeuronMatrix import NeuronMatrix
 from Domain.HopfieldNetwork import HopfieldNetwork
 from Domain.ActivationFunctions import ActivationFunctions
 
+from Data.NeuronMatrixTransferObject import NeuronMatrixTransferObject
+
 from Bases.ViewBase import ViewBase
 from . import ApplicationView
 from .NeuronMatrixView import NeuronMatrixView
+from .ImportView import ImportView
 
 import numpy as np
 import copy as copy
@@ -18,6 +21,9 @@ class HopfieldNetworkView(ViewBase):
     def __init__(self, applicationView: ApplicationView) -> None:
         super().__init__(Toplevel(applicationView.mainWindow), 500, 304, "Hopfield Network", applicationView.windowHandler)
         self.applicationView = applicationView
+        
+        # Singletons objects
+        self.importView = None
 
         self.neuronMatrixViews = []
         
@@ -219,12 +225,34 @@ class HopfieldNetworkView(ViewBase):
 
     #def import_matrix(self) -> None:
     def __show_import_neuron_matrix_menu(self) -> None:
-        if self.isExportNeuronMatrixExists:
+        if self.windowHandler.exists(self.importView):
+            return
+
+        self.importView = ImportView(self, "Neuron Matrix")
+        self.windowHandler.register(self.importView)
+
+        """if self.isExportNeuronMatrixExists:
             return
 
         self.isExportNeuronMatrixExists = True
-        #self.exportNeuronMatrixView = ImportNeuronMatrixView(self)
+        #self.exportNeuronMatrixView = ImportNeuronMatrixView(self)"""
 
+    def set_import_data(self, data: dict) -> None:
+        super().set_import_data(data)
+
+        if self._importData is None:
+            return
+
+        transferObject = NeuronMatrixTransferObject.set_by_dict(self._importData)
+
+        neuronMatrix = NeuronMatrix()
+        neuronMatrix.matrix = transferObject.matrix
+        neuronMatrix.matrixWithoutZeros = transferObject.matrixWithoutZeros
+        neuronMatrix.vector = transferObject.vector
+        neuronMatrix.weightMatrix = transferObject.weightMatrix
+        neuronMatrix.fullPattern = transferObject.fullPattern
+
+        self.saved_matrices.append(neuronMatrix)
 
     # Zobrazení všech uložených paternů
     def show_matrices(self) -> None:
