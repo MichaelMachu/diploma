@@ -16,7 +16,8 @@ class ViewBase(GraphicalUserInterface):
         self.mainWindow.title(title)
         self.mainWindow.configure(background=backgroundColor)
 
-        self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_closing)
+        if self.windowHandler is not None:
+            self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         self.__build()
         self.__run()
@@ -31,6 +32,4 @@ class ViewBase(GraphicalUserInterface):
         pass
 
     def on_closing(self) -> None:
-        if self.windowHandler is None:
-            return
         self.windowHandler.destroy(self)

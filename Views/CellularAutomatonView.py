@@ -35,6 +35,8 @@ class CellularAutomatonView(ViewBase):
         self.labelFileName = None
         # Entries
         self.entrySize = None
+        self.entrySizeX = None
+        self.entrySizeY = None
         self.entryRule = None
         self.entryK = None
         self.entryN = None
@@ -397,7 +399,7 @@ class CellularAutomatonView(ViewBase):
             self.applicationView.buttonAnimContinue.configure(state=ACTIVE)
             
 
-        self.applicationView.buttonCaSave.configure(state=ACTIVE)
+        self.applicationView.buttonCaExport.configure(state=ACTIVE)
 
         self.applicationView.cellularAutomaton = self.cellularAutomaton
 

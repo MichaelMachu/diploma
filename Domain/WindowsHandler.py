@@ -20,6 +20,8 @@ class WindowHandler:
         return view.id in self.__views
 
     def destroy(self, view: GraphicalUserInterface) -> None:
+        if view.id == -1:
+            return
         view.mainWindow.destroy()
         self.__views.pop(view.id)
 
