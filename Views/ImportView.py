@@ -2,18 +2,18 @@ from tkinter import *
 from tkinter import ttk
 
 from Interfaces.GraphicalUserInterface import GraphicalUserInterface
+from Interfaces.TransferObject import TransferObject
 from . import ApplicationView
 
-from Data.CellularAutomatonTransferObject import CellularAutomatonTransferObject
 from Data.DataProcess import DataProcess
 
-class SaveCellularAutomatonView(GraphicalUserInterface):
+class ImportView(GraphicalUserInterface):
 
-    def __init__(self, applicationView: ApplicationView) -> None:
-        super().__init__(Toplevel(applicationView.mainWindow), 500, 400, "Save Cellular Automaton to a file")
+    def __init__(self, applicationView: ApplicationView, transferObject: TransferObject) -> None:
+        super().__init__(Toplevel(applicationView.mainWindow), 500, 400, "Save Neuron Matrix to a file")
         self.applicationView = applicationView
 
-        self.cellularAutomaton = self.applicationView.cellularAutomaton
+        self.transferObject = transferObject
 
         self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_closing)
 
@@ -38,23 +38,22 @@ class SaveCellularAutomatonView(GraphicalUserInterface):
         self.entryFileName.grid(column=1, row=0, padx=10, pady=5, sticky=W)
 
         # Create button
-        self.buttonCreate = Button(self.frame, text="Save a Cellular Automaton", command=self.__save_ca)
+        self.buttonCreate = Button(self.frame, text="Import a Neuron Matrix", command=self.__import)
         self.buttonCreate.grid(column=0, row=1, columnspan=2, padx=10, pady=5)
 
     def draw(self) -> None:
         """Drawing method used for canvas"""
         pass
 
-    def __save_ca(self) -> None:
+    def __import(self) -> None:
         filename = self.entryFileName.get()
         if (not (filename and not filename.isspace())):
             return
 
-        CATransferObject = CellularAutomatonTransferObject(self.cellularAutomaton)
-        jsonData = DataProcess.to_json(CATransferObject.get_as_dict())
+        jsonData = DataProcess.to_json(self.transferObject.get_as_dict())
 
         DataProcess.save_to_json_file(filename, jsonData)
 
     def on_closing(self) -> None:
-        self.applicationView.isSaveCaExists = False
+        self.applicationView.isSaveNeuronMatrixExists = False
         self.mainWindow.destroy()

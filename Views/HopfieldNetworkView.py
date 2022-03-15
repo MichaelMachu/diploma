@@ -61,7 +61,7 @@ class HopfieldNetworkView(GraphicalUserInterface):
 
         self.buttonImport = Button(self.frameRight, bg = "#b9ffad")
         self.buttonImport["text"] = "Import pattern"
-        self.buttonImport["command"] = self.save_matrix
+        self.buttonImport["command"] = self.import_matrix
         #self.buttonImport.grid(row = 0, column = 0)
         self.buttonImport.pack(fill='x', pady=(0, 10))
 
@@ -218,6 +218,15 @@ class HopfieldNetworkView(GraphicalUserInterface):
     def save_matrix(self) -> None:
         specificMatrix = NeuronMatrix(copy.deepcopy(self.main_matrix))
         self.saved_matrices.append(specificMatrix)
+
+    #def import_matrix(self) -> None:
+    def __show_import_neuron_matrix_menu(self) -> None:
+        if self.isExportNeuronMatrixExists:
+            return
+
+        self.isExportNeuronMatrixExists = True
+        self.exportNeuronMatrixView = ImportNeuronMatrixView(self)
+
 
     # Zobrazení všech uložených paternů
     def show_matrices(self) -> None:

@@ -7,7 +7,7 @@ from . import ApplicationView
 from Data.NeuronMatrixTransferObject import NeuronMatrixTransferObject
 from Data.DataProcess import DataProcess
 
-class SaveNeuronMatrixView(GraphicalUserInterface):
+class ExportNeuronMatrixView(GraphicalUserInterface):
 
     def __init__(self, applicationView: ApplicationView) -> None:
         super().__init__(Toplevel(applicationView.mainWindow), 500, 400, "Save Neuron Matrix to a file")

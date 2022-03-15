@@ -8,7 +8,7 @@ from Domain.AnimationSettings import AnimationSettings
 from Interfaces.GraphicalUserInterface import GraphicalUserInterface
 from .CellularAutomatonView import CellularAutomatonView
 from .AnimationSettingsView import AnimationSettingsView
-from .SaveCellularAutomatonView import SaveCellularAutomatonView
+from .ExportCellularAutomatonView import ExportCellularAutomatonView
 from .HopfieldNetworkView import HopfieldNetworkView
 
 class ApplicationView(GraphicalUserInterface):
@@ -23,7 +23,7 @@ class ApplicationView(GraphicalUserInterface):
         self.cellularAutomaton = None
         self.cellularAutomatonView = None
         self.animationSettingsView = None
-        self.saveCellularAutomatonView = None
+        self.exportCellularAutomatonView = None
         self.hopfieldNetworkView = None
 
         self.testCa = None
@@ -31,7 +31,7 @@ class ApplicationView(GraphicalUserInterface):
         # Control parameters
         self.isCaMenuExists = False
         self.isAnimationSettingsExists = False
-        self.isSaveCaExists = False
+        self.isExportCaExists = False
         self.isAnimationRunning = False
         self.isHopfieldNetworkExists = False
         self.continueDraw = False
@@ -79,9 +79,9 @@ class ApplicationView(GraphicalUserInterface):
         self.buttonCa = Button(self.frameSplitUpper, text="Cellular Automaton", command=self.__show_cellular_automaton_menu)
         self.buttonCa.pack(fill='x')
 
-        self.buttonCaSave = Button(self.frameSplitUpper, text="Save Cellular Automaton", command=self.__show_save_cellular_automaton_menu)
-        self.buttonCaSave.configure(state=DISABLED)
-        self.buttonCaSave.pack(fill='x')
+        self.buttonCaExport = Button(self.frameSplitUpper, text="Export Cellular Automaton", command=self.__show_export_cellular_automaton_menu)
+        self.buttonCaExport.configure(state=DISABLED)
+        self.buttonCaExport.pack(fill='x')
 
         self.buttonAnim = Button(self.frameSplitLower, text="Start animation", command=self.start_draw)
         self.buttonAnim.configure(state=DISABLED)
@@ -131,12 +131,12 @@ class ApplicationView(GraphicalUserInterface):
         self.isCaMenuExists = True
         self.cellularAutomatonView = CellularAutomatonView(self)
 
-    def __show_save_cellular_automaton_menu(self) -> None:
-        if self.isSaveCaExists:
+    def __show_export_cellular_automaton_menu(self) -> None:
+        if self.isExportCaExists:
             return
 
-        self.isSaveCaExists = True
-        self.saveCellularAutomatonView = SaveCellularAutomatonView(self)
+        self.isExportCaExists = True
+        self.exportCellularAutomatonView = ExportCellularAutomatonView(self)
     
     def __show_hopfield_network(self) -> None:
         if self.isHopfieldNetworkExists:

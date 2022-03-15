@@ -3,7 +3,7 @@ from tkinter import ttk
 
 from Interfaces.GraphicalUserInterface import GraphicalUserInterface
 from . import ApplicationView
-from .SaveNeuronMatrixView import SaveNeuronMatrixView
+from .ExportNeuronMatrixView import ExportNeuronMatrixView
 
 from Domain.Print import Print
 
@@ -14,10 +14,10 @@ class NeuronMatrixView(GraphicalUserInterface):
         self.applicationView = applicationView
 
         # Singletons objects
-        self.saveNeuronMatrixView = None
+        self.exportNeuronMatrixView = None
 
         # Control parameters
-        self.isSaveNeuronMatrixExists = False
+        self.isExportNeuronMatrixExists = False
 
         self.ids = ids
         self.n = n
@@ -43,11 +43,11 @@ class NeuronMatrixView(GraphicalUserInterface):
         self.frameRight.rowconfigure(1, weight=1)
 
         # Buttons
-        self.buttonSave = Button(self.frameRight, bg = "#b9ffad")
-        self.buttonSave["text"] = "Export pattern"
-        self.buttonSave["command"] = self.__show_save_neuron_matrix_menu
-        #self.buttonSave.grid(row = 0, column = 0)
-        self.buttonSave.pack(fill='x', pady=(0, 20))
+        self.buttonExport = Button(self.frameRight, bg = "#b9ffad")
+        self.buttonExport["text"] = "Export pattern"
+        self.buttonExport["command"] = self.__show_export_neuron_matrix_menu
+        #self.buttonExport.grid(row = 0, column = 0)
+        self.buttonExport.pack(fill='x', pady=(0, 20))
 
         self.buttonMatrix = Button(self.frameRight, bg = "#ade4ff")
         self.buttonMatrix["text"] = "Show matrix"
@@ -117,12 +117,12 @@ class NeuronMatrixView(GraphicalUserInterface):
 
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
-    def __show_save_neuron_matrix_menu(self) -> None:
-        if self.isSaveNeuronMatrixExists:
+    def __show_export_neuron_matrix_menu(self) -> None:
+        if self.isExportNeuronMatrixExists:
             return
 
-        self.isSaveNeuronMatrixExists = True
-        self.saveNeuronMatrixView = SaveNeuronMatrixView(self)
+        self.isExportNeuronMatrixExists = True
+        self.exportNeuronMatrixView = ExportNeuronMatrixView(self)
 
     def on_closing(self) -> None:
         self.mainWindow.destroy()
