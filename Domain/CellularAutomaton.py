@@ -4,23 +4,30 @@ from random import seed, randint
 
 class CellularAutomaton:
 
-    def __init__(self, size: int or tuple, rule: int = None, K: int = 2, N: int = 3, λ: float = None, seedNumber: int = None) -> None:
+    def __init__(self, size: int or tuple, rule: int = None, K: int = 2, N: int = 3, λ: float = None, seedNumber: int = None, pattern2D: str = "moore") -> None:
         """
         Cellular Automaton creates one step by method execute.
         Params:
-            - size: is a size of space for cells
+            - size: is a size of space for cells - world / for 2D set as tuple (sizeX, sizeY)
             - rule: it determines the rule for each step
+            - K: number of states (colors)
+            - N: neighborhood - number of neighbors
+            - λ: lambda for setting cellular automaton into behaviour of edge of chaos
+            - seedNumber: seed for generating of random values
+            - pattern2D: it sets pattern for neighborhood in 2D, it is used only, if size is set as tuple for 2D
+                - values: moore / neuman
         """
-        self.size = size                # Size of dimension (number of neighbors)
-        self.K = K                      # Number of states (colors)
-        self.N = N                      # Neighborhood - number of neighbors
-        self.λ = λ                      # Lambda
-        self.quiescentState = None      # Arbitrary state
-        self.isQuiscentState = None     # List of decisions if the state is quiescent
-        self.possibleStates = 8 if K == 2 else 3 * K - 2    # 8 = 2^3
-        self.ruleNumber = rule          # Rule represented as number
-        self.dimension = 1              # Dimension of the world
-        self.seedNumber = seedNumber    # Seed for generating of random values
+        self.size = size                                    # Size of dimension (number of neighbors - world)
+        self.K = K                                          # Number of states (colors)
+        self.N = N                                          # Neighborhood - number of neighbors
+        self.λ = λ                                          # Lambda
+        self.quiescentState = None                          # Arbitrary state
+        self.isQuiscentState = None                         # List of decisions if the state is quiescent
+        self.possibleStates = 8 if K == 2 else 3 * K - 2    # Number of possible states -> elementary: 8 = 2^3 | totalistic: 3 * K - 2
+        self.ruleNumber = rule                              # Rule represented as number
+        self.dimension = 1                                  # Dimension of the world
+        self.seedNumber = seedNumber                        # Seed for generating of random values
+        self.pattern2D = pattern2D                          # Pattern for neighborhood in 2D
         if seedNumber is None:
             #self.seedNumber = randint(-2147483648, 2147483647) # self.randomSeed
             self.seedNumber = randint(0, 2**32 - 1)
@@ -30,16 +37,14 @@ class CellularAutomaton:
             # Set CA to 2D
             if type(size) is tuple and len(size) > 1:
                 self.dimension = 2
-                self.pattern2D = "moore"
-                self.possibleStates = 18
+                self.possibleStates = 18 if self.pattern2D == "moore" else 10
                 self.rule = self.__rule_calculation_binary(rule)
-                #print("rule", self.rule)
             # Set CA to 1D
             else:
                 self.rule = self.__rule_calculation_binary(rule) if K == 2 else self.__rule_calculation(rule)
         else:
             self.ruleNumber = CellularAutomaton.get_quiescent_trainsitions(self.λ, self.K, self.N)
-            self.possibleStates = N     # possible states for the neighborhood pattern -> is_rule_valid returns K^N
+            self.possibleStates = N                         # possible states for the neighborhood pattern -> is_rule_valid returns K^N
             np.random.seed(self.seedNumber)
             print("seed: ", self.seedNumber)
             self.rule = [randint(1, self.K - 1) for _ in range(self.K**self.N)]

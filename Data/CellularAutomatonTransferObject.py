@@ -14,6 +14,7 @@ class CellularAutomatonTransferObject(TransferObjectInterface):
         self.possibleStates = cellularAutomaton.possibleStates
         self.ruleNumber = cellularAutomaton.ruleNumber
         self.seedNumber = cellularAutomaton.seedNumber
+        self.pattern2D = cellularAutomaton.pattern2D
         self.rule = cellularAutomaton.rule
         self.isQuiscentState = cellularAutomaton.isQuiscentState
         self.cellHistory = cellularAutomaton.cellHistory
@@ -30,6 +31,7 @@ class CellularAutomatonTransferObject(TransferObjectInterface):
         result.possibleStates = dictValue["possibleStates"]
         result.ruleNumber = dictValue["ruleNumber"]
         result.seedNumber = dictValue["seedNumber"]
+        result.pattern2D = dictValue["pattern2D"]
         result.rule = dictValue["rule"]
         result.isQuiscentState = dictValue["isQuiscentState"]
         result.cellHistory = dictValue["cellHistory"]
@@ -46,6 +48,7 @@ class CellularAutomatonTransferObject(TransferObjectInterface):
             "quiescentState": self.quiescentState,
             "possibleStates": self.possibleStates,
             "ruleNumber": self.ruleNumber,
+            "pattern2D": self.pattern2D,
             "seedNumber": self.seedNumber,
             "rule": self.rule.tolist(),
             "isQuiscentState": self.isQuiscentState,

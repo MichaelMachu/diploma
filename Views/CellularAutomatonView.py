@@ -49,6 +49,7 @@ class CellularAutomatonView(ViewBase):
         self.comboboxCAType = None
         self.comboboxRandom = None
         self.comboboxSelection = None
+        self.comboboxPattern2D = None
 
 
         self.__build()
@@ -172,6 +173,17 @@ class CellularAutomatonView(ViewBase):
         self.comboboxSelection.grid(column=1, row=row, padx=10, pady=5, sticky=W)
         return row + 1
 
+    def __create_pattern2D_selection(self, row: int) -> int:
+        # Selection of the 2D pattern
+        self.labelPattern2D = Label(self.frameCA, text="Select neighborhood pattern", anchor='w', bg=self.frameBG)
+        self.labelPattern2D.grid(column=0, row=row, sticky=W)
+        self.comboboxPattern2D = ttk.Combobox(self.frameCA)
+        self.comboboxPattern2D['values'] = ("moore", "neuman")
+        self.comboboxPattern2D['state'] = 'readonly'
+        self.comboboxPattern2D.set("moore")
+        self.comboboxPattern2D.grid(column=1, row=row, padx=10, pady=5, sticky=W)
+        return row + 1
+
     def __create_button_create(self, row: int) -> int:
         # Create button
         self.buttonCreate = Button(self.frameCA, text="Create a new Cellular Automaton", command=self.__create_ca)
@@ -201,6 +213,7 @@ class CellularAutomatonView(ViewBase):
         row = self.__create_entry_size_2D(row)  # It takes two rows
         row = self.__create_entry_rule(row)
         #row = self.__create_entry_K(row)
+        row = self.__create_pattern2D_selection(row)
         row = self.__create_random_selection(row)   # It takes two rows
         row = self.__create_button_create(row)
 
@@ -238,6 +251,7 @@ class CellularAutomatonView(ViewBase):
                 if self.cellularAutomaton.dimension == 2:
                     self.__entry_set_value(self.entrySizeX, self.cellularAutomaton.size[0])
                     self.__entry_set_value(self.entrySizeY, self.cellularAutomaton.size[1])
+                    self.__combobox_set_value(self.comboboxPattern2D, self.cellularAutomaton.pattern2D)
                 else:
                     self.__entry_set_value(self.entrySize, self.cellularAutomaton.size)
                 self.__entry_set_value(self.entryRule, self.cellularAutomaton.ruleNumber)
@@ -386,7 +400,7 @@ class CellularAutomatonView(ViewBase):
 
             self.cellularAutomaton = CellularAutomaton(
                 CATransferObject.size, CATransferObject.ruleNumber, CATransferObject.K, 
-                CATransferObject.N, CATransferObject.λ, CATransferObject.seedNumber)
+                CATransferObject.N, CATransferObject.λ, CATransferObject.seedNumber, CATransferObject.pattern2D)
             self.cellularAutomaton.quiescentState = CATransferObject.quiescentState
             self.cellularAutomaton.currentState = CATransferObject.currentState
             self.cellularAutomaton.cellHistory = CATransferObject.cellHistory
