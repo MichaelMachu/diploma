@@ -8,11 +8,11 @@ from Data.DataProcess import DataProcess
 
 class ImportView(ViewBase):
 
-    def __init__(self, applicationView: ApplicationView, name: str = "") -> None:
+    def __init__(self, applicationView: ApplicationView, filePath: str, name: str = "") -> None:
         super().__init__(Toplevel(applicationView.mainWindow), 500, 100, "Import "+ name +" from a file", applicationView.windowHandler)
         self.applicationView = applicationView
 
-        self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_closing)
+        self.filePath = filePath
 
         self.__build()
 
@@ -45,7 +45,7 @@ class ImportView(ViewBase):
         if (not (filename and not filename.isspace())):
             return
 
-        dataDict = DataProcess.load_from_json_file(filename)
+        dataDict = DataProcess.load_from_json_file(self.filePath + filename)
         self.applicationView.set_import_data(dataDict)
 
         self.on_closing()

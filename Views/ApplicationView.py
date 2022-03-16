@@ -3,14 +3,14 @@ from tkinter import *
 
 from click import command
 
-from Domain.AnimationSettings import AnimationSettings
+from Domain.Settings import Settings
 from Domain.WindowsHandler import WindowHandler
 
 from Data.CellularAutomatonTransferObject import CellularAutomatonTransferObject
 
 from Bases.ViewBase import ViewBase
 from .CellularAutomatonView import CellularAutomatonView
-from .AnimationSettingsView import AnimationSettingsView
+from .SettingsView import SettingsView
 from .ExportView import ExportView
 from .HopfieldNetworkView import HopfieldNetworkView
 
@@ -23,10 +23,10 @@ class ApplicationView(ViewBase):
         
         # Singletons objects
         self.windowHandler = WindowHandler()
-        self.animationSettings = AnimationSettings()
+        self.settings = Settings()
         self.cellularAutomaton = None
         self.cellularAutomatonView = None
-        self.animationSettingsView = None
+        self.settingsView = None
         self.hopfieldNetworkView = None
 
         self.testCa = None
@@ -49,12 +49,28 @@ class ApplicationView(ViewBase):
         # Top menu
         self.menu = Menu(self.root)
         self.root.config(menu=self.menu)
+        
         self.menuModules = Menu(self.menu, tearoff=False)
         self.menuModules.add_command(
             label="Hopfield Network",
             command=self.__show_hopfield_network
         )
         self.menu.add_cascade(label="Modules", menu=self.menuModules)
+
+        #self.menuSettings = Menu(self.menu, tearoff=False)
+        #self.menuSettings.add_command(
+        #    label="Animation",
+        #    command=self.__show_animation_settings_menu
+        #)
+        #self.menuSettings.add_command(
+        #    label="Paths",
+        #    command=self.__show_paths_settings_menu
+        #)
+        #self.menu.add_cascade(label="Settings", menu=self.menuSettings)
+        self.menu.add_command(
+            label="Settings",
+            command=self.__show_settings_menu
+        )
 
         # Right menu
         self.frameRight = Frame(self.root, width=150, height=100, bg="#ababab")
@@ -71,8 +87,8 @@ class ApplicationView(ViewBase):
         self.frameSplitLower.grid(column=0, row=1, sticky="nsew")
 
         # Buttons
-        self.buttonAnimationSettings = Button(self.frameSplitUpper, text="Animation settings", command=self.__show_animation_settings_menu)
-        self.buttonAnimationSettings.pack(fill='x')
+        #self.buttonAnimationSettings = Button(self.frameSplitUpper, text="Animation settings", command=self.__show_animation_settings_menu)
+        #self.buttonAnimationSettings.pack(fill='x')
 
         self.buttonCa = Button(self.frameSplitUpper, text="Cellular Automaton", command=self.__show_cellular_automaton_menu)
         self.buttonCa.pack(fill='x')
@@ -115,12 +131,12 @@ class ApplicationView(ViewBase):
         self.root.grid_columnconfigure(0, weight=1)
         
     # Other windows for specific configuration
-    def __show_animation_settings_menu(self) -> None:
-        if self.windowHandler.exists(self.animationSettingsView):
+    def __show_settings_menu(self) -> None:
+        if self.windowHandler.exists(self.settingsView):
             return
 
-        self.animationSettingsView = AnimationSettingsView(self)
-        self.windowHandler.register(self.animationSettingsView)
+        self.settingsView = SettingsView(self)
+        self.windowHandler.register(self.settingsView)
 
     def __show_cellular_automaton_menu(self) -> None:
         if self.windowHandler.exists(self.cellularAutomatonView):
@@ -132,8 +148,9 @@ class ApplicationView(ViewBase):
     def __show_export_cellular_automaton_menu(self) -> None:
         if self.windowHandler.exists(self.exportView):
             return
-
-        self.exportView = ExportView(self, CellularAutomatonTransferObject(self.cellularAutomaton), "Cellular Automaton")
+        
+        path = self.settings.pathMain + "/" + self.settings.pathCellularAutomaton + "/"
+        self.exportView = ExportView(self, CellularAutomatonTransferObject(self.cellularAutomaton), path, "Cellular Automaton")
         self.windowHandler.register(self.exportView)
     
     def __show_hopfield_network(self) -> None:
@@ -147,19 +164,19 @@ class ApplicationView(ViewBase):
         if self.cellularAutomatonView.cellularAutomaton.dimension == 2:
             self.offsetY = 0
             for y in range(self.cellularAutomatonView.cellularAutomaton.size[0]):
-                color = self.animationSettings.color.get_colors_by_K(self.cellularAutomatonView.cellularAutomaton.K - 1)
+                color = self.settings.color.get_colors_by_K(self.cellularAutomatonView.cellularAutomaton.K - 1)
                 offsetX = 0
                 self.world.append([])
                 for x in range(self.cellularAutomatonView.cellularAutomaton.size[1]):
                     item = self.canvas.create_rectangle(
                         0 + offsetX, 0 + self.offsetY, 
-                        self.animationSettings.cellSize + offsetX, self.animationSettings.cellSize + self.offsetY, 
+                        self.settings.cellSize + offsetX, self.settings.cellSize + self.offsetY, 
                         #outline=color[x - 1], fill=color[x - 1]
                         outline="#ffffff", fill="#ffffff"
                     )
                     self.world[y].append(item)
-                    offsetX += self.animationSettings.cellSize
-                self.offsetY += self.animationSettings.cellSize
+                    offsetX += self.settings.cellSize
+                self.offsetY += self.settings.cellSize
 
     # Draw and animation methods
     def start_draw(self) -> None:
@@ -167,7 +184,7 @@ class ApplicationView(ViewBase):
         self.buttonAnimPause.configure(state=ACTIVE)
         self.buttonAnimContinue.configure(state=ACTIVE)
 
-        self.animationSettings.color.get_colors_by_K(self.cellularAutomatonView.cellularAutomaton.K - 1, True)
+        self.settings.color.get_colors_by_K(self.cellularAutomatonView.cellularAutomaton.K - 1, True)
 
         self.continueDraw = True
         self.draw()
@@ -205,17 +222,17 @@ class ApplicationView(ViewBase):
         
         offsetX = 0
         for item in step:
-            color = self.animationSettings.color.get_colors_by_K(self.cellularAutomatonView.cellularAutomaton.K - 1)
+            color = self.settings.color.get_colors_by_K(self.cellularAutomatonView.cellularAutomaton.K - 1)
             
             # if cell is not in a state of "death" then draw state by color
             if item > 0:
                 self.canvas.create_rectangle(
                     0 + offsetX, 0 + self.offsetY, 
-                    self.animationSettings.cellSize + offsetX, self.animationSettings.cellSize + self.offsetY, 
+                    self.settings.cellSize + offsetX, self.settings.cellSize + self.offsetY, 
                     outline=color[item - 1], fill=color[item - 1]
                 )
-            offsetX += self.animationSettings.cellSize
-        self.offsetY += self.animationSettings.cellSize
+            offsetX += self.settings.cellSize
+        self.offsetY += self.settings.cellSize
 
     def __draw_step_2D(self, step: list) -> None:
         #offsetX = 0
@@ -223,7 +240,7 @@ class ApplicationView(ViewBase):
         for y in range(len(step)):
             for x in range(len(step[y])):
                 item = step[y][x]
-                color = "#ffffff" if item == 0 else self.animationSettings.color.get_colors_by_K(self.cellularAutomatonView.cellularAutomaton.K - 1)[item - 1]
+                color = "#ffffff" if item == 0 else self.settings.color.get_colors_by_K(self.cellularAutomatonView.cellularAutomaton.K - 1)[item - 1]
                 
                 # if cell is not in a state of "death" then draw state by color
                 #if x > 0:

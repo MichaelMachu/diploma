@@ -25,6 +25,9 @@ class WindowHandler:
         view.mainWindow.destroy()
         self.__views.pop(view.id)
 
+    def get_index(self) -> int:
+        return self.__index
+
     """def open(self, view):
         pass
 

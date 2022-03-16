@@ -11,9 +11,10 @@ from Data.NeuronMatrixTransferObject import NeuronMatrixTransferObject
 
 class NeuronMatrixView(ViewBase):
 
-    def __init__(self, applicationView: ApplicationView, ids: int, n: int, m: int, size: int) -> None:
+    def __init__(self, applicationView: ApplicationView, hopfieldNetworkView: ViewBase, ids: int, n: int, m: int, size: int) -> None:
         super().__init__(Toplevel(applicationView.mainWindow), 500, 304, str(ids + 1) + ". matrix", applicationView.windowHandler)
         self.applicationView = applicationView
+        self.hopfieldNetworkView = hopfieldNetworkView
 
         # Singletons objects
         self.exportNeuronMatrixView = None
@@ -27,7 +28,7 @@ class NeuronMatrixView(ViewBase):
         self.m = m
         self.size = size
 
-        self.neuronMatrix = self.applicationView.saved_matrices[self.ids]
+        self.neuronMatrix = self.hopfieldNetworkView.saved_matrices[self.ids]
 
         self.__build()
 
@@ -128,7 +129,8 @@ class NeuronMatrixView(ViewBase):
         if self.windowHandler.exists(self.exportView):
             return
 
-        self.exportView = ExportView(self, NeuronMatrixTransferObject(self.neuronMatrix), "Neuron Matrix")
+        path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathHopfieldNetwork + "/"
+        self.exportView = ExportView(self, NeuronMatrixTransferObject(self.neuronMatrix), path, "Neuron Matrix")
         self.windowHandler.register(self.exportView)
 
         """if self.isExportNeuronMatrixExists:
@@ -138,14 +140,14 @@ class NeuronMatrixView(ViewBase):
         self.exportNeuronMatrixView = ExportNeuronMatrixView(self)"""
 
     def print_on_network(self) -> None:
-        self.applicationView.main_matrix = deepcopy(self.neuronMatrix.matrix)
-        self.applicationView.refresh_grid()
+        self.hopfieldNetworkView.main_matrix = deepcopy(self.neuronMatrix.matrix)
+        self.hopfieldNetworkView.refresh_grid()
 
     # Odstranění paternu z uložených paternů
     def forget_pattern(self) -> None:
-        self.applicationView.saved_matrices.remove(self.neuronMatrix)
+        self.hopfieldNetworkView.saved_matrices.remove(self.neuronMatrix)
         self.on_closing()
 
     def on_closing(self) -> None:
         self.mainWindow.destroy()
-        self.applicationView.neuronMatrixViews.remove(self)
+        self.hopfieldNetworkView.neuronMatrixViews.remove(self)

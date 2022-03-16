@@ -1,3 +1,4 @@
+from email.mime import application
 from tkinter import *
 from tkinter import ttk
 
@@ -9,13 +10,12 @@ from Data.DataProcess import DataProcess
 
 class ExportView(ViewBase):
 
-    def __init__(self, applicationView: ApplicationView, transferObject: TransferObjectInterface, name: str = "") -> None:
+    def __init__(self, applicationView: ApplicationView, transferObject: TransferObjectInterface, filePath: str, name: str = "") -> None:
         super().__init__(Toplevel(applicationView.mainWindow), 500, 100, "Export "+ name +" to a file", applicationView.windowHandler)
         self.applicationView = applicationView
 
         self.transferObject = transferObject
-
-        self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_closing)
+        self.filePath = filePath
 
         self.__build()
 
@@ -52,6 +52,6 @@ class ExportView(ViewBase):
 
         jsonData = DataProcess.to_json(self.transferObject.get_as_dict())
 
-        DataProcess.save_to_json_file(filename, jsonData)
+        DataProcess.save_to_json_file(self.filePath + filename, jsonData)
 
         self.on_closing()

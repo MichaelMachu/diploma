@@ -55,7 +55,7 @@ class HopfieldNetworkView(ViewBase):
         self.buttonImport["command"] = self.__show_import_neuron_matrix_menu
         #self.buttonImport.grid(row = 0, column = 0)
         self.buttonImport.pack(fill='x', pady=(0, 10))
-        
+
         self.buttonnSave = Button(self.frameRight, bg = "#b9ffad")
         self.buttonnSave["text"] = "Save pattern"
         self.buttonnSave["command"] = self.save_matrix
@@ -221,7 +221,8 @@ class HopfieldNetworkView(ViewBase):
         if self.windowHandler.exists(self.importView):
             return
 
-        self.importView = ImportView(self, "Neuron Matrix")
+        path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathHopfieldNetwork + "/"
+        self.importView = ImportView(self, path, "Neuron Matrix")
         self.windowHandler.register(self.importView)
 
     def set_import_data(self, data: dict) -> None:
@@ -247,5 +248,5 @@ class HopfieldNetworkView(ViewBase):
             return
         # zde upravit, dělá to chyby, chce to předělat na WindowsHandler anebo to opravit
         for ids in range(len(self.saved_matrices)):
-            neuronMatrixView = NeuronMatrixView(self, ids, self.n, self.m, self.size)
+            neuronMatrixView = NeuronMatrixView(self.applicationView, self, ids, self.n, self.m, self.size)
             self.neuronMatrixViews.append(neuronMatrixView)

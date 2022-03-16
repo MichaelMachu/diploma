@@ -392,7 +392,8 @@ class CellularAutomatonView(ViewBase):
             if (not (filename and not filename.isspace())):
                 return
 
-            dictData = DataProcess.load_from_json_file(filename)
+            path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathCellularAutomaton + "/"
+            dictData = DataProcess.load_from_json_file(path + filename)
             if dictData is None:
                 return
             
@@ -405,7 +406,7 @@ class CellularAutomatonView(ViewBase):
             self.cellularAutomaton.currentState = CATransferObject.currentState
             self.cellularAutomaton.cellHistory = CATransferObject.cellHistory
 
-            self.applicationView.animationSettings.color.get_colors_by_K(CATransferObject.K, True)      # Force to rebuild colors based on the loaded CA
+            self.applicationView.settings.color.get_colors_by_K(CATransferObject.K, True)      # Force to rebuild colors based on the loaded CA
             
             self.applicationView.re_draw()
             self.applicationView.buttonAnim.configure(state=DISABLED)

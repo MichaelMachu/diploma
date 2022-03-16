@@ -1,6 +1,6 @@
 from .ApplicationView import ApplicationView
 #from .CellularAutomatonView import CellularAutomatonView
-from .AnimationSettingsView import AnimationSettingsView
+from .SettingsView import SettingsView
 
 from Domain.CellularAutomaton import CellularAutomaton
 
