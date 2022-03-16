@@ -9,7 +9,7 @@ from Data.DataProcess import DataProcess
 class ImportView(ViewBase):
 
     def __init__(self, applicationView: ApplicationView, name: str = "") -> None:
-        super().__init__(Toplevel(applicationView.mainWindow), 500, 400, "Import "+ name +" from a file", applicationView.windowHandler)
+        super().__init__(Toplevel(applicationView.mainWindow), 500, 100, "Import "+ name +" from a file", applicationView.windowHandler)
         self.applicationView = applicationView
 
         self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_closing)

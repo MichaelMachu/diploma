@@ -19,7 +19,7 @@ import math as math
 class HopfieldNetworkView(ViewBase):
     
     def __init__(self, applicationView: ApplicationView) -> None:
-        super().__init__(Toplevel(applicationView.mainWindow), 500, 304, "Hopfield Network", applicationView.windowHandler)
+        super().__init__(Toplevel(applicationView.mainWindow), 600, 500, "Hopfield Network", applicationView.windowHandler)
         self.applicationView = applicationView
         
         # Singletons objects
@@ -50,17 +50,17 @@ class HopfieldNetworkView(ViewBase):
         self.frameRight.rowconfigure(1, weight=1)
 
         # Buttons
-        self.buttonnSave = Button(self.frameRight, bg = "#b9ffad")
-        self.buttonnSave["text"] = "Save pattern"
-        self.buttonnSave["command"] = self.save_matrix
-        #self.buttonnSave.grid(row = 0, column = 0)
-        self.buttonnSave.pack(fill='x', pady=(0, 10))
-
         self.buttonImport = Button(self.frameRight, bg = "#b9ffad")
         self.buttonImport["text"] = "Import pattern"
         self.buttonImport["command"] = self.__show_import_neuron_matrix_menu
         #self.buttonImport.grid(row = 0, column = 0)
         self.buttonImport.pack(fill='x', pady=(0, 10))
+        
+        self.buttonnSave = Button(self.frameRight, bg = "#b9ffad")
+        self.buttonnSave["text"] = "Save pattern"
+        self.buttonnSave["command"] = self.save_matrix
+        #self.buttonnSave.grid(row = 0, column = 0)
+        self.buttonnSave.pack(fill='x', pady=(0, 10))
 
         self.buttonRepairSync = Button(self.frameRight, bg = "#fff4ad")
         self.buttonRepairSync["text"] = "Repair pattern Sync"

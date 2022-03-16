@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from copy import deepcopy
 
 from Bases.ViewBase import ViewBase
 from . import ApplicationView
@@ -48,6 +49,12 @@ class NeuronMatrixView(ViewBase):
         self.buttonExport["command"] = self.__show_export_neuron_matrix_menu
         #self.buttonExport.grid(row = 0, column = 0)
         self.buttonExport.pack(fill='x', pady=(0, 20))
+
+        self.buttonPrint = Button(self.frameRight, bg = "#b9ffad")
+        self.buttonPrint["text"] = "Print on network"
+        self.buttonPrint["command"] = self.print_on_network
+        #self.buttonPrint.grid(row = 0, column = 0)
+        self.buttonPrint.pack(fill='x', pady=(0, 20))
 
         self.buttonMatrix = Button(self.frameRight, bg = "#ade4ff")
         self.buttonMatrix["text"] = "Show matrix"
@@ -129,6 +136,10 @@ class NeuronMatrixView(ViewBase):
 
         self.isExportNeuronMatrixExists = True
         self.exportNeuronMatrixView = ExportNeuronMatrixView(self)"""
+
+    def print_on_network(self) -> None:
+        self.applicationView.main_matrix = deepcopy(self.neuronMatrix.matrix)
+        self.applicationView.refresh_grid()
 
     # Odstranění paternu z uložených paternů
     def forget_pattern(self) -> None:

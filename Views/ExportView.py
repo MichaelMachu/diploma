@@ -10,7 +10,7 @@ from Data.DataProcess import DataProcess
 class ExportView(ViewBase):
 
     def __init__(self, applicationView: ApplicationView, transferObject: TransferObjectInterface, name: str = "") -> None:
-        super().__init__(Toplevel(applicationView.mainWindow), 500, 400, "Export "+ name +" to a file", applicationView.windowHandler)
+        super().__init__(Toplevel(applicationView.mainWindow), 500, 100, "Export "+ name +" to a file", applicationView.windowHandler)
         self.applicationView = applicationView
 
         self.transferObject = transferObject
