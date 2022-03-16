@@ -28,8 +28,6 @@ class NeuronMatrixView(ViewBase):
 
         self.neuronMatrix = self.applicationView.saved_matrices[self.ids]
 
-        self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_closing)
-
         self.__build()
 
     def __run(self) -> None:
@@ -83,7 +81,7 @@ class NeuronMatrixView(ViewBase):
 
         self.buttonForgetPattern = Button(self.frameRight, bg = "#ffb7ad")
         self.buttonForgetPattern["text"] = "Forget the pattern"
-        self.buttonForgetPattern["command"] = lambda ids = self.ids, window = self.mainWindow: self.applicationView.forget_pattern(ids, window)
+        self.buttonForgetPattern["command"] = self.forget_pattern
         #self.buttonForgetPattern.grid(row = 5, column = 1)
         self.buttonForgetPattern.pack(fill='x', pady=(20, 0))
 
@@ -131,6 +129,11 @@ class NeuronMatrixView(ViewBase):
 
         self.isExportNeuronMatrixExists = True
         self.exportNeuronMatrixView = ExportNeuronMatrixView(self)"""
+
+    # Odstranění paternu z uložených paternů
+    def forget_pattern(self) -> None:
+        self.applicationView.saved_matrices.remove(self.neuronMatrix)
+        self.on_closing()
 
     def on_closing(self) -> None:
         self.mainWindow.destroy()

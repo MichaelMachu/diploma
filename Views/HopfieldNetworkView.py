@@ -213,8 +213,8 @@ class HopfieldNetworkView(ViewBase):
 
     # Uložení matice skrze objekt NeuronMatrix do seznamu matic
     def save_matrix(self) -> None:
-        specificMatrix = NeuronMatrix(copy.deepcopy(self.main_matrix))
-        self.saved_matrices.append(specificMatrix)
+        neuronMatrix = NeuronMatrix(copy.deepcopy(self.main_matrix))
+        self.saved_matrices.append(neuronMatrix)
 
     #def import_matrix(self) -> None:
     def __show_import_neuron_matrix_menu(self) -> None:
@@ -245,12 +245,7 @@ class HopfieldNetworkView(ViewBase):
     def show_matrices(self) -> None:
         if self.neuronMatrixViews:
             return
-
+        # zde upravit, dělá to chyby, chce to předělat na WindowsHandler anebo to opravit
         for ids in range(len(self.saved_matrices)):
             neuronMatrixView = NeuronMatrixView(self, ids, self.n, self.m, self.size)
             self.neuronMatrixViews.append(neuronMatrixView)
-
-    # Odstranění paternu z uložených paternů
-    def forget_pattern(self, ids: int, window: Tk) -> None:
-        self.saved_matrices.pop(ids)
-        window.destroy()
