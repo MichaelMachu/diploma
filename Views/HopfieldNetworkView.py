@@ -11,6 +11,7 @@ from Bases.ViewBase import ViewBase
 from . import ApplicationView
 from .NeuronMatrixView import NeuronMatrixView
 from .ImportView import ImportView
+from .SettingsHopfieldNetworkView import SettingsHopfieldNetworkView
 
 import numpy as np
 import copy as copy
@@ -24,6 +25,7 @@ class HopfieldNetworkView(ViewBase):
         
         # Singletons objects
         self.importView = None
+        self.settingsView = None
 
         self.neuronMatrixViews = []
 
@@ -42,6 +44,15 @@ class HopfieldNetworkView(ViewBase):
     
     # Sestavení layoutu včetně tlačítek a canvasu
     def __build(self) -> None:
+        # Top menu
+        self.menu = Menu(self.mainWindow)
+        self.mainWindow.config(menu=self.menu)
+
+        self.menu.add_command(
+            label="Settings",
+            command=self.__show_settings_menu
+        )
+
         # Right menu
         self.frameRight = Frame(self.mainWindow, width=150, height=100, bg="#ababab")
         self.frameRight.grid(column=1, row=0, sticky="nsew")
@@ -224,6 +235,13 @@ class HopfieldNetworkView(ViewBase):
         path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathHopfieldNetwork + "/"
         self.importView = ImportView(self, path, "Neuron Matrix")
         self.windowHandler.register(self.importView)
+
+    def __show_settings_menu(self) -> None:
+        if self.windowHandler.exists(self.settingsView):
+            return
+
+        self.settingsView = SettingsHopfieldNetworkView(self)
+        self.windowHandler.register(self.settingsView)
 
     def set_import_data(self, data: dict) -> None:
         super().set_import_data(data)
