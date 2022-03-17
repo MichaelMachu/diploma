@@ -8,7 +8,7 @@ from . import ApplicationView
 class SettingsView(ViewBase):
 
     def __init__(self, applicationView: ApplicationView) -> None:
-        super().__init__(Toplevel(applicationView.mainWindow), 400, 300, "Settings", applicationView.windowHandler)
+        super().__init__(Toplevel(applicationView.mainWindow), 400, 400, "Settings", applicationView.windowHandler)
         self.applicationView = applicationView
         self.mainWindow.attributes("-topmost", True)
 
@@ -45,7 +45,7 @@ class SettingsView(ViewBase):
         self.entryColor = Button(self.frameAnimation, text="", width=5, background=self.applicationView.settings.color.get_hex(), command=self.__choose_color)
         self.entryColor.grid(column=1, row=2, padx=10, pady=5, sticky=W)
 
-        # Main frame
+        # Paths frame
         self.framePaths = Frame(self.frame, bg="#fff")
         self.framePaths.pack(side=TOP, fill=None, expand=False, padx=10, pady=10, anchor=NW)
         
@@ -71,6 +71,20 @@ class SettingsView(ViewBase):
         self.entryPathHopfieldNetwork.grid(column=1, row=3, padx=10, pady=5, sticky=W)
         self.entryPathHopfieldNetwork.insert(0, self.applicationView.settings.pathHopfieldNetwork)
 
+        # Modules
+        # Hopfield Network frame
+        self.frameHopfieldNetwork = Frame(self.frame, bg="#fff")
+        self.frameHopfieldNetwork.pack(side=TOP, fill=None, expand=False, padx=10, pady=10, anchor=NW)
+        
+        self.labelHopfieldNetwork = Label(self.frameHopfieldNetwork, text="Hopfield Network", anchor='w', bg=self.frameBG)
+        self.labelHopfieldNetwork.grid(column=0, row=0, sticky=W)
+
+        self.labelHopfieldNetworkCellSize = Label(self.frameHopfieldNetwork, text="Cell size (int)", anchor='w', bg=self.frameBG)
+        self.labelHopfieldNetworkCellSize.grid(column=0, row=1, sticky=W)
+        self.entryHopfieldNetworkCellSize = Entry(self.frameHopfieldNetwork)
+        self.entryHopfieldNetworkCellSize.grid(column=1, row=1, padx=10, pady=5, sticky=W)
+        self.entryHopfieldNetworkCellSize.insert(0, self.applicationView.settings.hopfieldnetworkCellSize)
+
         # Apply button
         self.buttonApply = Button(self.frame, text="Apply", command=self.__apply)
         #self.buttonApply.grid(column=0, row=3, columnspan=2, padx=10, pady=5)
@@ -89,17 +103,32 @@ class SettingsView(ViewBase):
         entryPathMainStr = self.entryPathMain.get()
         entryPathCellularAutomatonStr = self.entryPathCellularAutomaton.get()
         entryPathHopfieldNetworkStr = self.entryPathHopfieldNetwork.get()
-        if not cellSizeStr.isnumeric():
+        entryHopfieldNetworkCellSizeStr = self.entryHopfieldNetworkCellSize.get()
+        if not cellSizeStr.isnumeric() or not entryHopfieldNetworkCellSizeStr.isnumeric():
             return
 
         cellSize = int(cellSizeStr)
+        hopfieldnetworkCellSize = int(entryHopfieldNetworkCellSizeStr)
 
         self.applicationView.settings.cellSize = cellSize
         self.applicationView.settings.color = Color(self.colorCode)
         self.applicationView.settings.pathMain = entryPathMainStr
         self.applicationView.settings.pathCellularAutomaton = entryPathCellularAutomatonStr
         self.applicationView.settings.pathHopfieldNetwork = entryPathHopfieldNetworkStr
+        self.applicationView.settings.hopfieldnetworkCellSize = hopfieldnetworkCellSize
 
         self.applicationView.re_draw()
+
+        self.applicationView.hopfieldNetworkView.size = hopfieldnetworkCellSize
+        self.applicationView.hopfieldNetworkView.main_matrix_rectangles = []
+        self.applicationView.hopfieldNetworkView.canvas.delete("all")
+        self.applicationView.hopfieldNetworkView.create_grid()
+        self.applicationView.hopfieldNetworkView.refresh_grid()
+
+        if self.applicationView.hopfieldNetworkView.neuronMatrixViews:
+            for neuronMatrixView in self.applicationView.hopfieldNetworkView.neuronMatrixViews:
+                neuronMatrixView.size = hopfieldnetworkCellSize
+                neuronMatrixView.canvas.delete("all")
+                neuronMatrixView.draw()
         
         self.on_closing()

@@ -12,7 +12,7 @@ from Data.NeuronMatrixTransferObject import NeuronMatrixTransferObject
 class NeuronMatrixView(ViewBase):
 
     def __init__(self, applicationView: ApplicationView, hopfieldNetworkView: ViewBase, ids: int, n: int, m: int, size: int) -> None:
-        super().__init__(Toplevel(applicationView.mainWindow), 500, 304, str(ids + 1) + ". matrix", applicationView.windowHandler)
+        super().__init__(Toplevel(hopfieldNetworkView.mainWindow), 500, 304, str(ids + 1) + ". matrix pattern", applicationView.windowHandler)
         self.applicationView = applicationView
         self.hopfieldNetworkView = hopfieldNetworkView
 
@@ -37,6 +37,18 @@ class NeuronMatrixView(ViewBase):
         pass
 
     def __build(self) -> None:
+        # Top menu
+        self.menu = Menu(self.mainWindow)
+        self.mainWindow.config(menu=self.menu)
+
+        self.menuFile = Menu(self.menu, tearoff=False)
+        self.menuFile.add_command(
+            label="Export pattern",
+            command=self.__show_export_neuron_matrix_menu
+        )
+        
+        self.menu.add_cascade(label="File", menu=self.menuFile)
+
         # Right menu
         self.frameRight = Frame(self.mainWindow, width=150, height=100, bg="#ababab")
         self.frameRight.grid(column=1, row=0, sticky="nsew")
@@ -45,11 +57,11 @@ class NeuronMatrixView(ViewBase):
         self.frameRight.rowconfigure(1, weight=1)
 
         # Buttons
-        self.buttonExport = Button(self.frameRight, bg = "#b9ffad")
-        self.buttonExport["text"] = "Export pattern"
-        self.buttonExport["command"] = self.__show_export_neuron_matrix_menu
-        #self.buttonExport.grid(row = 0, column = 0)
-        self.buttonExport.pack(fill='x', pady=(0, 20))
+        #self.buttonExport = Button(self.frameRight, bg = "#b9ffad")
+        #self.buttonExport["text"] = "Export pattern"
+        #self.buttonExport["command"] = self.__show_export_neuron_matrix_menu
+        ##self.buttonExport.grid(row = 0, column = 0)
+        #self.buttonExport.pack(fill='x', pady=(0, 20))
 
         self.buttonPrint = Button(self.frameRight, bg = "#b9ffad")
         self.buttonPrint["text"] = "Print on network"

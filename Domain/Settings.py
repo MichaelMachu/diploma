@@ -9,6 +9,7 @@ class Settings:
         self.pathMain = "TestData"
         self.pathCellularAutomaton = "ca"
         self.pathHopfieldNetwork = "hn"
+        self.hopfieldnetworkCellSize = 30
 
     def save_to_file(self) -> None:
         pass

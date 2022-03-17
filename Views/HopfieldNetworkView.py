@@ -11,7 +11,7 @@ from Bases.ViewBase import ViewBase
 from . import ApplicationView
 from .NeuronMatrixView import NeuronMatrixView
 from .ImportView import ImportView
-from .SettingsHopfieldNetworkView import SettingsHopfieldNetworkView
+from .NewHopfieldNetworkView import NewHopfieldNetworkView
 
 import numpy as np
 import copy as copy
@@ -25,13 +25,13 @@ class HopfieldNetworkView(ViewBase):
         
         # Singletons objects
         self.importView = None
-        self.settingsView = None
+        self.newView = None
 
         self.neuronMatrixViews = []
 
         self.n = self.m = 10 # 10
-        self.max_patterns = int((self.n * self.m) / (2 * math.sqrt(self.n * self.m)))
-        self.size = 30 # 30
+        self.max_patterns = self.get_max_patterns()
+        self.size = self.applicationView.settings.hopfieldnetworkCellSize # 30
         self.main_matrix = np.zeros((self.n, self.m))
         self.main_matrix_rectangles = []
         self.saved_matrices = []
@@ -48,10 +48,22 @@ class HopfieldNetworkView(ViewBase):
         self.menu = Menu(self.mainWindow)
         self.mainWindow.config(menu=self.menu)
 
-        self.menu.add_command(
-            label="Settings",
-            command=self.__show_settings_menu
+        self.menuFile = Menu(self.menu, tearoff=False)
+        self.menuFile.add_command(
+            label="New",
+            command=self.__show_new_menu
         )
+        self.menuFile.add_command(
+            label="Import pattern",
+            command=self.__show_import_neuron_matrix_menu
+        )
+        
+        self.menu.add_cascade(label="File", menu=self.menuFile)
+
+        #self.menu.add_command(
+        #    label="Settings",
+        #    command=self.__show_settings_menu
+        #)
 
         # Right menu
         self.frameRight = Frame(self.mainWindow, width=150, height=100, bg="#ababab")
@@ -61,17 +73,16 @@ class HopfieldNetworkView(ViewBase):
         self.frameRight.rowconfigure(1, weight=1)
 
         # Buttons
-        self.buttonImport = Button(self.frameRight, bg = "#b9ffad")
-        self.buttonImport["text"] = "Import pattern"
-        self.buttonImport["command"] = self.__show_import_neuron_matrix_menu
-        #self.buttonImport.grid(row = 0, column = 0)
-        self.buttonImport.pack(fill='x', pady=(0, 10))
+        #self.buttonImport = Button(self.frameRight, bg = "#b9ffad")
+        #self.buttonImport["text"] = "Import pattern"
+        #self.buttonImport["command"] = self.__show_import_neuron_matrix_menu
+        #self.buttonImport.pack(fill='x', pady=(0, 10))
 
         self.buttonnSave = Button(self.frameRight, bg = "#b9ffad")
         self.buttonnSave["text"] = "Save pattern"
         self.buttonnSave["command"] = self.save_matrix
         #self.buttonnSave.grid(row = 0, column = 0)
-        self.buttonnSave.pack(fill='x', pady=(0, 10))
+        self.buttonnSave.pack(fill='x', pady=(0, 20))
 
         self.buttonRepairSync = Button(self.frameRight, bg = "#fff4ad")
         self.buttonRepairSync["text"] = "Repair pattern Sync"
@@ -89,7 +100,7 @@ class HopfieldNetworkView(ViewBase):
         self.buttonShowSavedPatterns["text"] = "Show saved patterns"
         self.buttonShowSavedPatterns["command"] = self.show_matrices
         #self.buttonShowSavedPatterns.grid(row = 3, column = 0, padx = 5)
-        self.buttonShowSavedPatterns.pack(fill='x', pady=10)
+        self.buttonShowSavedPatterns.pack(fill='x', pady=(20, 10))
 
         self.buttonClearGrid = Button(self.frameRight, bg = "#ffb7ad")
         self.buttonClearGrid["text"] = "Clear grid"
@@ -124,6 +135,10 @@ class HopfieldNetworkView(ViewBase):
         self.mainWindow.grid_columnconfigure(0, weight=1)
 
         self.create_grid()
+
+    # Returns max patterns
+    def get_max_patterns(self) -> int:
+        return int((self.n * self.m) / (2 * math.sqrt(self.n * self.m)))
 
     # Vytvoření gridu na canvasu
     def create_grid(self) -> None:
@@ -236,12 +251,12 @@ class HopfieldNetworkView(ViewBase):
         self.importView = ImportView(self, path, "Neuron Matrix")
         self.windowHandler.register(self.importView)
 
-    def __show_settings_menu(self) -> None:
-        if self.windowHandler.exists(self.settingsView):
+    def __show_new_menu(self) -> None:
+        if self.windowHandler.exists(self.newView):
             return
 
-        self.settingsView = SettingsHopfieldNetworkView(self)
-        self.windowHandler.register(self.settingsView)
+        self.newView = NewHopfieldNetworkView(self)
+        self.windowHandler.register(self.newView)
 
     def set_import_data(self, data: dict) -> None:
         super().set_import_data(data)
@@ -258,13 +273,17 @@ class HopfieldNetworkView(ViewBase):
         neuronMatrix.weightMatrix = transferObject.weightMatrix
         neuronMatrix.fullPattern = transferObject.fullPattern
 
+        if len(neuronMatrix.matrix) != self.n or len(neuronMatrix.matrix[0]) != self.m:
+            print("Error: size of imported pattern is not same as the size of hopfield field")
+            return
+
         self.saved_matrices.append(neuronMatrix)
 
     # Zobrazení všech uložených paternů
     def show_matrices(self) -> None:
         if self.neuronMatrixViews:
             return
-        # zde upravit, dělá to chyby, chce to předělat na WindowsHandler anebo to opravit
+        
         for ids in range(len(self.saved_matrices)):
             neuronMatrixView = NeuronMatrixView(self.applicationView, self, ids, self.n, self.m, self.size)
             self.neuronMatrixViews.append(neuronMatrixView)
