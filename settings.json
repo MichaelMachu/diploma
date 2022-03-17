@@ -1,0 +1,1 @@
+{"cellSize": 5, "color": [[0, 0, 0], "#000000"], "pathMain": "TestData", "pathCellularAutomaton": "ca", "pathHopfieldNetwork": "hn", "hopfieldnetworkCellSize": 30}

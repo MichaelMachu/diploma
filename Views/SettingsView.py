@@ -116,19 +116,21 @@ class SettingsView(ViewBase):
         self.applicationView.settings.pathCellularAutomaton = entryPathCellularAutomatonStr
         self.applicationView.settings.pathHopfieldNetwork = entryPathHopfieldNetworkStr
         self.applicationView.settings.hopfieldnetworkCellSize = hopfieldnetworkCellSize
+        self.applicationView.settings.save_to_file()
 
         self.applicationView.re_draw()
 
-        self.applicationView.hopfieldNetworkView.size = hopfieldnetworkCellSize
-        self.applicationView.hopfieldNetworkView.main_matrix_rectangles = []
-        self.applicationView.hopfieldNetworkView.canvas.delete("all")
-        self.applicationView.hopfieldNetworkView.create_grid()
-        self.applicationView.hopfieldNetworkView.refresh_grid()
+        if self.applicationView.hopfieldNetworkView is not None:
+            self.applicationView.hopfieldNetworkView.size = hopfieldnetworkCellSize
+            self.applicationView.hopfieldNetworkView.main_matrix_rectangles = []
+            self.applicationView.hopfieldNetworkView.canvas.delete("all")
+            self.applicationView.hopfieldNetworkView.create_grid()
+            self.applicationView.hopfieldNetworkView.refresh_grid()
 
-        if self.applicationView.hopfieldNetworkView.neuronMatrixViews:
-            for neuronMatrixView in self.applicationView.hopfieldNetworkView.neuronMatrixViews:
-                neuronMatrixView.size = hopfieldnetworkCellSize
-                neuronMatrixView.canvas.delete("all")
-                neuronMatrixView.draw()
+            if self.applicationView.hopfieldNetworkView.neuronMatrixViews:
+                for neuronMatrixView in self.applicationView.hopfieldNetworkView.neuronMatrixViews:
+                    neuronMatrixView.size = hopfieldnetworkCellSize
+                    neuronMatrixView.canvas.delete("all")
+                    neuronMatrixView.draw()
         
         self.on_closing()
