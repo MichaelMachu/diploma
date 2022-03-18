@@ -1,5 +1,6 @@
 __pycache__/
 Domain/__pycache__/
+Domain/Functions/__pycache__/
 Interface/__pycache__/
 Views/__pycache__/
 Data/__pycache__/
