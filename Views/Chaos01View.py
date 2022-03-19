@@ -7,6 +7,7 @@ from Bases.ViewBase import ViewBase
 from . import ApplicationView
 from Domain.Graph import Graph
 from Domain.FunctionSelection import FunctionSelection
+from Domain.Chaos01 import Chaos01
 
 class Chaos01View(ViewBase):
 
@@ -24,6 +25,8 @@ class Chaos01View(ViewBase):
         self.frameFunction = None
         self.frameCanvas = None
         # Labels
+        self.labelChaos01 = None
+        self.labelBifurcationDiagram = None
         self.labelSkip = None
         self.labelCut = None
         self.labelFunctionType = None
@@ -54,9 +57,24 @@ class Chaos01View(ViewBase):
         pass
 
     def __build(self) -> None:
+        # Top menu
+        self.menu = Menu(self.mainWindow)
+        self.mainWindow.config(menu=self.menu)
+        
+        self.menuFile = Menu(self.menu, tearoff=False)
+        self.menuFile.add_command(
+            label="Import",
+            #command=self.__show_hopfield_network
+        )
+        self.menuFile.add_command(
+            label="Export",
+            #command=self.__show_chaos01
+        )
+        self.menu.add_cascade(label="File", menu=self.menuFile)
+
         # Main frame
         self.frame = Frame(self.mainWindow, bg=self.frameBG)
-        self.frame.pack(side=TOP, fill=None, expand=False, padx=1, pady=1)
+        self.frame.pack(side=TOP, fill=BOTH, expand=1, padx=1, pady=1) # fill=BOTH, expand=1    fill=None, expand=False
         #self.frame.columnconfigure(1, weight=1)
         #self.frame.columnconfigure(0)
         #self.frame.rowconfigure(0, weight=1)
@@ -64,40 +82,50 @@ class Chaos01View(ViewBase):
         # Chaos01
         self.frameChaos01 = Frame(self.frame, bg=self.frameBG)
         #self.frameChaos01.pack(side=TOP, fill=None, expand=False, padx=1, pady=1)
-        self.frameChaos01.grid(column=0, row=0, sticky="nsew")
+        self.frameChaos01.grid(column=1, row=0, sticky="nsew", padx=(0, 10), pady=10)
         #self.frameChaos01.columnconfigure(0, weight=1)
         #self.frameChaos01.rowconfigure(0, weight=1)
+        #self.frameChaos01.rowconfigure(0, weight=1)
+        #self.frameChaos01.rowconfigure(1, weight=1)
+
+        self.labelChaos01 = Label(self.frameChaos01, text="Chaos01", anchor='w', bg=self.frameBG)
+        self.labelChaos01.grid(column=0, row=0, sticky=W, pady=(10, 0))
 
         self.labelSkip = Label(self.frameChaos01, text="Skip (int)", anchor='w', bg=self.frameBG)
-        self.labelSkip.grid(column=0, row=0, sticky=W)
+        self.labelSkip.grid(column=0, row=1, sticky=W)
         self.entrySkip = Entry(self.frameChaos01)
-        self.entrySkip.grid(column=1, row=0, padx=10, pady=5, sticky=W)
+        self.entrySkip.grid(column=1, row=1, padx=10, pady=5, sticky=W)
 
         self.labelCut = Label(self.frameChaos01, text="Cut (int)", anchor='w', bg=self.frameBG)
-        self.labelCut.grid(column=0, row=1, sticky=W)
+        self.labelCut.grid(column=0, row=2, sticky=W)
         self.entryCut = Entry(self.frameChaos01)
-        self.entryCut.grid(column=1, row=1, padx=10, pady=5, sticky=W)
+        self.entryCut.grid(column=1, row=2, padx=10, pady=5, sticky=W)
+
+        self.labelBifurcationDiagram = Label(self.frameChaos01, text="Bifurcation diagram", anchor='w', bg=self.frameBG)
+        self.labelBifurcationDiagram.grid(column=0, row=3, sticky=W, pady=(10, 0))
 
         self.labelFunctionType = Label(self.frameChaos01, text="Type of function", anchor='w', bg=self.frameBG)
-        self.labelFunctionType.grid(column=0, row=2, padx=5, pady=10, sticky=W)
+        self.labelFunctionType.grid(column=0, row=4, padx=5, pady=10, sticky=W)
         self.comboboxFunctionType = ttk.Combobox(self.frameChaos01)
         self.comboboxFunctionType["values"] = ("logistic map", "sinus", "scaled normal", "scaled uniform", "Load from file")
         self.comboboxFunctionType["state"] = "readonly"
         self.comboboxFunctionType.set("logistic map")
         self.comboboxFunctionType.bind("<<ComboboxSelected>>", self.__selection_function_type)
-        self.comboboxFunctionType.grid(column=1, row=2, padx=0, pady=10, sticky=W)
+        self.comboboxFunctionType.grid(column=1, row=4, padx=0, pady=10, sticky=W)
 
         # Function
         self.frameFunction = Frame(self.frameChaos01, bg=self.frameBG)
         #self.frameFunction.pack(side=TOP, fill=None, expand=False, padx=1, pady=1)
-        self.frameFunction.grid(column=0, row=3, columnspan=2, padx=10, pady=5, sticky=W)
+        self.frameFunction.grid(column=0, row=5, columnspan=2, padx=10, pady=5, sticky=W)
 
         # Matplotlib Canvas
         self.frameCanvas = Frame(self.frame, bg=self.frameBG) # "#ababab"
         #self.frameCanvas.pack(side=TOP, fill=None, expand=False, padx=1, pady=1, sticky=N)
-        self.frameCanvas.grid(column=1, row=0, rowspan=3, sticky="nsew")
+        self.frameCanvas.grid(column=0, row=0, sticky="nsew") # rowspan=3
         #self.frameCanvas.grid_rowconfigure(0, weight=1)
         #self.frameCanvas.grid_columnconfigure(0, weight=1)
+        self.frameCanvas.grid_rowconfigure(0, weight=1)
+        self.frameCanvas.grid_columnconfigure(0, weight=1)
 
         #self.frameCanvas.columnconfigure(1)
         #self.frameCanvas.rowconfigure(1, weight=2)
@@ -108,14 +136,20 @@ class Chaos01View(ViewBase):
         #self.canvas.get_tk_widget().grid(column=0, row=0, sticky="nsew")
 
         self.canvasToolbar = NavigationToolbar2Tk(self.canvas, self.frameCanvas, pack_toolbar=False)
+        self.canvasToolbar.config(background=self.frameBG)
+        for button in self.canvasToolbar.winfo_children():
+            button.config(background=self.frameBG)
         self.canvasToolbar.update()
         self.canvasToolbar.pack(side=BOTTOM, fill=X)
         #self.canvasToolbar.grid(column=0, row=1, sticky="nsew")
 
         # Show button
         self.buttonShow = Button(self.frameChaos01, text="Show on graph", command=self.__show_graph)
-        self.buttonShow.grid(column=0, row=4, columnspan=2, padx=10, pady=5)
+        self.buttonShow.grid(column=0, row=6, columnspan=2, padx=10, pady=5)
         #self.buttonShow.pack(fill=None, expand=False, padx=10, pady=10)
+
+        self.frame.grid_rowconfigure(0, weight=1)
+        self.frame.grid_columnconfigure(0, weight=1)
 
         self.__build_frame_logistic_map()
 
@@ -228,10 +262,12 @@ class Chaos01View(ViewBase):
         pass
 
     def __show_graph(self) -> None:
-        filename = self.entryFileName.get()
-        if (not (filename and not filename.isspace())):
-            return
+        #filename = self.entryFileName.get()
+        #if (not (filename and not filename.isspace())):
+        #    return
 
-        
-
-        self.on_closing()
+        data = Chaos01.execute_for_bifurcation_diagram(self.function)
+        self.graph.ax.clear()
+        self.graph.ax.set_title(self.function.get_name())
+        self.graph.draw_bifurcation_diagram(data)
+        self.canvas.draw()
