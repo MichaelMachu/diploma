@@ -1,8 +1,11 @@
-from numpy import sin
+from numpy import sin, linspace
 
-from Interfaces.FunctionInterface import FunctionInterface
+from Bases.FunctionBase import FunctionBase
 
-class Sinus(FunctionInterface):
+class Sinus(FunctionBase):
+
+    def __init__(self) -> None:
+        super().__init__("sinus", linspace(0, 10, 100, endpoint=False))
 
     def get(self, r: float, x: float) -> float:
         return sin(r)

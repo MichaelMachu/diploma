@@ -64,34 +64,31 @@ class Chaos01:
         k = median(Kc)
         return k, Kc, PC, QC
 
-    def bifurcation_diagram(function: FunctionInterface, start: float = 1.4, end: float = 4, values: int = 100) -> None:
-        lineArray = np.linspace(start, end, values) # 1000
+    def bifurcation_diagram(function: FunctionInterface, lineArray: list = None) -> list[dict]:   # start: float = 1.4, end: float = 4, values: int = 100
+        #lineArray = np.linspace(start, end, values) # 1000
+        lineArray = function.get_line_array() if lineArray is None else lineArray
         N = 500
         x = 0.5 + np.zeros(N)
         endcap = np.arange(round(N * 0.9), N)
         colors = []
-        fig = pl.figure()
-        ax = fig.add_subplot(111)
-        #u, r = [], []
+
+        data = []
+        
         for r in lineArray:
             for n in range(N - 1):
                 x[n + 1] = function.get(r, x[n])
-            #colors.append("#000000")
 
             u = np.unique(x[endcap])
             xx = r * np.ones(len(u))
             k, Kc, PC, QC = Chaos01.execute(u, 1, 20)    # 2, 8
-            #k = 4
-            #print(k)
+            
             set_color = "#ff0000" if k > 0.9 else "#00ff00"
             colors = [set_color for _ in range(len(xx))]
-            #u.append(np.unique(x[endcap]))
-            #r.append(a * np.ones(len(u)))
-            #pl.plot(r, u, 'k.', markersize=1)
-            #pl.plot(r, u, c=colors, markersize=1)
-            ax.scatter(xx, u, s=1, c=colors)
 
-        pl.show()
+            items = {"xx": xx, "yy": u, "colors": colors}
+            data.append(items)
+        
+        return data
 
     def test_sin() -> tuple[list, list]:
         x = np.linspace(0, t, int(fs*t), endpoint=False)

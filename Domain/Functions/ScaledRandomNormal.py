@@ -1,10 +1,12 @@
+from numpy import linspace
 from numpy.random import normal
 
-from Interfaces.FunctionInterface import FunctionInterface
+from Bases.FunctionBase import FunctionBase
 
-class ScaledRandomNormal(FunctionInterface):
+class ScaledRandomNormal(FunctionBase):
 
     def __init__(self, a: float = 4, scale: float = 0.1) -> None:
+        super().__init__("scaled normal", linspace(1, 100))
         self.a = a
         self.scale = scale
 
