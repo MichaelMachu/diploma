@@ -13,6 +13,7 @@ from .CellularAutomatonView import CellularAutomatonView
 from .SettingsView import SettingsView
 from .ExportView import ExportView
 from .HopfieldNetworkView import HopfieldNetworkView
+from .Chaos01View import Chaos01View
 
 class ApplicationView(ViewBase):
     
@@ -28,6 +29,7 @@ class ApplicationView(ViewBase):
         self.cellularAutomatonView = None
         self.settingsView = None
         self.hopfieldNetworkView = None
+        self.chaos01View = None
 
         self.testCa = None
 
@@ -54,6 +56,10 @@ class ApplicationView(ViewBase):
         self.menuModules.add_command(
             label="Hopfield Network",
             command=self.__show_hopfield_network
+        )
+        self.menuModules.add_command(
+            label="Chaos01",
+            command=self.__show_chaos01
         )
         self.menu.add_cascade(label="Modules", menu=self.menuModules)
 
@@ -159,6 +165,13 @@ class ApplicationView(ViewBase):
 
         self.hopfieldNetworkView = HopfieldNetworkView(self)
         self.windowHandler.register(self.hopfieldNetworkView)
+
+    def __show_chaos01(self) -> None:
+        if self.windowHandler.exists(self.chaos01View):
+            return
+
+        self.chaos01View = Chaos01View(self)
+        self.windowHandler.register(self.chaos01View)
 
     def create_world(self) -> None:
         if self.cellularAutomatonView.cellularAutomaton.dimension == 2:

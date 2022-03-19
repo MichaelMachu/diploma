@@ -15,4 +15,4 @@ class Graph:
         for item in data:
             self.ax.scatter(item["xx"], item["yy"], s=size, c=item["colors"])
 
-        plt.show()
+        #plt.show()
