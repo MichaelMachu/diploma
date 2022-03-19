@@ -21,7 +21,7 @@ class FunctionSelection:
 
         switcher = {
             "logistic map": LogisticMap(),
-            "sin": Sinus(),
+            "sinus": Sinus(),
             "scaled normal": ScaledRandomNormal(),
             "scaled uniform": ScaledRandomUniform(),
         }

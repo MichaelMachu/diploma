@@ -27,6 +27,7 @@ class Chaos01View(ViewBase):
         self.labelSkip = None
         self.labelCut = None
         self.labelFunctionType = None
+        self.labelDefinition = None
         self.labelFunctionDefinition = None
         self.labelA = None
         self.labelScale = None
@@ -89,7 +90,7 @@ class Chaos01View(ViewBase):
         # Function
         self.frameFunction = Frame(self.frameChaos01, bg=self.frameBG)
         #self.frameFunction.pack(side=TOP, fill=None, expand=False, padx=1, pady=1)
-        self.frameFunction.grid(column=0, row=3, columnspan=2, padx=10, pady=5)
+        self.frameFunction.grid(column=0, row=3, columnspan=2, padx=10, pady=5, sticky=W)
 
         # Matplotlib Canvas
         self.frameCanvas = Frame(self.frame, bg=self.frameBG) # "#ababab"
@@ -116,14 +117,18 @@ class Chaos01View(ViewBase):
         self.buttonShow.grid(column=0, row=4, columnspan=2, padx=10, pady=5)
         #self.buttonShow.pack(fill=None, expand=False, padx=10, pady=10)
 
+        self.__build_frame_logistic_map()
+
     def __clear_frame(self) -> int:
         for widget in self.frameFunction.winfo_children():
             widget.destroy()
         return 0
 
     def __create_label_function_definition(self, row: int) -> int:
-        self.labelFunctionDefinition = Label(self.frameFunction, text="definition of the function", anchor='w', bg=self.frameBG)
-        self.labelFunctionDefinition.grid(column=0, row=row, sticky=W)
+        self.labelDefinition = Label(self.frameFunction, text="Definition", anchor='w', bg=self.frameBG)
+        self.labelDefinition.grid(column=0, row=row, sticky=W)
+        self.labelFunctionDefinition = Label(self.frameFunction, text=self.function, anchor='w', bg=self.frameBG)
+        self.labelFunctionDefinition.grid(column=1, row=row, sticky=W)
         return row + 1
 
     def __create_entry_a(self, row: int) -> int:
@@ -152,24 +157,32 @@ class Chaos01View(ViewBase):
         self.entryRangeTo.grid(column=1, row=row, padx=10, pady=5, sticky=W)
         return row + 1
 
+    def __build_frame_logistic_map(self) -> None:
+        row = self.__clear_frame()
+        row = self.__create_label_function_definition(row)
+
+    def __build_frame_sinus(self) -> None:
+        row = self.__clear_frame()
+        row = self.__create_label_function_definition(row)
+
     def __build_frame_scaled_normal(self) -> None:
         row = self.__clear_frame()
+        row = self.__create_label_function_definition(row)
         row = self.__create_entry_a(row)
         row = self.__create_entry_scale(row)
 
     def __build_frame_scaled_uniform(self) -> None:
         row = self.__clear_frame()
+        row = self.__create_label_function_definition(row)
         row = self.__create_entry_a(row)
         row = self.__create_entry_range(row)
 
     def __build_frame_FromFile(self) -> None:
         row = self.__clear_frame()
-        self.labelFileName = Label(self.frameFunction, text="Filename or full path with a filename\n - without file suffix name (string)", anchor='w', bg=self.frameBG)
+        self.labelFileName = Label(self.frameFunction, text="Filename (string)\n - without suffix", anchor='w', bg=self.frameBG)
         self.labelFileName.grid(column=0, row=row, sticky=W)
         self.entryFileName = Entry(self.frameFunction)
         self.entryFileName.grid(column=1, row=row, padx=10, pady=5, sticky=W)
-        row = row + 1
-        row = self.__create_button_create(row)
 
     def __entry_set_value(self, entry: Entry, value: str) -> None:
         if entry is None:
@@ -195,9 +208,9 @@ class Chaos01View(ViewBase):
         self.function = FunctionSelection.GetByName(selection)
 
         if selection == "logistic map":
-            self.__clear_frame()
+            self.__build_frame_logistic_map()
         elif selection == "sinus":
-            self.__clear_frame()
+            self.__build_frame_sinus()
         elif selection == "scaled normal":
             self.__build_frame_scaled_normal()
             self.__entry_set_value(self.entryA, self.function.a)

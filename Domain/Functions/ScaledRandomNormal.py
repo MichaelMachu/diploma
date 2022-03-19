@@ -14,4 +14,5 @@ class ScaledRandomNormal(FunctionBase):
         return self.a * normal(scale=self.scale) * (1 - r)
 
     def __str__(self) -> str:
-        return "{} * normal(scale={}) * (1 - r)".format(self.a, self.scale)
+        #return "{} * normal(scale={}) * (1 - r)".format(self.a, self.scale)
+        return "a * normal(scale) * (1 - r)"

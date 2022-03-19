@@ -14,4 +14,5 @@ class ScaledRandomUniform(FunctionBase):
         return self.a * uniform(self.valueRange[0], self.valueRange[1]) * (1 - r)
 
     def __str__(self) -> str:
-        return "{} * uniform({}, {}) * (1 - r)".format(self.a, self.valueRange[0], self.valueRange[1])
+        #return "{} * uniform({}, {}) * (1 - r)".format(self.a, self.valueRange[0], self.valueRange[1])
+        return "a * uniform(range) * (1 - r)"
