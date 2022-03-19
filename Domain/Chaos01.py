@@ -10,16 +10,17 @@ class Chaos01:
         n2 = len(signal)
         phi = [signal[i] for i in range(n1, n2, skip)]
         N = len(phi)
+        R = 628
         ncut = int(np.floor(N / cut))
         x = 0
         Ephi = 0
         for j in range(N):
             Ephi = Ephi + (1 / N) * phi[j]
 
-        Kc = np.zeros(628)
-        PC = np.zeros((628, N))
-        QC = np.zeros((628, N))
-        for m in range(1, 628):
+        Kc = np.zeros(R)
+        PC = np.zeros((R, N))
+        QC = np.zeros((R, N))
+        for m in range(1, R):
             #   x=x+1;
             c = m / 100
             #print(m)
@@ -64,8 +65,7 @@ class Chaos01:
         k = median(Kc)
         return k, Kc, PC, QC
 
-    def bifurcation_diagram(function: FunctionInterface, lineArray: list = None) -> list[dict]:   # start: float = 1.4, end: float = 4, values: int = 100
-        #lineArray = np.linspace(start, end, values) # 1000
+    def execute_for_bifurcation_diagram(function: FunctionInterface, lineArray: list = None) -> list[dict]:
         lineArray = function.get_line_array() if lineArray is None else lineArray
         N = 500
         x = 0.5 + np.zeros(N)
@@ -89,191 +89,3 @@ class Chaos01:
             data.append(items)
         
         return data
-
-    def test_sin() -> tuple[list, list]:
-        x = np.linspace(0, t, int(fs*t), endpoint=False)
-        signal = np.sin(x)
-
-        return x, signal
-
-    def f_random(x, a) -> list:
-        return a * np.random.normal(scale=0.1, size=len(x)) * (1 - x)
-
-    def test_random() -> tuple[list, list]:
-        x = np.linspace(1, 100)
-        signal = Chaos01.f_random(x, 4)
-
-        return x, signal
-
-    def logistic_map(start: float = 1.4, end: float = 4, values: int = 100) -> None:
-        aline = np.linspace(start, end, values) # 1000
-        N = 500
-        x = 0.5 + np.zeros(N)
-        endcap = np.arange(round(N * 0.9), N)
-        colors = []
-        fig = pl.figure()
-        ax = fig.add_subplot(111)
-        #u, r = [], []
-        for a in aline:
-            for n in range(N - 1):
-                x[n + 1] = a * x[n] * (1 - x[n])
-            #colors.append("#000000")
-
-            u = np.unique(x[endcap])
-            r = a * np.ones(len(u))
-            k, Kc, PC, QC = Chaos01.execute(u, 1, 20)    # 2, 8
-            #k = 4
-            #print(k)
-            set_color = "#ff0000" if k > 0.9 else "#00ff00"
-            colors = [set_color for _ in range(len(r))]
-            #u.append(np.unique(x[endcap]))
-            #r.append(a * np.ones(len(u)))
-            #pl.plot(r, u, 'k.', markersize=1)
-            #pl.plot(r, u, c=colors, markersize=1)
-            ax.scatter(r, u, s=1, c=colors)
-
-        pl.show()
-
-    def test_sin_chaos():
-        fs = 10
-        t = 10
-        aline = np.linspace(0, t, int(fs*t), endpoint=False)
-        N = 500
-        x = 0.5 + np.zeros(N)
-        endcap = np.arange(round(N * 0.9), N)
-        colors = []
-        fig = pl.figure()
-        ax = fig.add_subplot(111)
-        #u, r = [], []
-        for a in aline:
-            for n in range(N - 1):
-                #x[n + 1] = a * x[n] * (1 - x[n])
-                x[n + 1] = np.sin(a)
-            #colors.append("#000000")
-
-            u = np.unique(x[endcap])
-            r = a * np.ones(len(u))
-            k, Kc, PC, QC = Chaos01.execute(u, 1, 20)    # 2, 8
-            #k = 4
-            #print(k)
-            set_color = "#ff0000" if k > 0.9 else "#00ff00"
-            colors = [set_color for _ in range(len(r))]
-            #u.append(np.unique(x[endcap]))
-            #r.append(a * np.ones(len(u)))
-            #pl.plot(r, u, 'k.', markersize=1)
-            #pl.plot(r, u, c=colors, markersize=1)
-            ax.scatter(r, u, s=1, c=colors)
-
-        pl.show()
-
-    def test_rand_chaos():
-        aline = np.linspace(1, 100)
-        N = 500
-        x = 0.5 + np.zeros(N)
-        endcap = np.arange(round(N * 0.9), N)
-        colors = []
-        fig = pl.figure()
-        ax = fig.add_subplot(111)
-        #u, r = [], []
-        for a in aline:
-            for n in range(N - 1):
-                #x[n + 1] = a * x[n] * (1 - x[n])
-                x[n + 1] = 4 * np.random.normal(scale=0.1) * (1 - a)    # np.random.normal(scale=0.1)  np.random.uniform(0, 1)
-            #colors.append("#000000")
-
-            u = np.unique(x[endcap])
-            r = a * np.ones(len(u))
-            k, Kc, PC, QC = Chaos01.execute(u, 1, 20)    # 2, 8
-            #k = 4
-            #print(k)
-            set_color = "#ff0000" if k > 0.9 else "#00ff00"
-            colors = [set_color for _ in range(len(r))]
-            #u.append(np.unique(x[endcap]))
-            #r.append(a * np.ones(len(u)))
-            #pl.plot(r, u, 'k.', markersize=1)
-            #pl.plot(r, u, c=colors, markersize=1)
-            ax.scatter(r, u, s=1, c=colors)
-
-        pl.show()
-
-import matplotlib.pyplot as pl
-import numpy as np
-
-x = np.linspace(1, 100)
-
-#fs = 44100
-fs = 10
-t = 10
-
-#xsin = np.linspace(1, 10)
-xsin = np.linspace(0, t, int(fs*t), endpoint=False)
-#xsin = np.arange(t * fs) / fs
-
-def f(x):
-    return np.sin(x) + np.random.normal(scale=0.1, size=len(x))
-
-def f2(x, a):
-    return a * np.random.normal(scale=0.1, size=len(x)) * (1 - x)
-
-def test_sin():
-    x = np.linspace(0, t, int(fs*t), endpoint=False)
-    signal = np.sin(x)
-
-    return x, signal
-
-def test_random():
-    x = np.linspace(1, 100)
-    signal = f2(x, 4)
-
-    return x, signal
-
-def logistic_map():
-    aline = np.linspace(1.4, 4, 100) # 1000
-    N = 500
-    x = 0.5 + np.zeros(N)
-    endcap = np.arange(round(N * 0.9), N)
-    colors = []
-    fig = pl.figure()
-    ax = fig.add_subplot(111)
-    #u, r = [], []
-    for a in aline:
-        for n in range(N - 1):
-            x[n + 1] = a * x[n] * (1 - x[n])
-        #colors.append("#000000")
-
-        u = np.unique(x[endcap])
-        r = a * np.ones(len(u))
-        k, Kc, PC, QC = Chaos01.execute(u, 1, 20)    # 2, 8
-        #k = 4
-        #print(k)
-        set_color = "#ff0000" if k > 0.9 else "#00ff00"
-        colors = [set_color for _ in range(len(r))]
-        #u.append(np.unique(x[endcap]))
-        #r.append(a * np.ones(len(u)))
-        #pl.plot(r, u, 'k.', markersize=1)
-        #pl.plot(r, u, c=colors, markersize=1)
-        ax.scatter(r, u, s=1, c=colors)
-
-    pl.show()
-
-
-#logistic_map()
-
-
-#x, signal = test_sin()
-
-#x, signal = Chaos01.test_sin()
-#
-#pl.plot(x, signal)
-#pl.show()
-
-
-#k, Kc, PC, QC = Chaos01.execute(signal)
-#print("k: {}".format(k))
-#print("k: {}\nKc: {}\nPC: {}\nQC: {}".format(k, Kc, PC, QC))
-
-#Chaos01.test_rand_chaos()
-"""ncut = 5
-a = np.arange(1, ncut + 1).reshape(-1)
-b = [i for i in range(1, ncut + 1)]
-print(a, b)"""

@@ -8,11 +8,13 @@ from . import ApplicationView
 class SettingsView(ViewBase):
 
     def __init__(self, applicationView: ApplicationView) -> None:
-        super().__init__(Toplevel(applicationView.mainWindow), 400, 400, "Settings", applicationView.windowHandler)
+        super().__init__(Toplevel(applicationView.mainWindow), 400, 550, "Settings", applicationView.windowHandler)
         self.applicationView = applicationView
         self.mainWindow.attributes("-topmost", True)
 
         self.colorCode = self.applicationView.settings.color.colorObject
+        self.colorCodeDeterminism = self.applicationView.settings.chaos01ColorDeterminism.colorObject
+        self.colorCodeChaotic = self.applicationView.settings.chaos01ColorChaotic.colorObject
 
         self.__build()
 
@@ -42,7 +44,7 @@ class SettingsView(ViewBase):
         # Set a main color of a cell, if cell has a more than two states it makes other colors automatically based on the main color
         self.labelRule = Label(self.frameAnimation, text="Cell color", anchor='w', bg=self.frameBG)
         self.labelRule.grid(column=0, row=2, sticky=W)
-        self.entryColor = Button(self.frameAnimation, text="", width=5, background=self.applicationView.settings.color.get_hex(), command=self.__choose_color)
+        self.entryColor = Button(self.frameAnimation, text="", width=5, background=self.applicationView.settings.color.get_hex(), command=lambda buttonColor = self, colorCode = self.colorCode: self.__choose_color(buttonColor, colorCode)) # self.__choose_color
         self.entryColor.grid(column=1, row=2, padx=10, pady=5, sticky=W)
 
         # Paths frame
@@ -71,6 +73,12 @@ class SettingsView(ViewBase):
         self.entryPathHopfieldNetwork.grid(column=1, row=3, padx=10, pady=5, sticky=W)
         self.entryPathHopfieldNetwork.insert(0, self.applicationView.settings.pathHopfieldNetwork)
 
+        self.labelPathChaos01 = Label(self.framePaths, text="Chaos01 path (string)", anchor='w', bg=self.frameBG)
+        self.labelPathChaos01.grid(column=0, row=4, sticky=W)
+        self.entryPathChaos01 = Entry(self.framePaths)
+        self.entryPathChaos01.grid(column=1, row=4, padx=10, pady=5, sticky=W)
+        self.entryPathChaos01.insert(0, self.applicationView.settings.pathChaos01)
+
         # Modules
         # Hopfield Network frame
         self.frameHopfieldNetwork = Frame(self.frame, bg="#fff")
@@ -85,6 +93,23 @@ class SettingsView(ViewBase):
         self.entryHopfieldNetworkCellSize.grid(column=1, row=1, padx=10, pady=5, sticky=W)
         self.entryHopfieldNetworkCellSize.insert(0, self.applicationView.settings.hopfieldnetworkCellSize)
 
+        # Chaos01
+        self.frameChaos01 = Frame(self.frame, bg="#fff")
+        self.frameChaos01.pack(side=TOP, fill=None, expand=False, padx=10, pady=10, anchor=NW)
+        
+        self.labelChaos01 = Label(self.frameChaos01, text="Chaos01", anchor='w', bg=self.frameBG)
+        self.labelChaos01.grid(column=0, row=0, sticky=W)
+
+        self.labelRule = Label(self.frameChaos01, text="Determinism color", anchor='w', bg=self.frameBG)
+        self.labelRule.grid(column=0, row=1, sticky=W)
+        self.entryColorDeterminism = Button(self.frameChaos01, text="", width=5, background=self.applicationView.settings.chaos01ColorDeterminism.get_hex(), command=lambda buttonColor = self, colorCode = self.colorCodeDeterminism: self.__choose_color(buttonColor, colorCode))
+        self.entryColorDeterminism.grid(column=1, row=1, padx=10, pady=5, sticky=W)
+
+        self.labelRule = Label(self.frameChaos01, text="Chaotic color", anchor='w', bg=self.frameBG)
+        self.labelRule.grid(column=0, row=2, sticky=W)
+        self.entryColorChaotic = Button(self.frameChaos01, text="", width=5, background=self.applicationView.settings.chaos01ColorChaotic.get_hex(), command=lambda buttonColor = self, colorCode = self.colorCodeChaotic: self.__choose_color(buttonColor, colorCode))
+        self.entryColorChaotic.grid(column=1, row=2, padx=10, pady=5, sticky=W)
+
         # Apply button
         self.buttonApply = Button(self.frame, text="Apply", command=self.__apply)
         #self.buttonApply.grid(column=0, row=3, columnspan=2, padx=10, pady=5)
@@ -94,15 +119,16 @@ class SettingsView(ViewBase):
         """Drawing method used for canvas"""
         pass
 
-    def __choose_color(self) -> None:
-        self.colorCode = askcolor(parent=self.mainWindow, title ="Choose color")
-        self.entryColor.configure(background=self.colorCode[1])
+    def __choose_color(self, buttonColor: Button, colorCode: tuple) -> None:
+        colorCode = askcolor(parent=self.mainWindow, title ="Choose color")
+        buttonColor.configure(background=colorCode[1])
 
     def __apply(self) -> None:
         cellSizeStr = self.entrySize.get()
         entryPathMainStr = self.entryPathMain.get()
         entryPathCellularAutomatonStr = self.entryPathCellularAutomaton.get()
         entryPathHopfieldNetworkStr = self.entryPathHopfieldNetwork.get()
+        entryPathChaos01Str = self.entryPathChaos01.get()
         entryHopfieldNetworkCellSizeStr = self.entryHopfieldNetworkCellSize.get()
         if not cellSizeStr.isnumeric() or not entryHopfieldNetworkCellSizeStr.isnumeric():
             return
@@ -115,7 +141,10 @@ class SettingsView(ViewBase):
         self.applicationView.settings.pathMain = entryPathMainStr
         self.applicationView.settings.pathCellularAutomaton = entryPathCellularAutomatonStr
         self.applicationView.settings.pathHopfieldNetwork = entryPathHopfieldNetworkStr
+        self.applicationView.settings.pathChaos01 = entryPathChaos01Str
         self.applicationView.settings.hopfieldnetworkCellSize = hopfieldnetworkCellSize
+        self.applicationView.settings.chaos01ColorDeterminism = Color(self.colorCodeDeterminism)
+        self.applicationView.settings.chaos01ColorChaotic = Color(self.colorCodeChaotic)
         self.applicationView.settings.save_to_file()
 
         self.applicationView.re_draw()

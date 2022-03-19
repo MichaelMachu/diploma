@@ -1,3 +1,4 @@
+from Interfaces.FunctionInterface import FunctionInterface
 
 class FunctionBase(FunctionInterface):
 

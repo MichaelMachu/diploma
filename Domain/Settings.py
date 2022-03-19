@@ -9,7 +9,10 @@ class Settings:
         self.pathMain = "TestData"
         self.pathCellularAutomaton = "ca"
         self.pathHopfieldNetwork = "hn"
+        self.pathChaos01 = "ch"
         self.hopfieldnetworkCellSize = 30
+        self.chaos01ColorDeterminism = Color(((0,255,0),"#00ff00"))
+        self.chaos01ColorChaotic = Color(((255,0,0),"#ff0000"))
 
         self.filename = "settings"
 
@@ -22,7 +25,10 @@ class Settings:
             "pathMain": self.pathMain,
             "pathCellularAutomaton": self.pathCellularAutomaton,
             "pathHopfieldNetwork": self.pathHopfieldNetwork,
+            "pathChaos01": self.pathChaos01,
             "hopfieldnetworkCellSize": self.hopfieldnetworkCellSize,
+            "chaos01ColorDeterminism": self.chaos01ColorDeterminism.colorObject,
+            "chaos01ColorChaotic": self.chaos01ColorChaotic.colorObject,
         }
 
         jsonData = DataProcess.to_json(dataDict)
@@ -39,4 +45,7 @@ class Settings:
         self.pathMain = dataDict["pathMain"]
         self.pathCellularAutomaton = dataDict["pathCellularAutomaton"]
         self.pathHopfieldNetwork = dataDict["pathHopfieldNetwork"]
+        self.pathChaos01 = dataDict["pathChaos01"]
         self.hopfieldnetworkCellSize = dataDict["hopfieldnetworkCellSize"]
+        self.chaos01ColorDeterminism = Color(tuple(dataDict["chaos01ColorDeterminism"]))
+        self.chaos01ColorChaotic = Color(tuple(dataDict["chaos01ColorChaotic"]))
