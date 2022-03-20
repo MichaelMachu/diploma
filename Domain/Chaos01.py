@@ -82,10 +82,11 @@ class Chaos01:
             xx = r * np.ones(len(u))
             k, Kc, PC, QC = Chaos01.execute(u, 1, 20)    # 2, 8
             
-            set_color = "#ff0000" if k > 0.9 else "#00ff00"
-            colors = [set_color for _ in range(len(xx))]
+            #set_color = "#ff0000" if k > 0.9 else "#00ff00"
+            #colors = [set_color for _ in range(len(xx))]
+            kk = [k for _ in range(len(xx))]
 
-            items = {"xx": xx, "yy": u, "colors": colors}
+            items = {"xx": xx, "yy": u, "kk": kk}   # "colors": colors
             data.append(items)
         
         return data

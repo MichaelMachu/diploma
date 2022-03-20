@@ -11,8 +11,9 @@ class Graph:
         self.ax = self.fig.add_subplot()
 
     # Draw bifurcation diagram
-    def draw_bifurcation_diagram(self, data: list[dict], size: int = 1) -> None:
+    def draw_bifurcation_diagram(self, data: list[dict], size: int = 1, colorDeterminism: str = "#00ff00", colorChaotic: str = "#ff0000") -> None:
         for item in data:
-            self.ax.scatter(item["xx"], item["yy"], s=size, c=item["colors"])
+            colors = [colorChaotic if k > 0.9 else colorDeterminism for k in item["kk"]]
+            self.ax.scatter(item["xx"], item["yy"], s=size, c=colors) # item["colors"]
 
         #plt.show()

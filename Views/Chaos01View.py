@@ -17,6 +17,7 @@ class Chaos01View(ViewBase):
 
         self.graph = Graph()
         self.function = FunctionSelection.GetByName("logistic map")
+        self.data = []
 
         # Create object variables
         # Frames
@@ -266,8 +267,10 @@ class Chaos01View(ViewBase):
         #if (not (filename and not filename.isspace())):
         #    return
 
-        data = Chaos01.execute_for_bifurcation_diagram(self.function)
+        self.data = Chaos01.execute_for_bifurcation_diagram(self.function)
         self.graph.ax.clear()
         self.graph.ax.set_title(self.function.get_name())
-        self.graph.draw_bifurcation_diagram(data)
+        self.graph.draw_bifurcation_diagram(self.data, 1, 
+            self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
+            self.applicationView.settings.chaos01ColorChaotic.get_hex())
         self.canvas.draw()

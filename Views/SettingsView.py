@@ -44,7 +44,8 @@ class SettingsView(ViewBase):
         # Set a main color of a cell, if cell has a more than two states it makes other colors automatically based on the main color
         self.labelRule = Label(self.frameAnimation, text="Cell color", anchor='w', bg=self.frameBG)
         self.labelRule.grid(column=0, row=2, sticky=W)
-        self.entryColor = Button(self.frameAnimation, text="", width=5, background=self.applicationView.settings.color.get_hex(), command=lambda buttonColor = self, colorCode = self.colorCode: self.__choose_color(buttonColor, colorCode)) # self.__choose_color
+        self.entryColor = Button(self.frameAnimation, text="", width=5, background=self.applicationView.settings.color.get_hex(), command=self.__choose_color) # self.__choose_color
+        #self.entryColor["command"] = lambda buttonColor = self.entryColor, colorCode = self.colorCode: self.__choose_color(buttonColor, colorCode)
         self.entryColor.grid(column=1, row=2, padx=10, pady=5, sticky=W)
 
         # Paths frame
@@ -102,15 +103,21 @@ class SettingsView(ViewBase):
 
         self.labelRule = Label(self.frameChaos01, text="Determinism color", anchor='w', bg=self.frameBG)
         self.labelRule.grid(column=0, row=1, sticky=W)
-        self.entryColorDeterminism = Button(self.frameChaos01, text="", width=5, background=self.applicationView.settings.chaos01ColorDeterminism.get_hex(), command=lambda buttonColor = self, colorCode = self.colorCodeDeterminism: self.__choose_color(buttonColor, colorCode))
+        self.entryColorDeterminism = Button(self.frameChaos01, text="", width=5, background=self.applicationView.settings.chaos01ColorDeterminism.get_hex(), command=self.__choose_color_determinism)
+        #self.entryColorDeterminism["command"] = lambda buttonColor = self.entryColorDeterminism, colorCode = self.colorCodeDeterminism: self.__choose_color(buttonColor, colorCode)
         self.entryColorDeterminism.grid(column=1, row=1, padx=10, pady=5, sticky=W)
 
         self.labelRule = Label(self.frameChaos01, text="Chaotic color", anchor='w', bg=self.frameBG)
         self.labelRule.grid(column=0, row=2, sticky=W)
-        self.entryColorChaotic = Button(self.frameChaos01, text="", width=5, background=self.applicationView.settings.chaos01ColorChaotic.get_hex(), command=lambda buttonColor = self, colorCode = self.colorCodeChaotic: self.__choose_color(buttonColor, colorCode))
+        self.entryColorChaotic = Button(self.frameChaos01, text="", width=5, background=self.applicationView.settings.chaos01ColorChaotic.get_hex(), command=self.__choose_color_chaotic)
+        #self.entryColorChaotic["command"] = lambda buttonColor = self.entryColorChaotic, colorCode = self.colorCodeChaotic: self.__choose_color(buttonColor, colorCode)
         self.entryColorChaotic.grid(column=1, row=2, padx=10, pady=5, sticky=W)
 
         # Apply button
+        self.buttonReset = Button(self.frame, text="Reset", command=self.__reset)
+        #self.buttonApply.grid(column=0, row=3, columnspan=2, padx=10, pady=5)
+        self.buttonReset.pack(side=LEFT, fill=None, expand=False, padx=10, pady=10)
+
         self.buttonApply = Button(self.frame, text="Apply", command=self.__apply)
         #self.buttonApply.grid(column=0, row=3, columnspan=2, padx=10, pady=5)
         self.buttonApply.pack(side=RIGHT, fill=None, expand=False, padx=10, pady=10)
@@ -119,9 +126,20 @@ class SettingsView(ViewBase):
         """Drawing method used for canvas"""
         pass
 
-    def __choose_color(self, buttonColor: Button, colorCode: tuple) -> None:
-        colorCode = askcolor(parent=self.mainWindow, title ="Choose color")
-        buttonColor.configure(background=colorCode[1])
+    def __choose_color(self) -> None:
+        self.colorCode = askcolor(parent=self.mainWindow, title ="Choose color")
+        self.entryColor.configure(background=self.colorCode[1])
+
+    def __choose_color_determinism(self) -> None:
+        self.colorCodeDeterminism = askcolor(parent=self.mainWindow, title ="Choose color")
+        self.entryColorDeterminism.configure(background=self.colorCodeDeterminism[1])
+
+    def __choose_color_chaotic(self) -> None:
+        self.colorCodeChaotic = askcolor(parent=self.mainWindow, title ="Choose color")
+        self.entryColorChaotic.configure(background=self.colorCodeChaotic[1])
+
+    def __reset(self) -> None:
+        pass
 
     def __apply(self) -> None:
         cellSizeStr = self.entrySize.get()
@@ -147,7 +165,8 @@ class SettingsView(ViewBase):
         self.applicationView.settings.chaos01ColorChaotic = Color(self.colorCodeChaotic)
         self.applicationView.settings.save_to_file()
 
-        self.applicationView.re_draw()
+        if self.applicationView.cellularAutomaton is not None:
+            self.applicationView.re_draw()
 
         if self.applicationView.hopfieldNetworkView is not None:
             self.applicationView.hopfieldNetworkView.size = hopfieldnetworkCellSize
@@ -162,4 +181,12 @@ class SettingsView(ViewBase):
                     neuronMatrixView.canvas.delete("all")
                     neuronMatrixView.draw()
         
+        if self.applicationView.chaos01View is not None:
+            self.applicationView.chaos01View.graph.ax.clear()
+            self.applicationView.chaos01View.graph.ax.set_title(self.applicationView.chaos01View.function.get_name())
+            self.applicationView.chaos01View.graph.draw_bifurcation_diagram(self.applicationView.chaos01View.data, 1, 
+                self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
+                self.applicationView.settings.chaos01ColorChaotic.get_hex())
+            self.applicationView.chaos01View.canvas.draw()
+
         self.on_closing()

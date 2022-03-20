@@ -18,6 +18,17 @@ class Settings:
 
         self.load_from_file()
 
+    def set_default(self) -> None:
+        self.cellSize = 5
+        self.color = Color(((0,0,0),"#000000"))
+        self.pathMain = "TestData"
+        self.pathCellularAutomaton = "ca"
+        self.pathHopfieldNetwork = "hn"
+        self.pathChaos01 = "ch"
+        self.hopfieldnetworkCellSize = 30
+        self.chaos01ColorDeterminism = Color(((0,255,0),"#00ff00"))
+        self.chaos01ColorChaotic = Color(((255,0,0),"#ff0000"))
+
     def save_to_file(self) -> None:
         dataDict = {
             "cellSize": self.cellSize,
