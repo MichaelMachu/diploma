@@ -287,3 +287,7 @@ class HopfieldNetworkView(ViewBase):
         for ids in range(len(self.saved_matrices)):
             neuronMatrixView = NeuronMatrixView(self.applicationView, self, ids, self.n, self.m, self.size)
             self.neuronMatrixViews.append(neuronMatrixView)
+
+    def on_closing(self) -> None:
+        super().on_closing()
+        self.applicationView.hopfieldNetworkView = None
