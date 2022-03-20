@@ -274,3 +274,7 @@ class Chaos01View(ViewBase):
             self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
             self.applicationView.settings.chaos01ColorChaotic.get_hex())
         self.canvas.draw()
+
+    def on_closing(self) -> None:
+        super().on_closing()
+        self.applicationView.chaos01View = None
