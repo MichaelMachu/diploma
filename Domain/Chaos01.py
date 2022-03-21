@@ -76,7 +76,6 @@ class Chaos01:
         N = 500
         x = 0.5 + np.zeros(N)
         endcap = np.arange(round(N * 0.9), N)
-        colors = []
 
         data = []
         
@@ -88,11 +87,7 @@ class Chaos01:
             xx = r * np.ones(len(u))
             k, Kc, PC, QC = Chaos01.execute(u, 1, 20)    # 2, 8
             
-            #set_color = "#ff0000" if k > 0.9 else "#00ff00"
-            #colors = [set_color for _ in range(len(xx))]
-            #kk = [k for _ in range(len(xx))]
-
-            items = {"xx": xx, "yy": u, "k": k, "Kc": Kc, "PC": PC, "QC": QC}   # "colors": colors  "kk": kk
+            items = {"xx": xx, "yy": u, "k": k, "Kc": Kc, "PC": PC, "QC": QC}
             data.append(items)
         
         return data

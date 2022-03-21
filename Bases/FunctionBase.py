@@ -6,10 +6,10 @@ class FunctionBase(FunctionInterface):
         self._name = name
         self._lineArray = lineArray
 
-    def get_name(self) -> None:
+    def get_name(self) -> str:
         return self._name
 
-    def get_line_array(self) -> None:
+    def get_line_array(self) -> list:
         return self._lineArray
 
     def get(self, r: float, x: float) -> float:
