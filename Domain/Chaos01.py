@@ -15,6 +15,7 @@ class Chaos01:
         ncut = int(np.floor(N / cut))
         x = 0
         Ephi = 0
+        INCREASE = 1e-15    # 1e-15 small increase because of division at fraction in corrcoef function
         for j in range(N):
             Ephi = Ephi + (1 / N) * phi[j]
 
@@ -45,6 +46,7 @@ class Chaos01:
             
             Mc = np.zeros(ncut)
             Dc = np.zeros(ncut)
+            #Dc = np.full(ncut, INCREASE)
             
             for n in range(1, ncut):
                 MCpom = np.zeros((N - 1 - ncut, 1))
@@ -57,10 +59,13 @@ class Chaos01:
                     Mc[n - 1] = 0
                 else:
                     Mc[n - 1] = MCpom[N - 1 - ncut - 1] / (N - 1 - ncut - 1)
-                Dc[n - 1] = Mc[n - 1] - Vosc[n - 1]
+                Dc[n - 1] = Mc[n - 1] - Vosc[n - 1] + INCREASE
             
-            pom = [i for i in range(ncut)]
-            CR = np.corrcoef(pom, Dc)
+            if ncut <= 1:
+                CR = [[0, 0], [0, 0]]
+            else:
+                pom = [i for i in range(ncut)]
+                CR = np.corrcoef(pom, Dc)
             Kc[m-1] = CR[1][0]
 
         k = median(Kc)
@@ -85,9 +90,9 @@ class Chaos01:
             
             #set_color = "#ff0000" if k > 0.9 else "#00ff00"
             #colors = [set_color for _ in range(len(xx))]
-            kk = [k for _ in range(len(xx))]
+            #kk = [k for _ in range(len(xx))]
 
-            items = {"xx": xx, "yy": u, "kk": kk}   # "colors": colors
+            items = {"xx": xx, "yy": u, "k": k, "Kc": Kc, "PC": PC, "QC": QC}   # "colors": colors  "kk": kk
             data.append(items)
         
         return data

@@ -70,10 +70,18 @@ class Chaos01View(ViewBase):
             label="Import",
             command=self.__show_import_menu
         )
-        self.menuFile.add_command(
-            label="Export",
-            command=self.__show_export_menu
+
+        self.menuExport = Menu(self.menuFile, tearoff=False)
+        self.menuExport.add_command(
+            label="Fast",
+            command=self.__show_export_fast_menu
         )
+        self.menuExport.add_command(
+            label="Full",
+            command=self.__show_export_full_menu
+        )
+
+        self.menuFile.add_cascade(label="Export", menu=self.menuExport)
         self.menu.add_cascade(label="File", menu=self.menuFile)
 
         # Main frame
@@ -286,14 +294,24 @@ class Chaos01View(ViewBase):
         self.importView = ImportView(self, path, "Chaos01 data")
         self.windowHandler.register(self.importView)
 
-    def __show_export_menu(self) -> None:
+    def __show_export_fast_menu(self) -> None:
         if self.windowHandler.exists(self.exportView):
             return
 
         transferObject = Chaos01TransferObject(self.data, self.function.get_name())
 
         path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathChaos01 + "/"
-        self.exportView = ExportView(self, transferObject, path, "Chaos01 data")
+        self.exportView = ExportView(self, transferObject, path, "main of the Chaos01 data")
+        self.windowHandler.register(self.exportView)
+
+    def __show_export_full_menu(self) -> None:
+        if self.windowHandler.exists(self.exportView):
+            return
+
+        transferObject = Chaos01TransferObject(self.data, self.function.get_name(), False)
+
+        path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathChaos01 + "/"
+        self.exportView = ExportView(self, transferObject, path, "all of the Chaos01 data")
         self.windowHandler.register(self.exportView)
 
     def set_import_data(self, data: dict) -> None:
