@@ -8,6 +8,7 @@ from . import ApplicationView
 from Domain.Graph import Graph
 from Domain.FunctionSelection import FunctionSelection
 from Domain.Chaos01 import Chaos01
+from Domain.Settings import Settings
 from .ImportView import ImportView
 from .ExportView import ExportView
 from Data.Chaos01TransferObject import Chaos01TransferObject
@@ -15,7 +16,7 @@ from Data.Chaos01TransferObject import Chaos01TransferObject
 class Chaos01View(ViewBase):
 
     def __init__(self, applicationView: ApplicationView) -> None:
-        super().__init__(Toplevel(applicationView.mainWindow), 500, 100, "Chaos01", applicationView.windowHandler)
+        super().__init__(Toplevel(applicationView.mainWindow), 900, 600, "Chaos01", applicationView.windowHandler)
         self.applicationView = applicationView
 
         self.graph = Graph()
@@ -156,7 +157,7 @@ class Chaos01View(ViewBase):
         #self.canvasToolbar.grid(column=0, row=1, sticky="nsew")
 
         # Show button
-        self.buttonShow = Button(self.frameChaos01, text="Show on graph", command=self.__show_graph)
+        self.buttonShow = Button(self.frameChaos01, text="Calculate and show on graph", command=self.__show_graph)
         self.buttonShow.grid(column=0, row=6, columnspan=2, padx=10, pady=5)
         #self.buttonShow.pack(fill=None, expand=False, padx=10, pady=10)
 
@@ -225,9 +226,14 @@ class Chaos01View(ViewBase):
 
     def __build_frame_FromFile(self) -> None:
         row = self.__clear_frame()
-        self.labelFileName = Label(self.frameFunction, text="Filename (string)\n - without suffix", anchor='w', bg=self.frameBG)
+        self.labelFileName = Label(self.frameFunction, text="Filename", anchor='w', bg=self.frameBG) # (string)\n - without suffix
         self.labelFileName.grid(column=0, row=row, sticky=W)
-        self.entryFileName = Entry(self.frameFunction)
+        #self.entryFileName = Entry(self.frameFunction)
+        #self.entryFileName.grid(column=1, row=row, padx=10, pady=5, sticky=W)
+        path = self.applicationView.settings.pathMain + "/" # + self.applicationView.settings.pathCellularAutomaton + "/"
+        self.entryFileName = ttk.Combobox(self.frameFunction)
+        self.entryFileName["values"] = Settings.get_files_in_directory(path)
+        self.entryFileName["state"] = "readonly"
         self.entryFileName.grid(column=1, row=row, padx=10, pady=5, sticky=W)
 
     def __entry_set_value(self, entry: Entry, value: str) -> None:
@@ -277,6 +283,9 @@ class Chaos01View(ViewBase):
         #filename = self.entryFileName.get()
         #if (not (filename and not filename.isspace())):
         #    return
+
+        if self.comboboxFunctionType.get() == "Load from file":
+            return
 
         self.data = Chaos01.execute_for_bifurcation_diagram(self.function)
         self.graph.ax.clear()
