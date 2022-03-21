@@ -1,3 +1,4 @@
+from os import walk
 from Domain.Color import Color
 from Data.DataProcess import DataProcess
 
@@ -18,6 +19,17 @@ class Settings:
 
         self.load_from_file()
 
+    # Class functions
+    def get_files_in_directory(path: str) -> list:
+        files = []
+        for (root, dirs, file) in walk(path):
+            for f in file:
+                if ".json" in f:
+                    f = f.removesuffix(".json")
+                    files.append(f)
+        return files
+
+    # Object functions
     def set_default(self) -> None:
         self.cellSize = 5
         self.color = Color(((0,0,0),"#000000"))

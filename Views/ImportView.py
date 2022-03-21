@@ -1,9 +1,11 @@
 from tkinter import *
 from tkinter import ttk
+from os import walk
 
 from Bases.ViewBase import ViewBase
 from . import ApplicationView
 
+from Domain.Settings import Settings
 from Data.DataProcess import DataProcess
 
 class ImportView(ViewBase):
@@ -29,8 +31,12 @@ class ImportView(ViewBase):
         # Filename
         self.labelFileName = Label(self.frame, text="Filename or full path with a filename\n - without file suffix name (string)", anchor='w', bg=self.frameBG)
         self.labelFileName.grid(column=0, row=0, sticky=W)
-        self.entryFileName = Entry(self.frame)
-        self.entryFileName.grid(column=1, row=0, padx=10, pady=5, sticky=W)
+        #self.entryFileName = Entry(self.frame)
+        #self.entryFileName.grid(column=1, row=0, padx=10, pady=5, sticky=W)
+        self.comboboxFileName = ttk.Combobox(self.frame)
+        self.comboboxFileName["values"] = Settings.get_files_in_directory(self.filePath)
+        self.comboboxFileName["state"] = "readonly"
+        self.comboboxFileName.grid(column=1, row=0, padx=10, pady=5, sticky=W)
 
         # Create button
         self.buttonCreate = Button(self.frame, text="Import", command=self.__import)
@@ -41,7 +47,7 @@ class ImportView(ViewBase):
         pass
 
     def __import(self) -> None:
-        filename = self.entryFileName.get()
+        filename = self.comboboxFileName.get()
         if (not (filename and not filename.isspace())):
             return
 

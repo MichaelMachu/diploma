@@ -5,6 +5,7 @@ from Bases.ViewBase import ViewBase
 from . import ApplicationView
 #from . import CellularAutomaton
 from Domain.CellularAutomaton import CellularAutomaton
+from Domain.Settings import Settings
 from Data.DataProcess import DataProcess
 from Data.CellularAutomatonTransferObject import CellularAutomatonTransferObject
 
@@ -221,7 +222,12 @@ class CellularAutomatonView(ViewBase):
         row = self.__clear_frame()
         self.labelFileName = Label(self.frameCA, text="Filename or full path with a filename\n - without file suffix name (string)", anchor='w', bg=self.frameBG)
         self.labelFileName.grid(column=0, row=row, sticky=W)
-        self.entryFileName = Entry(self.frameCA)
+        #self.entryFileName = Entry(self.frameCA)
+        #self.entryFileName.grid(column=1, row=row, padx=10, pady=5, sticky=W)
+        path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathCellularAutomaton + "/"
+        self.entryFileName = ttk.Combobox(self.frameCA)
+        self.entryFileName["values"] = Settings.get_files_in_directory(path)
+        self.entryFileName["state"] = "readonly"
         self.entryFileName.grid(column=1, row=row, padx=10, pady=5, sticky=W)
         row = row + 1
         row = self.__create_button_create(row)
