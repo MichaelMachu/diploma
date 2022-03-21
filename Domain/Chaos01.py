@@ -1,11 +1,12 @@
 import numpy as np
 from statistics import median
+from typing import Tuple, List
 
 from Interfaces.FunctionInterface import FunctionInterface
 
 class Chaos01:
 
-    def execute(signal: list, skip: int = 1, cut: int = 2) -> tuple[int, list, list, list]:
+    def execute(signal: list, skip: int = 1, cut: int = 2) -> Tuple[int, list, list, list]:
         n1 = 0
         n2 = len(signal)
         phi = [signal[i] for i in range(n1, n2, skip)]
@@ -65,7 +66,7 @@ class Chaos01:
         k = median(Kc)
         return k, Kc, PC, QC
 
-    def execute_for_bifurcation_diagram(function: FunctionInterface, lineArray: list = None) -> list[dict]:
+    def execute_for_bifurcation_diagram(function: FunctionInterface, lineArray: list = None) -> List[dict]:
         lineArray = function.get_line_array() if lineArray is None else lineArray
         N = 500
         x = 0.5 + np.zeros(N)

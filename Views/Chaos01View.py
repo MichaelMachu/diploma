@@ -8,6 +8,9 @@ from . import ApplicationView
 from Domain.Graph import Graph
 from Domain.FunctionSelection import FunctionSelection
 from Domain.Chaos01 import Chaos01
+from .ImportView import ImportView
+from .ExportView import ExportView
+from Data.Chaos01TransferObject import Chaos01TransferObject
 
 class Chaos01View(ViewBase):
 
@@ -65,11 +68,11 @@ class Chaos01View(ViewBase):
         self.menuFile = Menu(self.menu, tearoff=False)
         self.menuFile.add_command(
             label="Import",
-            #command=self.__show_hopfield_network
+            command=self.__show_import_menu
         )
         self.menuFile.add_command(
             label="Export",
-            #command=self.__show_chaos01
+            command=self.__show_export_menu
         )
         self.menu.add_cascade(label="File", menu=self.menuFile)
 
@@ -271,6 +274,39 @@ class Chaos01View(ViewBase):
         self.graph.ax.clear()
         self.graph.ax.set_title(self.function.get_name())
         self.graph.draw_bifurcation_diagram(self.data, 1, 
+            self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
+            self.applicationView.settings.chaos01ColorChaotic.get_hex())
+        self.canvas.draw()
+
+    def __show_import_menu(self) -> None:
+        if self.windowHandler.exists(self.importView):
+            return
+
+        path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathChaos01 + "/"
+        self.importView = ImportView(self, path, "Chaos01 data")
+        self.windowHandler.register(self.importView)
+
+    def __show_export_menu(self) -> None:
+        if self.windowHandler.exists(self.exportView):
+            return
+
+        transferObject = Chaos01TransferObject(self.data, self.function.get_name())
+
+        path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathChaos01 + "/"
+        self.exportView = ExportView(self, transferObject, path, "Chaos01 data")
+        self.windowHandler.register(self.exportView)
+
+    def set_import_data(self, data: dict) -> None:
+        super().set_import_data(data)
+
+        if self._importData is None:
+            return
+
+        self.data, functionName = Chaos01TransferObject.set_by_dict(self._importData)
+        self.function = FunctionSelection.GetByName(functionName)
+        self.graph.ax.clear()
+        self.graph.ax.set_title(self.function.get_name())
+        self.applicationView.chaos01View.graph.draw_bifurcation_diagram(self.data, 1, 
             self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
             self.applicationView.settings.chaos01ColorChaotic.get_hex())
         self.canvas.draw()

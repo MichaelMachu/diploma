@@ -1,7 +1,7 @@
 #import tkinter as tk
 from tkinter import *
 
-from click import command
+#from click import command
 
 from Domain.Settings import Settings
 from Domain.WindowsHandler import WindowHandler
