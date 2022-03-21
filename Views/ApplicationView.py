@@ -19,11 +19,13 @@ class ApplicationView(ViewBase):
     
     def __init__(self) -> None:
         """The main thread of the application"""
-        super().__init__(Tk(), 600, 500, "Systems at the edge of chaos by Michael Machů")
+        super().__init__(Tk(), 600, 500, "Systems at the edge of chaos by Michael Machů", WindowHandler())
         self.root = self.mainWindow
         
+        self.windowHandler.register(self)
+
         # Singletons objects
-        self.windowHandler = WindowHandler()
+        #self.windowHandler = WindowHandler()
         self.settings = Settings()
         self.cellularAutomaton = None
         self.cellularAutomatonView = None
@@ -284,3 +286,8 @@ class ApplicationView(ViewBase):
         if not self.continueDraw:
             self.continueDraw = True
             self.root.after(100, self.draw)
+
+    def on_closing(self) -> None:
+        if self.chaos01View is not None:
+            self.chaos01View.on_closing()
+        super().on_closing()

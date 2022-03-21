@@ -18,4 +18,5 @@ class Graph:
             color = colorChaotic if item["k"] > 0.9 else colorDeterminism
             self.ax.scatter(item["xx"], item["yy"], s=size, c=color) # item["colors"]
 
-        #plt.show()
+    def close(self) -> None:
+        plt.close()

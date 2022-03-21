@@ -330,5 +330,6 @@ class Chaos01View(ViewBase):
         self.canvas.draw()
 
     def on_closing(self) -> None:
+        self.graph.close()
         super().on_closing()
         self.applicationView.chaos01View = None
