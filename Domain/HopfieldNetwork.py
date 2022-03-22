@@ -61,7 +61,7 @@ class HopfieldNetwork:
         check = 0
         change = copy.deepcopy(inputVector)
         areSame = False
-        print(inputVector)
+        #print(inputVector)
         self.iter = 0
         size = m*n
         

@@ -6,3 +6,6 @@ Views/__pycache__/
 Data/__pycache__/
 Bases/__pycache__/
 settings.json
+
+# Do not upload large patterns
+TestData/hn/100x100noisePattern.json

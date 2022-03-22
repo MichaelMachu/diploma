@@ -32,15 +32,17 @@ class NeuronMatrix:
 
     # Výpočet vah podle vzorce X*X^T kde X je vektor z původní matice
     def __create_weighted_matrix(self, serializedMatrix: list) -> list:
-        result_array = []
-        for i in range(len(serializedMatrix)):
-            array = []
-            for j in range(len(serializedMatrix)):
-                result = serializedMatrix[i] * serializedMatrix[j]
-                array.append(result)
-            result_array.append(array)
+        #result_array = []
+        #for i in range(len(serializedMatrix)):
+        #    array = []
+        #    for j in range(len(serializedMatrix)):
+        #        result = serializedMatrix[i] * serializedMatrix[j]
+        #        array.append(result)
+        #    result_array.append(array)
 
-        return result_array
+        #return result_array
+        length = len(serializedMatrix)
+        return [[serializedMatrix[i] * serializedMatrix[j] for j in range(length)] for i in range(length)]
 
     # Odečtení jednotkové matice od váhové matice
     def __create_full_pattern(self, weightMatrix: list) -> list:
