@@ -14,7 +14,7 @@ class FunctionSelection:
         """
         Option names are:
             - logistic map
-            - sin
+            - sinus
             - scaled normal
             - scaled uniform
         """

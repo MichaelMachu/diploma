@@ -183,7 +183,7 @@ class SettingsView(ViewBase):
         
         if self.applicationView.chaos01View is not None:
             self.applicationView.chaos01View.graph.ax.clear()
-            self.applicationView.chaos01View.graph.ax.set_title(self.applicationView.chaos01View.function.get_name())
+            self.applicationView.chaos01View.graph.ax.set_title(self.applicationView.chaos01View.graph.figName)
             self.applicationView.chaos01View.graph.draw_bifurcation_diagram(self.applicationView.chaos01View.data, 1, 
                 self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
                 self.applicationView.settings.chaos01ColorChaotic.get_hex())

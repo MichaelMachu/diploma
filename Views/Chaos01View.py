@@ -257,23 +257,26 @@ class Chaos01View(ViewBase):
 
     def __selection_function_type(self, event: EventType) -> None:
         selection = self.comboboxFunctionType.get()
-        self.function = FunctionSelection.GetByName(selection)
-
-        if selection == "logistic map":
-            self.__build_frame_logistic_map()
-        elif selection == "sinus":
-            self.__build_frame_sinus()
-        elif selection == "scaled normal":
-            self.__build_frame_scaled_normal()
-            self.__entry_set_value(self.entryA, self.function.a)
-            self.__entry_set_value(self.entryScale, self.function.scale)
-        elif selection == "scaled uniform":
-            self.__build_frame_scaled_uniform()
-            self.__entry_set_value(self.entryA, self.function.a)
-            self.__entry_set_value(self.entryRangeFrom, self.function.valueRange[0])
-            self.__entry_set_value(self.entryRangeTo, self.function.valueRange[1])
-        else:
+        if selection == "Load from file":
             self.__build_frame_FromFile()
+        else:
+            self.function = FunctionSelection.GetByName(selection)
+
+            if selection == "logistic map":
+                self.__build_frame_logistic_map()
+            elif selection == "sinus":
+                self.__build_frame_sinus()
+            elif selection == "scaled normal":
+                self.__build_frame_scaled_normal()
+                self.__entry_set_value(self.entryA, self.function.a)
+                self.__entry_set_value(self.entryScale, self.function.scale)
+            elif selection == "scaled uniform":
+                self.__build_frame_scaled_uniform()
+                self.__entry_set_value(self.entryA, self.function.a)
+                self.__entry_set_value(self.entryRangeFrom, self.function.valueRange[0])
+                self.__entry_set_value(self.entryRangeTo, self.function.valueRange[1])
+            #else:
+            #    self.__build_frame_FromFile()
 
     def draw(self) -> None:
         """Drawing method used for canvas"""
@@ -284,8 +287,12 @@ class Chaos01View(ViewBase):
         #if (not (filename and not filename.isspace())):
         #    return
 
-        if self.comboboxFunctionType.get() == "Load from file":
+        selection = self.comboboxFunctionType.get()
+
+        if selection == "Load from file":
             return
+
+        #self.function = FunctionSelection.GetByName(selection)
 
         self.data = Chaos01.execute_for_bifurcation_diagram(self.function)
         self.graph.ax.clear()

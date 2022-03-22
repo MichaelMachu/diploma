@@ -7,6 +7,7 @@ from typing import List
 class Graph:
 
     def __init__(self, figName: str = None):
+        self.figName = figName
         self.fig = plt.figure(figName)
         self.fig.suptitle(figName)
         self.ax = self.fig.add_subplot()
