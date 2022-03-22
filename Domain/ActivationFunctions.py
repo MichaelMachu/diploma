@@ -37,7 +37,10 @@ class ActivationFunctions:
         return 0 if x != 0 else 2
     
     def ReLU(x: float) -> float:
-        np.max(0, x)
+        return np.max(0, x)
+
+    def Tanh(x: float) -> float:
+        return np.tanh(x)
 
     def ReLUDerivative(x: float) -> float:
         return 0 if x < 0 else 1
@@ -47,3 +50,6 @@ class ActivationFunctions:
 
     def SigmoidDerivative(x: float) -> float:
         return x * (1 - x)
+
+    def TanhDerivative(x: float) -> float:
+        return 1 - np.tanh(x)*np.tanh(x)

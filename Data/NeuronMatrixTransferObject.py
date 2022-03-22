@@ -1,5 +1,6 @@
 from Interfaces.TransferObjectInterface import TransferObjectInterface
 from Domain.NeuronMatrix import NeuronMatrix
+from .DataProcess import DataProcess
 
 class NeuronMatrixTransferObject(TransferObjectInterface):
 
@@ -25,8 +26,8 @@ class NeuronMatrixTransferObject(TransferObjectInterface):
     # Object functions
     def get_as_dict(self) -> dict:
         return {
-            "matrix": self.matrix.tolist(),
-            "matrixWithoutZeros": self.matrixWithoutZeros.tolist(),
+            "matrix": DataProcess.to_list(self.matrix),
+            "matrixWithoutZeros": DataProcess.to_list(self.matrixWithoutZeros),
             "vector": self.vector,
             "weightMatrix": self.weightMatrix,
             "fullPattern": self.fullPattern,

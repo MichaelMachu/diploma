@@ -84,6 +84,12 @@ class HopfieldNetworkView(ViewBase):
         #self.buttonnSave.grid(row = 0, column = 0)
         self.buttonnSave.pack(fill='x', pady=(0, 20))
 
+        self.buttonnSave = Button(self.frameRight, bg = "#b9ffad")
+        self.buttonnSave["text"] = "Add 50 % noise"
+        self.buttonnSave["command"] = self.__add_noise
+        #self.buttonnSave.grid(row = 0, column = 0)
+        self.buttonnSave.pack(fill='x', pady=(0, 20))
+
         self.buttonRepairSync = Button(self.frameRight, bg = "#fff4ad")
         self.buttonRepairSync["text"] = "Repair pattern Sync"
         self.buttonRepairSync["command"] = self.repair_pattern_sync
@@ -227,6 +233,12 @@ class HopfieldNetworkView(ViewBase):
                 self.canvas.itemconfig(self.main_matrix_rectangles[i][j], fill = "white")
 
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+
+    def __add_noise(self) -> None:
+        #noise = np.array(np.random.rand() < 0.5, dtype=np.int8)
+        noise = [[np.random.rand() < 0.5 for _ in range(self.m)] for _ in range(self.n)]
+        self.main_matrix = [[int(bool(self.main_matrix[i][j]) != bool(noise[i][j])) for j in range(self.m)] for i in range(self.n)]
+        self.refresh_grid()
 
     # Serializování matice do vektoru
     def serialized_matrix(self, matrix: list) -> list:
