@@ -1,1 +1,1 @@
-{"cellSize": 5, "color": [[0, 0, 0], "#000000"], "pathMain": "TestData", "pathCellularAutomaton": "ca", "pathHopfieldNetwork": "hn", "pathChaos01": "ch", "hopfieldnetworkCellSize": 5, "chaos01ColorDeterminism": [[0, 255, 0], "#00ff00"], "chaos01ColorChaotic": [[255, 0, 0], "#ff0000"]}
+{"cellSize": 5, "color": [[0, 0, 0], "#000000"], "pathMain": "TestData", "pathCellularAutomaton": "ca", "pathHopfieldNetwork": "hn", "pathChaos01": "ch", "hopfieldnetworkCellSize": 10, "chaos01ColorDeterminism": [[0, 255, 0], "#00ff00"], "chaos01ColorChaotic": [[255, 0, 0], "#ff0000"]}
