@@ -10,11 +10,12 @@ class HopfieldNetwork:
     def __init__(self, size: Tuple[int, int] = (10, 10)) -> None:
         self.iter = 0
         self.size = size
-        self.bias = 1e-5
+        self.sizeFull = size[0] * size[1]
+        self.bias = 1e-1   # 1e-5
 
     # Sečtení všech matic
-    def SumMatrices(self, matrices: NeuronMatrix, n: int, m: int) -> list:
-        rows, cols = (n*m, n*m)
+    def SumMatrices(self, matrices: NeuronMatrix) -> list:  # n: int, m: int
+        rows, cols = (self.sizeFull, self.sizeFull) # (n*m, n*m)
         array = [[0 for _ in range(cols)] for _ in range(rows)]
         # Procházení všech matic
         for i in range(len(matrices)):
@@ -38,9 +39,9 @@ class HopfieldNetwork:
         return -0.5 * summaryWeight + summaryBias
 
     # Hopfieldova sít synchroním způsobem
-    def HopfieldNetworkSync(self, dimension: int, func: MethodType, inputVector: list, patterns: NeuronMatrix, n: int, m: int) -> list:
+    def HopfieldNetworkSync(self, dimension: int, func: MethodType, inputVector: list, patterns: NeuronMatrix) -> list: # n: int, m: int
         # Sečtu všechny paterny aneb vytvořím celkovou váhu všech matic
-        summedPatterns = self.SumMatrices(patterns, n, m)
+        summedPatterns = self.SumMatrices(patterns)
 
         # Vstupnímu vektoru převedu nuly na mínus jedničky
         for i in range(len(inputVector)):
@@ -64,9 +65,9 @@ class HopfieldNetwork:
         return result
 
     # Hopfieldova sít asynchroním způsobem
-    def HopfieldNetworkAsync(self, dimension: int, func: MethodType, inputVector: list, patterns: NeuronMatrix, n: int, m: int, checkMax: int = 3) -> list: # useEnergy: bool = True
+    def HopfieldNetworkAsync(self, dimension: int, func: MethodType, inputVector: list, patterns: NeuronMatrix, checkMax: int = 3, useCheck: bool = False) -> list: # useEnergy: bool = True
         # Sečtu všechny paterny aneb vytvořím celkovou váhu všech matic
-        summedPatterns = self.SumMatrices(patterns, n, m)
+        summedPatterns = self.SumMatrices(patterns)
         self.summedPatterns = summedPatterns
 
         # Vstupnímu vektoru převedu nuly na mínus jedničky
@@ -79,18 +80,17 @@ class HopfieldNetwork:
         areSame = False
         #print(inputVector)
         self.iter = 0
-        size = m*n
 
         energy = self.energy(change)
         
         # Provádím cyklus tak dlouho, dokud se matice nemění 10x po sobě
         while check < checkMax:
             # Výpočet opravení chyb skrze váhovou matici a vstupní vektor
-            for i in range(size): #np.random.permutation(size) #range(size):
-                idx = np.random.randint(0, size)
+            for i in range(self.sizeFull): #np.random.permutation(size) #range(size):
+                idx = np.random.randint(0, self.sizeFull)
 
                 summary = 0
-                for j in range(size): #np.random.permutation(m*n): #range(m*n):
+                for j in range(self.sizeFull): #np.random.permutation(m*n): #range(m*n):
                     summary += inputVector[j] * summedPatterns[idx][j] #summedPatterns[i][j] #summedPatterns[j][i] => original a blbě
                 summary = func(summary)
                 inputVector[idx] = summary
@@ -101,19 +101,22 @@ class HopfieldNetwork:
 
             #if useEnergy:
             if energy == energyNew:
-                # Kontrola, jestli se výsledek nezměnil
-                for i in range(len(change)):
-                    if change[i] != inputVector[i]:
-                        areSame = False
-                        break
-                    else:
-                        areSame = True
+                if useCheck:
+                    # Kontrola, jestli se výsledek nezměnil
+                    for i in range(len(change)):
+                        if change[i] != inputVector[i]:
+                            areSame = False
+                            break
+                        else:
+                            areSame = True
 
-                if areSame:
-                    check += 1
+                    if areSame:
+                        check += 1
+                    else:
+                        check = 0
+                        change = copy.deepcopy(inputVector)
                 else:
-                    check = 0
-                    change = copy.deepcopy(inputVector)
+                    break
 
             energy = energyNew
 

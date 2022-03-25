@@ -189,9 +189,9 @@ class HopfieldNetworkView(ViewBase):
 
     # Opravení paternu synchronním způsobem
     def repair_pattern_sync(self) -> None:
-        algorithms = HopfieldNetwork()
+        algorithms = HopfieldNetwork((self.n, self.m))
         vector = self.serialized_matrix(self.main_matrix)
-        result_vector = algorithms.HopfieldNetworkSync(2, ActivationFunctions.Signum, vector, self.saved_matrices, self.n, self.m)
+        result_vector = algorithms.HopfieldNetworkSync(2, ActivationFunctions.Signum, vector, self.saved_matrices)
 
         #print("result_vector", result_vector)
         for i in range(len(self.main_matrix)):
@@ -202,9 +202,9 @@ class HopfieldNetworkView(ViewBase):
 
     # Opravení paternu asynchronním způsobem
     def repair_pattern_async(self) -> None:
-        algorithms = HopfieldNetwork()
+        algorithms = HopfieldNetwork((self.n, self.m))
         vector = self.serialized_matrix(self.main_matrix)
-        result_vector = algorithms.HopfieldNetworkAsync(2, ActivationFunctions.Signum, vector, self.saved_matrices, self.n, self.m)
+        result_vector = algorithms.HopfieldNetworkAsync(2, ActivationFunctions.Signum, vector, self.saved_matrices)
 
         #print("result_vector", result_vector)
         for i in range(len(self.main_matrix)):
