@@ -29,11 +29,11 @@ class ImportView(ViewBase):
         self.frame.columnconfigure(1, weight=1)
 
         # Filename
-        self.labelFileName = Label(self.frame, text="Filename or full path with a filename\n - without file suffix name (string)", anchor='w', bg=self.frameBG)
+        self.labelFileName = Label(self.frame, text="Filename", anchor='w', bg=self.frameBG) #or full path with a filename\n - without file suffix name (string)
         self.labelFileName.grid(column=0, row=0, sticky=W)
         #self.entryFileName = Entry(self.frame)
         #self.entryFileName.grid(column=1, row=0, padx=10, pady=5, sticky=W)
-        self.comboboxFileName = ttk.Combobox(self.frame)
+        self.comboboxFileName = ttk.Combobox(self.frame, width=30)
         self.comboboxFileName["values"] = Settings.get_files_in_directory(self.filePath)
         self.comboboxFileName["state"] = "readonly"
         self.comboboxFileName.grid(column=1, row=0, padx=10, pady=5, sticky=W)

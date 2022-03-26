@@ -1,7 +1,8 @@
 from types import MethodType
 from typing import Tuple
 import numpy as np
-import copy
+from copy import deepcopy
+from math import sqrt
 
 from .NeuronMatrix import NeuronMatrix
 
@@ -11,7 +12,11 @@ class HopfieldNetwork:
         self.iter = 0
         self.size = size
         self.sizeFull = size[0] * size[1]
-        self.bias = 1e-1   # 1e-5
+        self.bias = 1e-10   # 1e-5 1e-1
+        self.history = []
+
+    def get_max_patterns(self) -> int:
+        return int(self.sizeFull / (2 * sqrt(self.sizeFull)))
 
     # Sečtení všech matic
     def SumMatrices(self, matrices: NeuronMatrix) -> list:  # n: int, m: int
@@ -76,7 +81,8 @@ class HopfieldNetwork:
                 inputVector[i] = -1
 
         check = 0
-        change = copy.deepcopy(inputVector)
+        change = deepcopy(inputVector)
+        self.history = [deepcopy(inputVector)]
         areSame = False
         #print(inputVector)
         self.iter = 0
@@ -95,6 +101,7 @@ class HopfieldNetwork:
                 summary = func(summary)
                 inputVector[idx] = summary
 
+            self.history.append(deepcopy(inputVector))
             energyNew = self.energy(inputVector)
 
             print(energy, energyNew)
@@ -114,7 +121,7 @@ class HopfieldNetwork:
                         check += 1
                     else:
                         check = 0
-                        change = copy.deepcopy(inputVector)
+                        change = deepcopy(inputVector)
                 else:
                     break
 

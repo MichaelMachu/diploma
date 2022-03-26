@@ -3,6 +3,8 @@ import numpy as np
 
 from Bases.ViewBase import ViewBase
 
+from Domain.HopfieldNetwork import HopfieldNetwork
+
 class NewHopfieldNetworkView(ViewBase):
 
     def __init__(self, hopfieldNetworkView: ViewBase) -> None:
@@ -28,14 +30,14 @@ class NewHopfieldNetworkView(ViewBase):
         self.labelWidth.grid(column=0, row=1, sticky=W)
         self.entryWidth = Entry(self.frame)
         self.entryWidth.grid(column=1, row=1, padx=10, pady=5, sticky=W)
-        self.entryWidth.insert(0, self.hopfieldNetworkView.n)
+        self.entryWidth.insert(0, self.hopfieldNetworkView.networkSize[1])
 
         # Set size N - Height
         self.labelHeight = Label(self.frame, text="Height (int)", anchor='w', bg=self.frameBG)
         self.labelHeight.grid(column=0, row=2, sticky=W)
         self.entryHeight = Entry(self.frame)
         self.entryHeight.grid(column=1, row=2, padx=10, pady=5, sticky=W)
-        self.entryHeight.insert(0, self.hopfieldNetworkView.m)
+        self.entryHeight.insert(0, self.hopfieldNetworkView.networkSize[0])
 
         self.labelWarning = Label(self.frame, text="It is recommended to keep the width and height with a same value", anchor='w', bg=self.frameBG)
         self.labelWarning.grid(column=0, row=3, columnspan=2, sticky=W)
@@ -57,14 +59,19 @@ class NewHopfieldNetworkView(ViewBase):
         width = int(widthStr)
         height = int(heightStr)
 
-        self.hopfieldNetworkView.n = height
-        self.hopfieldNetworkView.m = width
+        #self.hopfieldNetworkView.n = height
+        #self.hopfieldNetworkView.m = width
 
-        self.hopfieldNetworkView.main_matrix = np.zeros((self.hopfieldNetworkView.n, self.hopfieldNetworkView.m))
+        self.hopfieldNetworkView.networkSize = (height, width)
+        self.hopfieldNetworkView.hopfieldNetwork = HopfieldNetwork(self.hopfieldNetworkView.networkSize)
+
+        self.hopfieldNetworkView.main_matrix = np.zeros(self.hopfieldNetworkView.networkSize)
         self.hopfieldNetworkView.main_matrix_rectangles = []
         self.hopfieldNetworkView.saved_matrices = []
+        self.hopfieldNetworkView.max_patterns = self.hopfieldNetworkView.hopfieldNetwork.get_max_patterns()
+
         self.hopfieldNetworkView.canvas.delete("all")
         self.hopfieldNetworkView.create_grid()
-        self.hopfieldNetworkView.labelMaxPatterns["text"] = "Max recommended amount\n of saved patterns is " + str(self.hopfieldNetworkView.get_max_patterns())
+        self.hopfieldNetworkView.labelMaxPatterns["text"] = "Max recommended amount\n of saved patterns is " + str(self.hopfieldNetworkView.max_patterns)
         
         self.on_closing()

@@ -6,11 +6,13 @@ from Domain.HopfieldNetwork import HopfieldNetwork
 from Domain.ActivationFunctions import ActivationFunctions
 
 from Data.NeuronMatrixTransferObject import NeuronMatrixTransferObject
+from Data.HopfieldNetworkHistoryTransferObject import HopfieldNetworkHistoryTransferObject
 
 from Bases.ViewBase import ViewBase
 from . import ApplicationView
 from .NeuronMatrixView import NeuronMatrixView
 from .ImportView import ImportView
+from .ExportView import ExportView
 from .NewHopfieldNetworkView import NewHopfieldNetworkView
 
 import numpy as np
@@ -29,10 +31,13 @@ class HopfieldNetworkView(ViewBase):
 
         self.neuronMatrixViews = []
 
-        self.n = self.m = 10 # 10
-        self.max_patterns = self.get_max_patterns()
-        self.size = self.applicationView.settings.hopfieldnetworkCellSize # 30
-        self.main_matrix = np.zeros((self.n, self.m))
+        self.networkSize = (10, 10)
+        self.hopfieldNetwork = HopfieldNetwork(self.networkSize)
+
+        #self.n = self.m = 10 # 10
+        self.max_patterns = self.hopfieldNetwork.get_max_patterns()     # self.get_max_patterns()
+        self.cellSize = self.applicationView.settings.hopfieldnetworkCellSize # 30
+        self.main_matrix = np.zeros(self.networkSize) # (self.n, self.m)
         self.main_matrix_rectangles = []
         self.saved_matrices = []
 
@@ -57,7 +62,15 @@ class HopfieldNetworkView(ViewBase):
             label="Import pattern",
             command=self.__show_import_neuron_matrix_menu
         )
-        
+        self.menuFile.add_command(
+            label="Import image as pattern",
+            #command=self.__show_import_neuron_matrix_menu  # TODO
+        )
+        self.menuFile.add_command(
+            label="Export history of repairing",
+            command=self.__show_export_menu
+        )
+
         self.menu.add_cascade(label="File", menu=self.menuFile)
 
         #self.menu.add_command(
@@ -143,30 +156,30 @@ class HopfieldNetworkView(ViewBase):
         self.create_grid()
 
     # Returns max patterns
-    def get_max_patterns(self) -> int:
-        return int((self.n * self.m) / (2 * math.sqrt(self.n * self.m)))
+    #def get_max_patterns(self) -> int:
+    #    return int((self.n * self.m) / (2 * math.sqrt(self.n * self.m)))
 
     # Vytvoření gridu na canvasu
     def create_grid(self) -> None:
         offset = 2
         offsetY = 0
-        for i in range(self.n):
+        for i in range(self.networkSize[0]):
             array = []
             offsetX = 0
-            for j in range(self.m):
+            for j in range(self.networkSize[1]):
                 blockName = "block-" + str(i) + "-" + str(j)
                 array.append(self.canvas.create_rectangle(
-                    #offset + j * self.size, 
-                    #offset + i * self.size, 
-                    #offset + (j + 1) * self.size, 
-                    #offset + (i + 1) * self.size,
+                    #offset + j * self.cellSize, 
+                    #offset + i * self.cellSize, 
+                    #offset + (j + 1) * self.cellSize, 
+                    #offset + (i + 1) * self.cellSize,
                     offsetX + offset, offsetY + offset,
-                    offsetX + self.size + offset, offsetY + self.size + offset,
+                    offsetX + self.cellSize + offset, offsetY + self.cellSize + offset,
                     fill = "white", outline = "black", tags = blockName))
                 self.canvas.tag_bind(blockName, "<Button-1>", lambda event, i=i, j=j: self.change_value(event, i, j))
-                offsetX += self.size
+                offsetX += self.cellSize
             self.main_matrix_rectangles.append(array)
-            offsetY += self.size
+            offsetY += self.cellSize
 
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
@@ -189,36 +202,36 @@ class HopfieldNetworkView(ViewBase):
 
     # Opravení paternu synchronním způsobem
     def repair_pattern_sync(self) -> None:
-        algorithms = HopfieldNetwork((self.n, self.m))
+        #algorithms = HopfieldNetwork((self.n, self.m))
         vector = self.serialized_matrix(self.main_matrix)
-        result_vector = algorithms.HopfieldNetworkSync(2, ActivationFunctions.Signum, vector, self.saved_matrices)
+        result_vector = self.hopfieldNetwork.HopfieldNetworkSync(2, ActivationFunctions.Signum, vector, self.saved_matrices)
 
         #print("result_vector", result_vector)
         for i in range(len(self.main_matrix)):
             for j in range(len(self.main_matrix[i])):
-                self.main_matrix[i][j] = result_vector[j + (i * self.n)]
+                self.main_matrix[i][j] = result_vector[j + (i * self.networkSize[0])]
         
         self.refresh_grid()
 
     # Opravení paternu asynchronním způsobem
     def repair_pattern_async(self) -> None:
-        algorithms = HopfieldNetwork((self.n, self.m))
+        #algorithms = HopfieldNetwork((self.n, self.m))
         vector = self.serialized_matrix(self.main_matrix)
-        result_vector = algorithms.HopfieldNetworkAsync(2, ActivationFunctions.Signum, vector, self.saved_matrices)
+        result_vector = self.hopfieldNetwork.HopfieldNetworkAsync(2, ActivationFunctions.Signum, vector, self.saved_matrices)
 
         #print("result_vector", result_vector)
         for i in range(len(self.main_matrix)):
             for j in range(len(self.main_matrix[i])):
-                self.main_matrix[i][j] = result_vector[j + (i * self.n)]
+                self.main_matrix[i][j] = result_vector[j + (i * self.networkSize[0])]
         
         self.refresh_grid()
 
-        print("iterations:", algorithms.iter)
+        print("iterations:", self.hopfieldNetwork.iter)
 
     # Obnovení gridu
     def refresh_grid(self) -> None:
-        for i in range(self.n):
-            for j in range(self.m):
+        for i in range(self.networkSize[0]):
+            for j in range(self.networkSize[1]):
                 if self.main_matrix[i][j] == 0:
                     color = "white"
                 else:
@@ -227,8 +240,8 @@ class HopfieldNetworkView(ViewBase):
 
     # Vyčištění gridu
     def clear_grid(self) -> None:
-        for i in range(self.n):
-            for j in range(self.m):
+        for i in range(self.networkSize[0]):
+            for j in range(self.networkSize[1]):
                 self.main_matrix[i][j] = 0
                 self.canvas.itemconfig(self.main_matrix_rectangles[i][j], fill = "white")
 
@@ -236,8 +249,8 @@ class HopfieldNetworkView(ViewBase):
 
     def __add_noise(self) -> None:
         #noise = np.array(np.random.rand() < 0.5, dtype=np.int8)
-        noise = [[np.random.rand() < 0.5 for _ in range(self.m)] for _ in range(self.n)]
-        self.main_matrix = [[int(bool(self.main_matrix[i][j]) != bool(noise[i][j])) for j in range(self.m)] for i in range(self.n)]
+        noise = [[np.random.rand() < 0.5 for _ in range(self.networkSize[1])] for _ in range(self.networkSize[0])]
+        self.main_matrix = [[int(bool(self.main_matrix[i][j]) != bool(noise[i][j])) for j in range(self.networkSize[1])] for i in range(self.networkSize[0])]
         self.refresh_grid()
 
     # Serializování matice do vektoru
@@ -263,6 +276,16 @@ class HopfieldNetworkView(ViewBase):
         self.importView = ImportView(self, path, "Neuron Matrix")
         self.windowHandler.register(self.importView)
 
+    def __show_export_menu(self) -> None:
+        if self.windowHandler.exists(self.exportView):
+            return
+
+        transferObject = HopfieldNetworkHistoryTransferObject(self.hopfieldNetwork.history)
+
+        path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathHopfieldNetwork + "/"
+        self.exportView = ExportView(self, transferObject, path, "history data of repairing")
+        self.windowHandler.register(self.exportView)
+
     def __show_new_menu(self) -> None:
         if self.windowHandler.exists(self.newView):
             return
@@ -285,7 +308,7 @@ class HopfieldNetworkView(ViewBase):
         neuronMatrix.weightMatrix = transferObject.weightMatrix
         neuronMatrix.fullPattern = transferObject.fullPattern
 
-        if len(neuronMatrix.matrix) != self.n or len(neuronMatrix.matrix[0]) != self.m:
+        if len(neuronMatrix.matrix) != self.networkSize[0] or len(neuronMatrix.matrix[0]) != self.networkSize[1]:
             print("Error: size of imported pattern is not same as the size of hopfield field")
             return
 
@@ -297,7 +320,7 @@ class HopfieldNetworkView(ViewBase):
             return
         
         for ids in range(len(self.saved_matrices)):
-            neuronMatrixView = NeuronMatrixView(self.applicationView, self, ids, self.n, self.m, self.size)
+            neuronMatrixView = NeuronMatrixView(self.applicationView, self, ids, self.networkSize[0], self.networkSize[1], self.cellSize)
             self.neuronMatrixViews.append(neuronMatrixView)
 
     def on_closing(self) -> None:
