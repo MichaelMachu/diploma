@@ -15,6 +15,8 @@ class ImportView(ViewBase):
         self.applicationView = applicationView
 
         self.filePath = filePath
+        self.paths = Settings.get_files_in_directory(filePath)
+        self.fileNames = [key for key in self.paths]
 
         self.__build()
 
@@ -34,7 +36,7 @@ class ImportView(ViewBase):
         #self.entryFileName = Entry(self.frame)
         #self.entryFileName.grid(column=1, row=0, padx=10, pady=5, sticky=W)
         self.comboboxFileName = ttk.Combobox(self.frame, width=30)
-        self.comboboxFileName["values"] = Settings.get_files_in_directory(self.filePath)
+        self.comboboxFileName["values"] = self.fileNames
         self.comboboxFileName["state"] = "readonly"
         self.comboboxFileName.grid(column=1, row=0, padx=10, pady=5, sticky=W)
 

@@ -12,6 +12,7 @@ from Domain.Settings import Settings
 from .ImportView import ImportView
 from .ExportView import ExportView
 from Data.Chaos01TransferObject import Chaos01TransferObject
+from Data.DataProcess import DataProcess
 
 class Chaos01View(ViewBase):
 
@@ -22,6 +23,7 @@ class Chaos01View(ViewBase):
         self.graph = Graph()
         self.function = FunctionSelection.GetByName("logistic map")
         self.data = []
+        self.paths = {}
 
         # Create object variables
         # Frames
@@ -231,9 +233,11 @@ class Chaos01View(ViewBase):
         #self.entryFileName = Entry(self.frameFunction)
         #self.entryFileName.grid(column=1, row=row, padx=10, pady=5, sticky=W)
         path = self.applicationView.settings.pathMain + "/" # + self.applicationView.settings.pathCellularAutomaton + "/"
+        self.paths = Settings.get_files_in_directory(path)
         self.entryFileName = ttk.Combobox(self.frameFunction)
-        self.entryFileName["values"] = Settings.get_files_in_directory(path)
+        self.entryFileName["values"] = [key for key in self.paths]
         self.entryFileName["state"] = "readonly"
+        self.entryFileName.bind("<<ComboboxSelected>>", self.__selection_of_data)
         self.entryFileName.grid(column=1, row=row, padx=10, pady=5, sticky=W)
 
     def __entry_set_value(self, entry: Entry, value: str) -> None:
@@ -278,6 +282,68 @@ class Chaos01View(ViewBase):
             #else:
             #    self.__build_frame_FromFile()
 
+    def __selection_of_data(self, event: EventType) -> None:
+        filename = self.entryFileName.get()
+        if (not (filename and not filename.isspace())):
+            return
+
+        path = self.paths[filename]
+
+        dataDict = DataProcess.load_from_json_file(path)
+
+        if "history" in dataDict:
+            #print(dataDict["history"])
+
+            #self.data = Chaos01.execute_for_bifurcation_diagram_of_history_data(dataDict["history"])
+            #self.graph.ax.clear()
+            #self.graph.ax.set_title("Hopfield Network - Test")
+            #self.graph.draw_bifurcation_diagram(self.data, 1, 
+            #    self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
+            #    self.applicationView.settings.chaos01ColorChaotic.get_hex())
+            #self.canvas.draw()
+
+            #for signal in dataDict["history"]:
+            #    k, Kc, PC, QC = Chaos01.execute(signal)
+            #    print(k)
+            x, y = [], []
+            #s = len(dataDict["history"][0])
+            #for i in range(s):
+            #    for data in dataDict["history"]:
+            #        y.append(data[i])
+            #        x.append(i)
+            kk = []
+            segments = []
+            i = 0
+            INCREMENT = 1e-2
+
+            import numpy as np
+            se = np.zeros((6, 100, 2))
+
+            size = len(dataDict["history"])
+
+            for index, data in enumerate(dataDict["history"]):
+                k, Kc, PC, QC = Chaos01.execute(data)
+                print(k)
+                color = "#ff0000" if k > 0.5 else "#00ff00"
+                kk.append(color)
+                segment = []
+                for item in data:
+                    y.append(item)
+                    x.append(i)
+                    i += INCREMENT
+                    #kk.append(color)
+                    segment.append([i, item])
+                #segment.append
+                if index + 1 < size:
+                    segment.append([i+INCREMENT, dataDict["history"][index + 1][0]]) # add join between two segments
+                segments.append(segment)
+
+            self.graph.ax.clear()
+            self.graph.ax.set_title("Hopfield Network - Test")
+            self.graph.draw(segments, kk)   # x, y, kk
+            self.canvas.draw()
+
+
     def draw(self) -> None:
         """Drawing method used for canvas"""
         pass
@@ -293,6 +359,7 @@ class Chaos01View(ViewBase):
             return
 
         #self.function = FunctionSelection.GetByName(selection)
+        self.dataType = "bifurcation" # "iteration"
 
         self.data = Chaos01.execute_for_bifurcation_diagram(self.function)
         self.graph.ax.clear()
@@ -340,7 +407,7 @@ class Chaos01View(ViewBase):
         self.function = FunctionSelection.GetByName(functionName)
         self.graph.ax.clear()
         self.graph.ax.set_title(self.function.get_name())
-        self.applicationView.chaos01View.graph.draw_bifurcation_diagram(self.data, 1, 
+        self.graph.draw_bifurcation_diagram(self.data, 1, 
             self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
             self.applicationView.settings.chaos01ColorChaotic.get_hex())
         self.canvas.draw()

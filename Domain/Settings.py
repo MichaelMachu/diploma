@@ -1,4 +1,5 @@
 from os import walk
+from os.path import join
 from Domain.Color import Color
 from Data.DataProcess import DataProcess
 
@@ -20,14 +21,17 @@ class Settings:
         self.load_from_file()
 
     # Class functions
-    def get_files_in_directory(path: str) -> list:
-        files = []
+    def get_files_in_directory(path: str) -> dict:  # list
+        files = {}  # []
         for (root, dirs, file) in walk(path):
             for f in file:
                 if ".json" in f:
                     f = f.removesuffix(".json")
-                    files.append(f)
+                    #files.append(f)
+                    files[f] = join(root, f)
         return files
+
+    #def get_file_by_name(filename: str) -> dict
 
     # Object functions
     def set_default(self) -> None:
