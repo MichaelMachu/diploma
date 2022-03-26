@@ -21,13 +21,15 @@ class Graph:
             color = colorChaotic if item["k"] > 0.9 else colorDeterminism
             self.ax.scatter(item["xx"], item["yy"], s=size, c=color) # item["colors"]
 
-    def draw(self, data, colors): # xx, yy, kk
-        #self.ax.plot(xx, yy, c=kk)
-        #i = 0
-        #for item in data:
-        #    self.ax.plot(xx, yy, c=kk)
+    def draw_iteration(self, data, colorDeterminism: str = "#00ff00", colorChaotic: str = "#ff0000"): # xx, yy, kk
+        colors = []
+        segments = []
+        for item in data:
+            color = "#ff0000" if item["k"] > 0.5 else "#00ff00"
+            colors.append(color)
+            segments.append(item["segment"])
 
-        lineCollection = LineCollection(data, colors=colors) # colors=colors    cmap=plt.cm.gist_ncar
+        lineCollection = LineCollection(segments, colors=colors)
         self.ax.add_collection(lineCollection)
         self.ax.autoscale_view()
 

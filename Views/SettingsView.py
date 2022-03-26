@@ -4,6 +4,7 @@ from Domain.Color import Color
 
 from Bases.ViewBase import ViewBase
 from . import ApplicationView
+from EnumTypes.GraphType import GraphType
 
 class SettingsView(ViewBase):
 
@@ -184,9 +185,10 @@ class SettingsView(ViewBase):
         if self.applicationView.chaos01View is not None:
             self.applicationView.chaos01View.graph.ax.clear()
             self.applicationView.chaos01View.graph.ax.set_title(self.applicationView.chaos01View.graph.figName)
-            self.applicationView.chaos01View.graph.draw_bifurcation_diagram(self.applicationView.chaos01View.data, 1, 
-                self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
-                self.applicationView.settings.chaos01ColorChaotic.get_hex())
+            if self.applicationView.chaos01View.dataType == GraphType.BIFURCATION:
+                self.applicationView.chaos01View.graph.draw_bifurcation_diagram(self.applicationView.chaos01View.data, 1, 
+                    self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
+                    self.applicationView.settings.chaos01ColorChaotic.get_hex())
             self.applicationView.chaos01View.canvas.draw()
 
         self.on_closing()

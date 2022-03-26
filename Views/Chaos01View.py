@@ -14,6 +14,8 @@ from .ExportView import ExportView
 from Data.Chaos01TransferObject import Chaos01TransferObject
 from Data.DataProcess import DataProcess
 
+from EnumTypes.GraphType import GraphType
+
 class Chaos01View(ViewBase):
 
     def __init__(self, applicationView: ApplicationView) -> None:
@@ -22,6 +24,7 @@ class Chaos01View(ViewBase):
 
         self.graph = Graph()
         self.function = FunctionSelection.GetByName("logistic map")
+        self.dataType = GraphType.BIFURCATION
         self.data = []
         self.paths = {}
 
@@ -287,11 +290,11 @@ class Chaos01View(ViewBase):
         if (not (filename and not filename.isspace())):
             return
 
-        path = self.paths[filename]
+        #path = self.paths[filename]
 
-        dataDict = DataProcess.load_from_json_file(path)
+        #dataDict = DataProcess.load_from_json_file(path)
 
-        if "history" in dataDict:
+        #if "history" in dataDict:
             #print(dataDict["history"])
 
             #self.data = Chaos01.execute_for_bifurcation_diagram_of_history_data(dataDict["history"])
@@ -305,47 +308,46 @@ class Chaos01View(ViewBase):
             #for signal in dataDict["history"]:
             #    k, Kc, PC, QC = Chaos01.execute(signal)
             #    print(k)
-            x, y = [], []
+            #x, y = [], []
             #s = len(dataDict["history"][0])
             #for i in range(s):
             #    for data in dataDict["history"]:
             #        y.append(data[i])
             #        x.append(i)
-            kk = []
-            segments = []
-            i = 0
-            INCREMENT = 1e-2
+            #kk = []
+            #segments = []
+            #i = 0
+            #INCREMENT = 1e-2
+            #size = len(dataDict["history"])
+            #for index, data in enumerate(dataDict["history"]):
+            #    k, Kc, PC, QC = Chaos01.execute(data)
+            #    print(k)
+            #    color = "#ff0000" if k > 0.5 else "#00ff00"
+            #    kk.append(color)
+            #    segment = []
+            #    for item in data:
+            #        y.append(item)
+            #        x.append(i)
+            #        i += INCREMENT
+            #        #kk.append(color)
+            #        segment.append([i, item])
+            #    #segment.append
+            #    if index + 1 < size:
+            #        segment.append([i+INCREMENT, dataDict["history"][index + 1][0]]) # add join between two segments
+            #    segments.append(segment)
 
-            import numpy as np
-            se = np.zeros((6, 100, 2))
+            #self.data = Chaos01.execute_for_iteration(dataDict["history"])
+            #self.dataType = GraphType.ITERATION
 
-            size = len(dataDict["history"])
-
-            for index, data in enumerate(dataDict["history"]):
-                k, Kc, PC, QC = Chaos01.execute(data)
-                print(k)
-                color = "#ff0000" if k > 0.5 else "#00ff00"
-                kk.append(color)
-                segment = []
-                for item in data:
-                    y.append(item)
-                    x.append(i)
-                    i += INCREMENT
-                    #kk.append(color)
-                    segment.append([i, item])
-                #segment.append
-                if index + 1 < size:
-                    segment.append([i+INCREMENT, dataDict["history"][index + 1][0]]) # add join between two segments
-                segments.append(segment)
-
-            self.graph.ax.clear()
-            self.graph.ax.set_title("Hopfield Network - Test")
-            self.graph.draw(segments, kk)   # x, y, kk
-            self.canvas.draw()
+            #self.graph.ax.clear()
+            #self.graph.ax.set_title("Hopfield Network - Iteration over history with Chaos01")
+            #self.graph.draw_iteration(self.data)   # x, y, kk
+            #self.canvas.draw()
 
 
     def draw(self) -> None:
         """Drawing method used for canvas"""
+        # TODO refresh canvas, so unnecessary changes in other files will be removed because of this
         pass
 
     def __show_graph(self) -> None:
@@ -356,10 +358,27 @@ class Chaos01View(ViewBase):
         selection = self.comboboxFunctionType.get()
 
         if selection == "Load from file":
+            filename = self.entryFileName.get()
+            if (not (filename and not filename.isspace())):
+                return
+
+            path = self.paths[filename]
+
+            dataDict = DataProcess.load_from_json_file(path)
+
+            if "history" in dataDict:
+                self.dataType = GraphType.ITERATION
+
+                self.data = Chaos01.execute_for_iteration(dataDict["history"])
+
+                self.graph.ax.clear()
+                self.graph.ax.set_title("Hopfield Network - Iteration over history with Chaos01")
+                self.graph.draw_iteration(self.data)
+                self.canvas.draw()
             return
 
         #self.function = FunctionSelection.GetByName(selection)
-        self.dataType = "bifurcation" # "iteration"
+        self.dataType = GraphType.BIFURCATION
 
         self.data = Chaos01.execute_for_bifurcation_diagram(self.function)
         self.graph.ax.clear()
@@ -381,7 +400,7 @@ class Chaos01View(ViewBase):
         if self.windowHandler.exists(self.exportView):
             return
 
-        transferObject = Chaos01TransferObject(self.data, self.function.get_name())
+        transferObject = Chaos01TransferObject(self.data, self.function.get_name(), self.dataType)
 
         path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathChaos01 + "/"
         self.exportView = ExportView(self, transferObject, path, "main of the Chaos01 data")
@@ -391,7 +410,7 @@ class Chaos01View(ViewBase):
         if self.windowHandler.exists(self.exportView):
             return
 
-        transferObject = Chaos01TransferObject(self.data, self.function.get_name(), False)
+        transferObject = Chaos01TransferObject(self.data, self.function.get_name(), self.dataType, False)
 
         path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathChaos01 + "/"
         self.exportView = ExportView(self, transferObject, path, "all of the Chaos01 data")
@@ -403,13 +422,21 @@ class Chaos01View(ViewBase):
         if self._importData is None:
             return
 
-        self.data, functionName = Chaos01TransferObject.set_by_dict(self._importData)
-        self.function = FunctionSelection.GetByName(functionName)
+        self.data, functionName, self.dataType = Chaos01TransferObject.set_by_dict(self._importData)
+
         self.graph.ax.clear()
-        self.graph.ax.set_title(self.function.get_name())
-        self.graph.draw_bifurcation_diagram(self.data, 1, 
-            self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
-            self.applicationView.settings.chaos01ColorChaotic.get_hex())
+
+        if self.dataType == GraphType.BIFURCATION:
+            self.function = FunctionSelection.GetByName(functionName)
+            self.graph.ax.set_title(self.function.get_name())
+            self.graph.draw_bifurcation_diagram(self.data, 1, 
+                self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
+                self.applicationView.settings.chaos01ColorChaotic.get_hex())
+        elif self.dataType == GraphType.ITERATION:
+            self.graph.ax.set_title("")
+            self.graph.draw_iteration(self.data,
+                self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
+                self.applicationView.settings.chaos01ColorChaotic.get_hex())
         self.canvas.draw()
 
     def on_closing(self) -> None:

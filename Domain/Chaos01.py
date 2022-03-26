@@ -92,24 +92,25 @@ class Chaos01:
         
         return data
 
-    def execute_for_bifurcation_diagram_of_history_data(historyData: list, lineArray: list = None) -> List[dict]:
-        lineArray = np.linspace(1, 100)
-        N = len(historyData[0])
-        x = 0.5 + np.zeros(N)
-        endcap = np.arange(round(N * 0.9), N)
-
+    def execute_for_iteration(historyData: list) -> List[dict]: # lineArray: list = None
         data = []
-        
-        for r in lineArray:
-            for array in historyData:
-                for n in range(N - 1):
-                    x[n + 1] = array[n] # function.get(r, x[n])
+        i = 0
+        INCREMENT = 1e-2
+        size = len(historyData)
 
-            u = np.unique(x[endcap])
-            xx = r * np.ones(len(u))
-            k, Kc, PC, QC = Chaos01.execute(u)    # 2, 8        , 1, 20
+        for index, items in enumerate(historyData):
+            k, Kc, PC, QC = Chaos01.execute(items)
             print(k)
-            items = {"xx": xx, "yy": u, "k": k, "Kc": Kc, "PC": PC, "QC": QC}
+            segment = []
+            
+            for item in items:
+                i += INCREMENT
+                segment.append([i, item])
+            
+            if index + 1 < size:
+                segment.append([i+INCREMENT, historyData[index + 1][0]]) # add join between two segments
+            
+            items = {"segment": segment, "k": k, "Kc": Kc, "PC": PC, "QC": QC}
             data.append(items)
         
         return data
