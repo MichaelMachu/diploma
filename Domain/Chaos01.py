@@ -95,11 +95,11 @@ class Chaos01:
     def execute_for_iteration(historyData: list) -> List[dict]: # lineArray: list = None
         data = []
         i = 0
-        INCREMENT = 1e-2
+        INCREMENT = 1/len(historyData[0])    # 1e-2
         size = len(historyData)
 
         for index, items in enumerate(historyData):
-            k, Kc, PC, QC = Chaos01.execute(items)
+            k, Kc, PC, QC = Chaos01.execute(items, 4)
             print(k)
             segment = []
             

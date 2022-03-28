@@ -25,6 +25,7 @@ class Chaos01View(ViewBase):
         self.graph = Graph()
         self.function = FunctionSelection.GetByName("logistic map")
         self.dataType = GraphType.BIFURCATION
+        self.dataTypePom = GraphType.BIFURCATION
         self.data = []
         self.paths = {}
         self.dataDict = {}
@@ -167,6 +168,13 @@ class Chaos01View(ViewBase):
         self.buttonShow = Button(self.frameChaos01, text="Calculate and show on graph", command=self.__show_graph)
         self.buttonShow.grid(column=0, row=6, columnspan=2, padx=10, pady=5)
         #self.buttonShow.pack(fill=None, expand=False, padx=10, pady=10)
+        
+        self.buttonShowGraphCourseK = Button(self.frameChaos01, text="Show course of K values on graph", command=self.__show_graph_course_of_K_values)
+        self.buttonShowGraphCourseK.grid(column=0, row=7, columnspan=2, padx=10, pady=5)
+        
+        self.buttonShowGraphChaos = Button(self.frameChaos01, text="Show chaotic data on graph", command=self.__show_graph_of_chaos)
+        self.buttonShowGraphChaos.grid(column=0, row=8, columnspan=2, padx=10, pady=5)
+        
 
         self.frame.grid_rowconfigure(0, weight=1)
         self.frame.grid_columnconfigure(0, weight=1)
@@ -304,6 +312,12 @@ class Chaos01View(ViewBase):
 
         self.comboboxSelectedParameter["values"] = [key for key in self.dataDict]
 
+    def set_data_type(self, dataType: GraphType) -> None:
+        #if dataType == GraphType.KVALUES and self.dataType != GraphType.KVALUES:
+        #    self.dataTypePom = self.dataType
+        
+        #self.dataType = self.dataTypePom if self.dataType == GraphType.KVALUES else dataType
+        self.dataType = dataType
 
     def draw(self) -> None:
         self.graph.refresh()
@@ -316,6 +330,8 @@ class Chaos01View(ViewBase):
             self.graph.draw_iteration(self.data,
                 self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
                 self.applicationView.settings.chaos01ColorChaotic.get_hex())
+        #elif self.dataType == GraphType.KVALUES:
+        #    self.graph.draw_course_of_K_values(self.data)
         
         self.canvas.draw()
 
@@ -334,7 +350,7 @@ class Chaos01View(ViewBase):
                 return
 
             if selectedParameter in self.dataDict:
-                self.dataType = GraphType.ITERATION
+                self.set_data_type(GraphType.ITERATION)
 
                 self.data = Chaos01.execute_for_iteration(self.dataDict[selectedParameter])
 
@@ -343,12 +359,31 @@ class Chaos01View(ViewBase):
                 self.draw()
             return
 
-        self.dataType = GraphType.BIFURCATION
+        self.set_data_type(GraphType.BIFURCATION)
 
         self.data = Chaos01.execute_for_bifurcation_diagram(self.function)
         self.graph.figName = self.function.get_name()
         
         self.draw()
+
+    def __show_graph_of_chaos(self) -> None:
+        if not self.data:
+            return
+
+        selection = self.comboboxFunctionType.get()
+        if (not (selection and not selection.isspace())):
+            return
+
+        #self.set_data_type(self.dataTypePom)
+        #self.dataType = GraphType(self.data["dataType"]) if "dataType" in self.data else GraphType.BIFURCATION if selection != "Load from file" else GraphType.ITERATION
+        self.draw()
+
+    def __show_graph_course_of_K_values(self) -> None:
+        self.graph.refresh()
+        self.graph.draw_course_of_K_values(self.data)
+        self.canvas.draw()
+        #self.set_data_type(GraphType.KVALUES)
+        #self.draw()
 
     def __show_import_menu(self) -> None:
         if self.windowHandler.exists(self.importView):
@@ -384,7 +419,8 @@ class Chaos01View(ViewBase):
         if self._importData is None:
             return
 
-        self.data, functionName, self.dataType = Chaos01TransferObject.set_by_dict(self._importData)
+        self.data, functionName, dataType = Chaos01TransferObject.set_by_dict(self._importData)
+        self.set_data_type(GraphType(dataType))
 
         if self.dataType == GraphType.BIFURCATION:
             self.function = FunctionSelection.GetByName(functionName)

@@ -40,5 +40,13 @@ class Graph:
         self.ax.add_collection(lineCollection)
         self.ax.autoscale_view()
 
+    def draw_course_of_K_values(self, data):
+        x = []
+        y = []
+        for i, item in enumerate(data):
+            x.append(i)
+            y.append(item["k"])
+        self.ax.plot(x, y)
+
     def close(self) -> None:
         plt.close()
