@@ -27,6 +27,7 @@ class Chaos01View(ViewBase):
         self.dataType = GraphType.BIFURCATION
         self.data = []
         self.paths = {}
+        self.dataDict = {}
 
         # Create object variables
         # Frames
@@ -54,11 +55,12 @@ class Chaos01View(ViewBase):
         self.entryScale = None
         self.entryRangeFrom = None
         self.entryRangeTo = None
-        self.entryFileName = None
         # Buttons
         self.buttonShow = None
         # Comboboxes
         self.comboboxFunctionType = None
+        self.comboboxFileName = None
+        self.comboboxSelectedParameter = None
 
         self.__build()
 
@@ -233,15 +235,21 @@ class Chaos01View(ViewBase):
         row = self.__clear_frame()
         self.labelFileName = Label(self.frameFunction, text="Filename", anchor='w', bg=self.frameBG) # (string)\n - without suffix
         self.labelFileName.grid(column=0, row=row, sticky=W)
-        #self.entryFileName = Entry(self.frameFunction)
-        #self.entryFileName.grid(column=1, row=row, padx=10, pady=5, sticky=W)
+        #self.comboboxFileName = Entry(self.frameFunction)
+        #self.comboboxFileName.grid(column=1, row=row, padx=10, pady=5, sticky=W)
         path = self.applicationView.settings.pathMain + "/" # + self.applicationView.settings.pathCellularAutomaton + "/"
         self.paths = Settings.get_files_in_directory(path)
-        self.entryFileName = ttk.Combobox(self.frameFunction)
-        self.entryFileName["values"] = [key for key in self.paths]
-        self.entryFileName["state"] = "readonly"
-        self.entryFileName.bind("<<ComboboxSelected>>", self.__selection_of_data)
-        self.entryFileName.grid(column=1, row=row, padx=10, pady=5, sticky=W)
+        self.comboboxFileName = ttk.Combobox(self.frameFunction)
+        self.comboboxFileName["values"] = [key for key in self.paths]
+        self.comboboxFileName["state"] = "readonly"
+        self.comboboxFileName.bind("<<ComboboxSelected>>", self.__selection_of_data)
+        self.comboboxFileName.grid(column=1, row=row, padx=10, pady=5, sticky=W)
+        row += 1
+        self.labelSelectedParameter = Label(self.frameFunction, text="Select parameter", anchor='w', bg=self.frameBG) # (string)\n - without suffix
+        self.labelSelectedParameter.grid(column=0, row=row, sticky=W)
+        self.comboboxSelectedParameter = ttk.Combobox(self.frameFunction)
+        self.comboboxSelectedParameter["state"] = "readonly"
+        self.comboboxSelectedParameter.grid(column=1, row=row, padx=10, pady=5, sticky=W)
 
     def __entry_set_value(self, entry: Entry, value: str) -> None:
         if entry is None:
@@ -286,107 +294,61 @@ class Chaos01View(ViewBase):
             #    self.__build_frame_FromFile()
 
     def __selection_of_data(self, event: EventType) -> None:
-        filename = self.entryFileName.get()
+        filename = self.comboboxFileName.get()
         if (not (filename and not filename.isspace())):
             return
 
-        #path = self.paths[filename]
+        path = self.paths[filename]
 
-        #dataDict = DataProcess.load_from_json_file(path)
+        self.dataDict = DataProcess.load_from_json_file(path)
 
-        #if "history" in dataDict:
-            #print(dataDict["history"])
-
-            #self.data = Chaos01.execute_for_bifurcation_diagram_of_history_data(dataDict["history"])
-            #self.graph.ax.clear()
-            #self.graph.ax.set_title("Hopfield Network - Test")
-            #self.graph.draw_bifurcation_diagram(self.data, 1, 
-            #    self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
-            #    self.applicationView.settings.chaos01ColorChaotic.get_hex())
-            #self.canvas.draw()
-
-            #for signal in dataDict["history"]:
-            #    k, Kc, PC, QC = Chaos01.execute(signal)
-            #    print(k)
-            #x, y = [], []
-            #s = len(dataDict["history"][0])
-            #for i in range(s):
-            #    for data in dataDict["history"]:
-            #        y.append(data[i])
-            #        x.append(i)
-            #kk = []
-            #segments = []
-            #i = 0
-            #INCREMENT = 1e-2
-            #size = len(dataDict["history"])
-            #for index, data in enumerate(dataDict["history"]):
-            #    k, Kc, PC, QC = Chaos01.execute(data)
-            #    print(k)
-            #    color = "#ff0000" if k > 0.5 else "#00ff00"
-            #    kk.append(color)
-            #    segment = []
-            #    for item in data:
-            #        y.append(item)
-            #        x.append(i)
-            #        i += INCREMENT
-            #        #kk.append(color)
-            #        segment.append([i, item])
-            #    #segment.append
-            #    if index + 1 < size:
-            #        segment.append([i+INCREMENT, dataDict["history"][index + 1][0]]) # add join between two segments
-            #    segments.append(segment)
-
-            #self.data = Chaos01.execute_for_iteration(dataDict["history"])
-            #self.dataType = GraphType.ITERATION
-
-            #self.graph.ax.clear()
-            #self.graph.ax.set_title("Hopfield Network - Iteration over history with Chaos01")
-            #self.graph.draw_iteration(self.data)   # x, y, kk
-            #self.canvas.draw()
+        self.comboboxSelectedParameter["values"] = [key for key in self.dataDict]
 
 
     def draw(self) -> None:
-        """Drawing method used for canvas"""
-        # TODO refresh canvas, so unnecessary changes in other files will be removed because of this
-        pass
+        self.graph.refresh()
+
+        if self.dataType == GraphType.BIFURCATION:
+            self.graph.draw_bifurcation_diagram(self.data, 1, 
+                self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
+                self.applicationView.settings.chaos01ColorChaotic.get_hex())
+        elif self.dataType == GraphType.ITERATION:
+            self.graph.draw_iteration(self.data,
+                self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
+                self.applicationView.settings.chaos01ColorChaotic.get_hex())
+        
+        self.canvas.draw()
 
     def __show_graph(self) -> None:
-        #filename = self.entryFileName.get()
-        #if (not (filename and not filename.isspace())):
-        #    return
-
         selection = self.comboboxFunctionType.get()
+        if (not (selection and not selection.isspace())):
+            return
 
         if selection == "Load from file":
-            filename = self.entryFileName.get()
+            filename = self.comboboxFileName.get()
             if (not (filename and not filename.isspace())):
                 return
 
-            path = self.paths[filename]
+            selectedParameter = self.comboboxSelectedParameter.get()
+            if (not (selectedParameter and not selectedParameter.isspace())):
+                return
 
-            dataDict = DataProcess.load_from_json_file(path)
-
-            if "history" in dataDict:
+            if selectedParameter in self.dataDict:
                 self.dataType = GraphType.ITERATION
 
-                self.data = Chaos01.execute_for_iteration(dataDict["history"])
+                self.data = Chaos01.execute_for_iteration(self.dataDict[selectedParameter])
 
-                self.graph.ax.clear()
-                self.graph.ax.set_title("Hopfield Network - Iteration over history with Chaos01")
-                self.graph.draw_iteration(self.data)
-                self.canvas.draw()
+                self.graph.figName = "Hopfield Network - Iteration over history with Chaos01"
+
+                self.draw()
             return
 
-        #self.function = FunctionSelection.GetByName(selection)
         self.dataType = GraphType.BIFURCATION
 
         self.data = Chaos01.execute_for_bifurcation_diagram(self.function)
-        self.graph.ax.clear()
-        self.graph.ax.set_title(self.function.get_name())
-        self.graph.draw_bifurcation_diagram(self.data, 1, 
-            self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
-            self.applicationView.settings.chaos01ColorChaotic.get_hex())
-        self.canvas.draw()
+        self.graph.figName = self.function.get_name()
+        
+        self.draw()
 
     def __show_import_menu(self) -> None:
         if self.windowHandler.exists(self.importView):
@@ -424,20 +386,13 @@ class Chaos01View(ViewBase):
 
         self.data, functionName, self.dataType = Chaos01TransferObject.set_by_dict(self._importData)
 
-        self.graph.ax.clear()
-
         if self.dataType == GraphType.BIFURCATION:
             self.function = FunctionSelection.GetByName(functionName)
-            self.graph.ax.set_title(self.function.get_name())
-            self.graph.draw_bifurcation_diagram(self.data, 1, 
-                self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
-                self.applicationView.settings.chaos01ColorChaotic.get_hex())
+            self.graph.figName = self.function.get_name()
         elif self.dataType == GraphType.ITERATION:
-            self.graph.ax.set_title("")
-            self.graph.draw_iteration(self.data,
-                self.applicationView.settings.chaos01ColorDeterminism.get_hex(),
-                self.applicationView.settings.chaos01ColorChaotic.get_hex())
-        self.canvas.draw()
+            self.graph.figName = ""
+        
+        self.draw()
 
     def on_closing(self) -> None:
         self.graph.close()

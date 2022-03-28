@@ -14,6 +14,13 @@ class Graph:
         self.fig.suptitle(figName)
         #self.ax = self.fig.add_subplot()
 
+    def __set_name(self):
+        self.ax.set_title(self.figName)
+
+    def refresh(self):
+        self.ax.clear()
+        self.__set_name()
+
     # Draw bifurcation diagram
     def draw_bifurcation_diagram(self, data: List[dict], size: int = 1, colorDeterminism: str = "#00ff00", colorChaotic: str = "#ff0000") -> None:
         for item in data:
@@ -25,7 +32,7 @@ class Graph:
         colors = []
         segments = []
         for item in data:
-            color = "#ff0000" if item["k"] > 0.5 else "#00ff00"
+            color = colorChaotic if item["k"] > 0.5 else colorDeterminism
             colors.append(color)
             segments.append(item["segment"])
 

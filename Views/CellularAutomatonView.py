@@ -225,8 +225,9 @@ class CellularAutomatonView(ViewBase):
         #self.entryFileName = Entry(self.frameCA)
         #self.entryFileName.grid(column=1, row=row, padx=10, pady=5, sticky=W)
         path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathCellularAutomaton + "/"
+        paths = Settings.get_files_in_directory(path)
         self.entryFileName = ttk.Combobox(self.frameCA)
-        self.entryFileName["values"] = Settings.get_files_in_directory(path)
+        self.entryFileName["values"] = [key for key in paths]
         self.entryFileName["state"] = "readonly"
         self.entryFileName.grid(column=1, row=row, padx=10, pady=5, sticky=W)
         row = row + 1
