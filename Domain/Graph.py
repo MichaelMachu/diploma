@@ -23,14 +23,19 @@ class Graph:
 
     # Draw bifurcation diagram
     def draw_bifurcation_diagram(self, data: List[dict], size: int = 1, colorDeterminism: str = "#00ff00", colorChaotic: str = "#ff0000") -> None:
+        self.ax.set_xlabel("time in iterations")
+        self.ax.set_ylabel("values of the function")
+
         for item in data:
             #colors = [colorChaotic if k > 0.9 else colorDeterminism for k in item["kk"]]
             color = colorChaotic if item["k"] > 0.9 else colorDeterminism
             self.ax.scatter(item["xx"], item["yy"], s=size, c=color) # item["colors"]
 
     def draw_iteration(self, data, colorDeterminism: str = "#00ff00", colorChaotic: str = "#ff0000"): # xx, yy, kk
-        colors = []
-        segments = []
+        self.ax.set_xlabel("time in iterations")
+        self.ax.set_ylabel("values of states")
+        colors, segments = [], []
+
         for item in data:
             color = colorChaotic if item["k"] > 0.5 else colorDeterminism
             colors.append(color)
@@ -41,8 +46,8 @@ class Graph:
         self.ax.autoscale_view()
 
     def draw_course_of_K_values(self, data):
-        x = []
-        y = []
+        x, y = [], []
+
         for i, item in enumerate(data):
             x.append(i)
             y.append(item["k"])

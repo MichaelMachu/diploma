@@ -34,6 +34,7 @@ class Chaos01View(ViewBase):
         self.data = []
         self.paths = {}
         self.dataDict = {}
+        self.thread = None
 
         # Create object variables
         # Frames
@@ -363,7 +364,8 @@ class Chaos01View(ViewBase):
     def __calculate_chaos01(self, function: MethodType, *args) -> None:
         self.buttonCalculateAndShow.configure(state=DISABLED)
         self.buttonCalculateAndShow["text"] = "Data are calculating..."
-        Thread(target=self.__calculate_chaos01_wrapper, args=(function, *args,)).start()
+        self.thread = Thread(target=self.__calculate_chaos01_wrapper, args=(function, *args,))
+        self.thread.start()
 
     def __calculate_and_show_graph(self) -> None:
         skipStr = self.entrySkip.get()
@@ -437,7 +439,7 @@ class Chaos01View(ViewBase):
         if self.windowHandler.exists(self.exportView):
             return
 
-        transferObject = Chaos01TransferObject(self.data, self.function.get_name(), self.dataType)
+        transferObject = Chaos01TransferObject(self.data, self.function.get_name(), self.dataType, self.chaos01)
 
         path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathChaos01 + "/"
         self.exportView = ExportView(self, transferObject, path, "main of the Chaos01 data")
@@ -447,7 +449,7 @@ class Chaos01View(ViewBase):
         if self.windowHandler.exists(self.exportView):
             return
 
-        transferObject = Chaos01TransferObject(self.data, self.function.get_name(), self.dataType, False)
+        transferObject = Chaos01TransferObject(self.data, self.function.get_name(), self.dataType, self.chaos01, False)
 
         path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathChaos01 + "/"
         self.exportView = ExportView(self, transferObject, path, "all of the Chaos01 data")
@@ -459,8 +461,11 @@ class Chaos01View(ViewBase):
         if self._importData is None:
             return
 
-        self.data, functionName, dataType = Chaos01TransferObject.set_by_dict(self._importData)
+        self.data, functionName, dataType, self.chaos01 = Chaos01TransferObject.set_by_dict(self._importData)
         self.set_data_type(GraphType(dataType))
+
+        self.__entry_set_value(self.entrySkip, self.chaos01.skip)
+        self.__entry_set_value(self.entryCut, self.chaos01.cut)
 
         if self.dataType == GraphType.BIFURCATION:
             self.function = FunctionSelection.GetByName(functionName)
@@ -471,6 +476,8 @@ class Chaos01View(ViewBase):
         self.draw()
 
     def on_closing(self) -> None:
+        if self.thread is not None:
+            self.thread.join()
         self.graph.close()
         super().on_closing()
         self.applicationView.chaos01View = None
