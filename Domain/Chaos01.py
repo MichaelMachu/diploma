@@ -6,23 +6,41 @@ from Interfaces.FunctionInterface import FunctionInterface
 
 class Chaos01:
 
-    def execute(signal: list, skip: int = 1, cut: int = 2) -> Tuple[int, list, list, list]:
+    def __init__(self, skip: int = 1, cut: int = 2) -> None:
+        self.set_skip(skip)
+        self.set_cut(cut)
+        self.R = 628
+        self.INCREASE = 1e-15   # small increase because of division at fraction in corrcoef function
+
+    def minimum_skip(self) -> int:
+        return 1
+
+    def minimum_cut(self) -> int:
+        return 2
+
+    def set_skip(self, value: int) -> None:
+        self.skip = value if value > self.minimum_skip() else self.minimum_skip()
+
+    def set_cut(self, value: int) -> None:
+        self.cut = value if value > self.minimum_cut() else self.minimum_cut()
+
+    # Object functions
+    def execute(self, signal: list) -> Tuple[int, list, list, list]:
         n1 = 0
         n2 = len(signal)
-        phi = [signal[i] for i in range(n1, n2, skip)]
+        phi = [signal[i] for i in range(n1, n2, self.skip)]
         N = len(phi)
-        R = 628
-        ncut = int(np.floor(N / cut))
+        self.R = 628
+        ncut = int(np.floor(N / self.cut))
         x = 0
         Ephi = 0
-        INCREASE = 1e-15    # 1e-15 small increase because of division at fraction in corrcoef function
         for j in range(N):
             Ephi = Ephi + (1 / N) * phi[j]
 
-        Kc = np.zeros(R)
-        PC = np.zeros((R, N))
-        QC = np.zeros((R, N))
-        for m in range(1, R):
+        Kc = np.zeros(self.R)
+        PC = np.zeros((self.R, N))
+        QC = np.zeros((self.R, N))
+        for m in range(1, self.R):
             #   x=x+1;
             c = m / 100
             #print(m)
@@ -59,7 +77,7 @@ class Chaos01:
                     Mc[n - 1] = 0
                 else:
                     Mc[n - 1] = MCpom[N - 1 - ncut - 1] / (N - 1 - ncut - 1)
-                Dc[n - 1] = Mc[n - 1] - Vosc[n - 1] + INCREASE
+                Dc[n - 1] = Mc[n - 1] - Vosc[n - 1] + self.INCREASE
             
             if ncut <= 1:
                 CR = [[0, 0], [0, 0]]
@@ -71,7 +89,8 @@ class Chaos01:
         k = median(Kc)
         return k, Kc, PC, QC
 
-    def execute_for_bifurcation_diagram(function: FunctionInterface, lineArray: list = None) -> List[dict]:
+    # Class functions
+    def execute_for_bifurcation_diagram(chaos01: "Chaos01", function: FunctionInterface, lineArray: list = None) -> List[dict]:
         lineArray = function.get_line_array() if lineArray is None else lineArray
         N = 500
         x = 0.5 + np.zeros(N)
@@ -85,21 +104,21 @@ class Chaos01:
 
             u = np.unique(x[endcap])
             xx = r * np.ones(len(u))
-            k, Kc, PC, QC = Chaos01.execute(u, 1, 20)    # 2, 8
+            k, Kc, PC, QC = chaos01.execute(u)    # , 1, 20        2, 8
             
             items = {"xx": xx, "yy": u, "k": k, "Kc": Kc, "PC": PC, "QC": QC}
             data.append(items)
         
         return data
 
-    def execute_for_iteration(historyData: list) -> List[dict]: # lineArray: list = None
+    def execute_for_iteration(chaos01: "Chaos01", historyData: list) -> List[dict]: # lineArray: list = None
         data = []
         i = 0
         INCREMENT = 1/len(historyData[0])    # 1e-2
         size = len(historyData)
 
         for index, items in enumerate(historyData):
-            k, Kc, PC, QC = Chaos01.execute(items, 4)
+            k, Kc, PC, QC = chaos01.execute(items)  # , 4
             print(k)
             segment = []
             

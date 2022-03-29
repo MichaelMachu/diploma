@@ -1,7 +1,9 @@
 from tkinter import *
 from tkinter import ttk
+from types import MethodType
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
+from threading import Thread
 
 from Bases.ViewBase import ViewBase
 from . import ApplicationView
@@ -22,6 +24,9 @@ class Chaos01View(ViewBase):
         super().__init__(Toplevel(applicationView.mainWindow), 900, 600, "Chaos01", applicationView.windowHandler)
         self.applicationView = applicationView
 
+        self.chaos01 = Chaos01()
+        self.chaos01.set_skip(1)
+        self.chaos01.set_cut(20)        # set skip and cut, because of the first selected function "logistic map"
         self.graph = Graph()
         self.function = FunctionSelection.GetByName("logistic map")
         self.dataType = GraphType.BIFURCATION
@@ -38,7 +43,7 @@ class Chaos01View(ViewBase):
         self.frameCanvas = None
         # Labels
         self.labelChaos01 = None
-        self.labelBifurcationDiagram = None
+        self.labelCalculationDataChaos01 = None
         self.labelSkip = None
         self.labelCut = None
         self.labelFunctionType = None
@@ -57,7 +62,7 @@ class Chaos01View(ViewBase):
         self.entryRangeFrom = None
         self.entryRangeTo = None
         # Buttons
-        self.buttonShow = None
+        self.buttonCalculateAndShow = None
         # Comboboxes
         self.comboboxFunctionType = None
         self.comboboxFileName = None
@@ -122,8 +127,8 @@ class Chaos01View(ViewBase):
         self.entryCut = Entry(self.frameChaos01)
         self.entryCut.grid(column=1, row=2, padx=10, pady=5, sticky=W)
 
-        self.labelBifurcationDiagram = Label(self.frameChaos01, text="Bifurcation diagram", anchor='w', bg=self.frameBG)
-        self.labelBifurcationDiagram.grid(column=0, row=3, sticky=W, pady=(10, 0))
+        self.labelCalculationDataChaos01 = Label(self.frameChaos01, text="Data for calculation of Chaos01", anchor='w', bg=self.frameBG)    # Bifurcation diagram   # labelBifurcationDiagram
+        self.labelCalculationDataChaos01.grid(column=0, row=3, sticky=W, pady=(10, 0))
 
         self.labelFunctionType = Label(self.frameChaos01, text="Type of function", anchor='w', bg=self.frameBG)
         self.labelFunctionType.grid(column=0, row=4, padx=5, pady=10, sticky=W)
@@ -165,15 +170,15 @@ class Chaos01View(ViewBase):
         #self.canvasToolbar.grid(column=0, row=1, sticky="nsew")
 
         # Show button
-        self.buttonShow = Button(self.frameChaos01, text="Calculate and show on graph", command=self.__show_graph)
-        self.buttonShow.grid(column=0, row=6, columnspan=2, padx=10, pady=5)
-        #self.buttonShow.pack(fill=None, expand=False, padx=10, pady=10)
+        self.buttonCalculateAndShow = Button(self.frameChaos01, text="Calculate and show on graph", command=self.__calculate_and_show_graph)
+        self.buttonCalculateAndShow.grid(column=0, row=6, columnspan=2, padx=10, pady=5)
+        #self.buttonCalculateAndShow.pack(fill=None, expand=False, padx=10, pady=10)
         
         self.buttonShowGraphCourseK = Button(self.frameChaos01, text="Show course of K values on graph", command=self.__show_graph_course_of_K_values)
-        self.buttonShowGraphCourseK.grid(column=0, row=7, columnspan=2, padx=10, pady=5)
+        self.buttonShowGraphCourseK.grid(column=1, row=7, padx=5, pady=50)
         
         self.buttonShowGraphChaos = Button(self.frameChaos01, text="Show chaotic data on graph", command=self.__show_graph_of_chaos)
-        self.buttonShowGraphChaos.grid(column=0, row=8, columnspan=2, padx=10, pady=5)
+        self.buttonShowGraphChaos.grid(column=0, row=7, padx=5, pady=50)
         
 
         self.frame.grid_rowconfigure(0, weight=1)
@@ -285,6 +290,9 @@ class Chaos01View(ViewBase):
         else:
             self.function = FunctionSelection.GetByName(selection)
 
+            self.chaos01.set_skip(1)
+            self.chaos01.set_cut(20)
+
             if selection == "logistic map":
                 self.__build_frame_logistic_map()
             elif selection == "sinus":
@@ -307,10 +315,15 @@ class Chaos01View(ViewBase):
             return
 
         path = self.paths[filename]
-
         self.dataDict = DataProcess.load_from_json_file(path)
 
         self.comboboxSelectedParameter["values"] = [key for key in self.dataDict]
+        self.comboboxSelectedParameter.set("")
+
+        for key in self.dataDict:
+            if "history" in key.lower():
+                self.comboboxSelectedParameter.set(key)
+                break
 
     def set_data_type(self, dataType: GraphType) -> None:
         #if dataType == GraphType.KVALUES and self.dataType != GraphType.KVALUES:
@@ -335,7 +348,31 @@ class Chaos01View(ViewBase):
         
         self.canvas.draw()
 
-    def __show_graph(self) -> None:
+    def is_string_numeric_and_not_empty(self, string: str) -> bool:
+        if string:
+            if string.isnumeric():
+                return True
+        return False
+
+    def __calculate_chaos01(self, function: MethodType, *args): #button: Button, returnData: list, 
+        self.data = function(*args)
+        self.draw()
+        self.buttonCalculateAndShow.configure(state=ACTIVE)
+        self.buttonCalculateAndShow["text"] = "Calculate and show on graph"
+        
+
+    def __calculate_and_show_graph(self) -> None:
+        skipStr = self.entrySkip.get()
+        cutStr = self.entryCut.get()
+
+        if self.is_string_numeric_and_not_empty(skipStr):
+            print("set skip")
+            self.chaos01.set_skip(int(skipStr))
+
+        if self.is_string_numeric_and_not_empty(cutStr):
+            print("set cut")
+            self.chaos01.set_cut(int(cutStr))
+
         selection = self.comboboxFunctionType.get()
         if (not (selection and not selection.isspace())):
             return
@@ -352,19 +389,30 @@ class Chaos01View(ViewBase):
             if selectedParameter in self.dataDict:
                 self.set_data_type(GraphType.ITERATION)
 
-                self.data = Chaos01.execute_for_iteration(self.dataDict[selectedParameter])
+                self.buttonCalculateAndShow.configure(state=DISABLED)
+                self.buttonCalculateAndShow["text"] = "Data are calculating..."
+                #self.data = Chaos01.execute_for_iteration(self.chaos01, self.dataDict[selectedParameter])
+                #Thread(target=Chaos01View.__calculate_chaos01, args=(self.buttonCalculateAndShow, self.data, Chaos01.execute_for_iteration, self.chaos01, self.dataDict[selectedParameter],)).start()
+                Thread(target=self.__calculate_chaos01, args=(Chaos01.execute_for_iteration, self.chaos01, self.dataDict[selectedParameter],)).start()
 
                 self.graph.figName = "Hopfield Network - Iteration over history with Chaos01"
 
-                self.draw()
+                #self.draw()
+                self.graph.refresh()
             return
 
         self.set_data_type(GraphType.BIFURCATION)
 
-        self.data = Chaos01.execute_for_bifurcation_diagram(self.function)
+        self.buttonCalculateAndShow.configure(state=DISABLED)
+        self.buttonCalculateAndShow["text"] = "Data are calculating..."
+        #self.data = Chaos01.execute_for_bifurcation_diagram(self.chaos01, self.function)
+        #Thread(target=Chaos01View.__calculate_chaos01, args=(self.buttonCalculateAndShow, self.data, Chaos01.execute_for_bifurcation_diagram, self.chaos01, self.function,)).start()
+        Thread(target=self.__calculate_chaos01, args=(Chaos01.execute_for_bifurcation_diagram, self.chaos01, self.function,)).start()
+
         self.graph.figName = self.function.get_name()
         
-        self.draw()
+        #self.draw()
+        self.graph.refresh()
 
     def __show_graph_of_chaos(self) -> None:
         if not self.data:
