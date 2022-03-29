@@ -13,6 +13,7 @@ from .CellularAutomatonView import CellularAutomatonView
 from .SettingsView import SettingsView
 from .ExportView import ExportView
 from .HopfieldNetworkView import HopfieldNetworkView
+from .ParticleSwarmView import ParticleSwarmView
 from .Chaos01View import Chaos01View
 
 class ApplicationView(ViewBase):
@@ -31,6 +32,7 @@ class ApplicationView(ViewBase):
         self.cellularAutomatonView = None
         self.settingsView = None
         self.hopfieldNetworkView = None
+        self.particleSwarmView = None
         self.chaos01View = None
 
         self.testCa = None
@@ -58,6 +60,10 @@ class ApplicationView(ViewBase):
         self.menuModules.add_command(
             label="Hopfield Network",
             command=self.__show_hopfield_network
+        )
+        self.menuModules.add_command(
+            label="Particle Swarm",
+            command=self.__show_particle_swarm
         )
         self.menuModules.add_command(
             label="Chaos01",
@@ -167,6 +173,13 @@ class ApplicationView(ViewBase):
 
         self.hopfieldNetworkView = HopfieldNetworkView(self)
         self.windowHandler.register(self.hopfieldNetworkView)
+
+    def __show_particle_swarm(self) -> None:
+        if self.windowHandler.exists(self.particleSwarmView):
+            return
+
+        self.particleSwarmView = ParticleSwarmView(self)
+        self.windowHandler.register(self.particleSwarmView)
 
     def __show_chaos01(self) -> None:
         if self.windowHandler.exists(self.chaos01View):

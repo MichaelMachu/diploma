@@ -1,18 +1,34 @@
+from types import MethodType
 from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
 import numpy as np
 
+from .Interval import Interval
+
 class Graph:
 
     # Konstruktor třídy Graph nastavuje základní hodnoty proměnných pro konstrukci vizualizace grafu
-    def __init__(self, func, interval):
+    def __init__(self, figName: str = None, func: MethodType = None, interval: Interval = None):
+        self.figName = figName
         self.fig = plt.figure()
         self.ax = self.fig.add_subplot(111, projection='3d')
         self.func = func
         self.interval = interval
+        self.animation = None
+
+    def __set_name(self):
+        self.ax.set_title(self.figName)
+
+    def refresh(self):
+        self.animation = None
+        self.ax.clear()
+        self.__set_name()
+
+    def close(self) -> None:
+        plt.close()
 
     # Zobrazení grafu
-    def Show(self, figName, points = None, points_history = None, interval_anim = 1):
+    def Show(self, points = None, points_history = None, interval_anim = 1):
         # Sestavení bodů pro x a y skrze interval s následným vytvořením meshgridu
         x = y = np.arange(self.interval.lowerBound, self.interval.upperBound, self.interval.step)
         x, y = np.meshgrid(x, y)
@@ -24,7 +40,7 @@ class Graph:
         self.ax.plot_surface(x, y, z, rstride=1, cstride=1, cmap=plt.get_cmap('jet'), alpha=0.3)
 
         # Pojmenování grafu a jednotlivých os
-        self.ax.set_title(figName)
+        self.ax.set_title(self.figName)
         self.ax.set_xlabel('X')
         self.ax.set_ylabel('Y')
         self.ax.set_zlabel('Z')
@@ -37,7 +53,7 @@ class Graph:
         # Vykreslení animace
         # => vykreslená historie průchodu je zobrazena červeně
         if self.points_to_anim != None:
-            anim = FuncAnimation(self.fig, self.anim, len(self.points_to_anim), interval=interval_anim, blit=False, repeat=False)
+            self.animation = FuncAnimation(self.fig, self.anim, len(self.points_to_anim), interval=interval_anim, blit=False, repeat=False)
 
         # Vykreslení bodů získaných z vyhledávacího algoritmu
         # => výsledné body jsou vykresleny zeleně
@@ -45,10 +61,10 @@ class Graph:
             for point in points:
                 self.ax.scatter3D(point.x, point.y, point.z, c = '#00ff00')
 
-        plt.show()
+        #plt.show()
 
     # Zobrazení grafu včetně vykreslení historie průchodu celé populace
-    def ShowByPopulation(self, figName, best_individual = None, population_history = None, interval_anim = 1):
+    def ShowByPopulation(self, best_individual = None, population_history = None, interval_anim = 1):
         # Sestavení bodů pro x a y skrze interval s následným vytvořením meshgridu
         x = y = np.arange(self.interval.lowerBound, self.interval.upperBound, self.interval.step)
         x, y = np.meshgrid(x, y)
@@ -60,7 +76,7 @@ class Graph:
         self.ax.plot_surface(x, y, z, rstride=1, cstride=1, cmap=plt.get_cmap('jet'), alpha=0.3)
 
         # Pojmenování grafu a jednotlivých os
-        self.ax.set_title(figName)
+        self.ax.set_title(self.figName)
         self.ax.set_xlabel('X')
         self.ax.set_ylabel('Y')
         self.ax.set_zlabel('Z')
@@ -73,14 +89,14 @@ class Graph:
         # Vykreslení animace
         # => vykreslená historie průchodu je zobrazena červeně
         if self.population_to_anim != None:
-            anim = FuncAnimation(self.fig, self.animByPopulation, len(self.population_to_anim), interval=interval_anim, blit=False, repeat=False)
+            self.animation = FuncAnimation(self.fig, self.animByPopulation, len(self.population_to_anim), interval=interval_anim, blit=False, repeat=False)
 
         # Vykreslení nejlepšího jedince získaného z vyhledávacího algoritmu
         # => výsledný jedinec je vykresleny zeleně
         if best_individual != None:
             self.ax.scatter3D(best_individual.coordinates[0], best_individual.coordinates[1], best_individual.f, c = '#00ff00')
 
-        plt.show()
+        #plt.show()
 
     # Vykreslení animace
     def anim(self, n):

@@ -1,6 +1,6 @@
 import random
-from Individual import Individual
 from operator import attrgetter
+from .Individual import Individual
 
 class Population:
 

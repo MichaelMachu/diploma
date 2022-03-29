@@ -1,17 +1,17 @@
-from Graph import Graph
-from Population import Population
+from .Graph import Graph
+from .Population import Population
 from copy import deepcopy
 
 class ParticleSwarm:
 
-    def __init__(self) -> None:
-        self.pop_size = 15   # Velikost populace
-        self.c_1 = 2.0       # Konstanta pro výpočet vektoru v
-        self.c_2 = 2.0       # Konstanta pro výpočet vektoru v
-        self.M_max = 50      # Počet generací
+    def __init__(self, pop_size: int = 15, c_1: float = 2.0, c_2: float = 2.0, M_max: int = 50) -> None:
+        self.population_history = []    # History of population
+        self.pop_size = pop_size        # Size of population
+        self.c_1 = c_1                  # Constant value for calculation of vector v
+        self.c_2 = c_2                  # Constant value for calculation of vector v
+        self.M_max = M_max              # Maximum number of generations
 
-    # Algoritmus Particle Swarm sestavený podle kódu z prezentace
-    def ParticleSwarm(self, dimension, interval, func, figName, interval_anim):
+    def execute(self, dimension, interval, func):
         velocity = [-interval.step*2, interval.step*2] # Aktuálně možná rychlost
 
         # Vytvoření populace jedinců
@@ -26,8 +26,8 @@ class ParticleSwarm:
         m = 0
 
         # Pole historie populací pro vykreslení do animace
-        population_history = []
-        population_history.append(deepcopy(swarm))
+        self.population_history = []
+        self.population_history.append(deepcopy(swarm))
 
         # Cyklus průchodu generací
         while m < self.M_max :
@@ -55,8 +55,6 @@ class ParticleSwarm:
                 #print(i, ". pBestf: ", x.pBestf, " pBestX: ", x.pBest[0], " pBestY: ", x.pBest[1])
             m += 1
             # Přidání populace do historie pro vykreslení
-            population_history.append(deepcopy(swarm))
+            self.population_history.append(deepcopy(swarm))
 
-        # Sestavení grafu
-        graph = Graph(func, interval)
-        graph.ShowByPopulation(figName, gBest, population_history, interval_anim)
+        return gBest, self.population_history
