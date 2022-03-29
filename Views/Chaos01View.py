@@ -354,12 +354,16 @@ class Chaos01View(ViewBase):
                 return True
         return False
 
-    def __calculate_chaos01(self, function: MethodType, *args): #button: Button, returnData: list, 
+    def __calculate_chaos01_wrapper(self, function: MethodType, *args) -> None: #button: Button, returnData: list, 
         self.data = function(*args)
         self.draw()
         self.buttonCalculateAndShow.configure(state=ACTIVE)
         self.buttonCalculateAndShow["text"] = "Calculate and show on graph"
-        
+
+    def __calculate_chaos01(self, function: MethodType, *args) -> None:
+        self.buttonCalculateAndShow.configure(state=DISABLED)
+        self.buttonCalculateAndShow["text"] = "Data are calculating..."
+        Thread(target=self.__calculate_chaos01_wrapper, args=(function, *args,)).start()
 
     def __calculate_and_show_graph(self) -> None:
         skipStr = self.entrySkip.get()
@@ -389,29 +393,17 @@ class Chaos01View(ViewBase):
             if selectedParameter in self.dataDict:
                 self.set_data_type(GraphType.ITERATION)
 
-                self.buttonCalculateAndShow.configure(state=DISABLED)
-                self.buttonCalculateAndShow["text"] = "Data are calculating..."
-                #self.data = Chaos01.execute_for_iteration(self.chaos01, self.dataDict[selectedParameter])
-                #Thread(target=Chaos01View.__calculate_chaos01, args=(self.buttonCalculateAndShow, self.data, Chaos01.execute_for_iteration, self.chaos01, self.dataDict[selectedParameter],)).start()
-                Thread(target=self.__calculate_chaos01, args=(Chaos01.execute_for_iteration, self.chaos01, self.dataDict[selectedParameter],)).start()
+                self.__calculate_chaos01(Chaos01.execute_for_iteration, self.chaos01, self.dataDict[selectedParameter])
 
                 self.graph.figName = "Hopfield Network - Iteration over history with Chaos01"
-
-                #self.draw()
                 self.graph.refresh()
             return
 
         self.set_data_type(GraphType.BIFURCATION)
 
-        self.buttonCalculateAndShow.configure(state=DISABLED)
-        self.buttonCalculateAndShow["text"] = "Data are calculating..."
-        #self.data = Chaos01.execute_for_bifurcation_diagram(self.chaos01, self.function)
-        #Thread(target=Chaos01View.__calculate_chaos01, args=(self.buttonCalculateAndShow, self.data, Chaos01.execute_for_bifurcation_diagram, self.chaos01, self.function,)).start()
-        Thread(target=self.__calculate_chaos01, args=(Chaos01.execute_for_bifurcation_diagram, self.chaos01, self.function,)).start()
+        self.__calculate_chaos01(Chaos01.execute_for_bifurcation_diagram, self.chaos01, self.function)
 
         self.graph.figName = self.function.get_name()
-        
-        #self.draw()
         self.graph.refresh()
 
     def __show_graph_of_chaos(self) -> None:
