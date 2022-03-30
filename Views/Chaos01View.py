@@ -25,8 +25,6 @@ class Chaos01View(ViewBase):
         self.applicationView = applicationView
 
         self.chaos01 = Chaos01()
-        self.chaos01.set_skip(1)
-        self.chaos01.set_cut(20)        # set skip and cut, because of the first selected function "logistic map"
         self.graph = Graph()
         self.function = FunctionSelection.GetByName("logistic map")
         self.dataType = GraphType.BIFURCATION
@@ -121,11 +119,13 @@ class Chaos01View(ViewBase):
         self.labelSkip = Label(self.frameChaos01, text="Skip (int)", anchor='w', bg=self.frameBG)
         self.labelSkip.grid(column=0, row=1, sticky=W)
         self.entrySkip = Entry(self.frameChaos01)
+        self.entrySkip.insert(0, self.chaos01.skip)
         self.entrySkip.grid(column=1, row=1, padx=10, pady=5, sticky=W)
 
         self.labelCut = Label(self.frameChaos01, text="Cut (int)", anchor='w', bg=self.frameBG)
         self.labelCut.grid(column=0, row=2, sticky=W)
         self.entryCut = Entry(self.frameChaos01)
+        self.entryCut.insert(0, self.chaos01.cut)
         self.entryCut.grid(column=1, row=2, padx=10, pady=5, sticky=W)
 
         self.labelCalculationDataChaos01 = Label(self.frameChaos01, text="Data for calculation of Chaos01", anchor='w', bg=self.frameBG)    # Bifurcation diagram   # labelBifurcationDiagram
@@ -136,7 +136,7 @@ class Chaos01View(ViewBase):
         self.comboboxFunctionType = ttk.Combobox(self.frameChaos01)
         self.comboboxFunctionType["values"] = ("logistic map", "sinus", "scaled normal", "scaled uniform", "Load from file")
         self.comboboxFunctionType["state"] = "readonly"
-        self.comboboxFunctionType.set("logistic map")
+        #self.comboboxFunctionType.set("logistic map")
         self.comboboxFunctionType.bind("<<ComboboxSelected>>", self.__selection_function_type)
         self.comboboxFunctionType.grid(column=1, row=4, padx=0, pady=10, sticky=W)
 
@@ -287,12 +287,13 @@ class Chaos01View(ViewBase):
     def __selection_function_type(self, event: EventType) -> None:
         selection = self.comboboxFunctionType.get()
         if selection == "Load from file":
+            self.set_skip_cut(1, 2)
+
             self.__build_frame_FromFile()
         else:
             self.function = FunctionSelection.GetByName(selection)
 
-            self.chaos01.set_skip(1)
-            self.chaos01.set_cut(20)
+            self.set_skip_cut(1, 20)
 
             if selection == "logistic map":
                 self.__build_frame_logistic_map()
@@ -325,6 +326,12 @@ class Chaos01View(ViewBase):
             if "history" in key.lower():
                 self.comboboxSelectedParameter.set(key)
                 break
+
+    def set_skip_cut(self, skip: int, cut: int) -> None:
+        self.chaos01.set_skip(skip)
+        self.chaos01.set_cut(cut)
+        self.__entry_set_value(self.entrySkip, skip)
+        self.__entry_set_value(self.entryCut, cut)
 
     def set_data_type(self, dataType: GraphType) -> None:
         #if dataType == GraphType.KVALUES and self.dataType != GraphType.KVALUES:
