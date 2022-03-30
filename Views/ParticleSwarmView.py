@@ -28,6 +28,7 @@ class ParticleSwarmView(ViewBase):
         self.bestFound = None
         self.populationHistory = None
         self.animationSpeed = 1
+        self.functionName = ""
 
         # Create object variables
         # Frames
@@ -189,9 +190,9 @@ class ParticleSwarmView(ViewBase):
         self.particleSwarm.M_max = int(maxGenerationsStr)
 
         function, interval = TestFunctions.GetByName(selection)
-
         self.graph.func = function
         self.graph.interval = interval
+        self.functionName = selection
 
         self.bestFound, self.populationHistory = self.particleSwarm.execute(2, interval, function)
 
@@ -216,7 +217,7 @@ class ParticleSwarmView(ViewBase):
         if self.windowHandler.exists(self.exportView):
             return
 
-        transferObject = ParticleSwarmTransferObject(self.particleSwarm)
+        transferObject = ParticleSwarmTransferObject(self.particleSwarm, self.functionName)
 
         path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathParticleSwarm + "/"
         self.exportView = ExportView(self, transferObject, path, "Particle Swarm data")
@@ -235,7 +236,13 @@ class ParticleSwarmView(ViewBase):
         self.particleSwarm.c_2 = transferObject.c2
         self.particleSwarm.M_max = transferObject.maxGeneration
 
-        self.populationHistory = transferObject.history
+        self.populationHistory = transferObject.populations
+        self.bestFound = transferObject.bestFound
+        self.functionName = transferObject.functionName
+
+        function, interval = TestFunctions.GetByName(self.functionName)
+        self.graph.func = function
+        self.graph.interval = interval
 
         self.draw()
 

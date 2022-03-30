@@ -9,10 +9,10 @@ class Population:
     # Privátní promměná, která nabývá hodnoty true, pokud již jedinci byli ohodnoceni (kvůli výběru nejlepšího jedince)
     __individualsWereCalculated = False
 
-    def __init__(self, interval: Interval, dimension: int) -> None:
+    def __init__(self, interval: Interval = None, dimension: int = 0, individuals: list = []) -> None:
         self.interval = interval
         self.dimension = dimension
-        self.individuals = []
+        self.individuals = individuals
 
     # Generuje náhodné hodnoty pro vyhledávání skrze hodnoty z intervalu a dimenze
     def GenerateIndividual(self) -> Individual:

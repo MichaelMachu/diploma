@@ -75,10 +75,16 @@ class SettingsView(ViewBase):
         self.entryPathHopfieldNetwork.grid(column=1, row=3, padx=10, pady=5, sticky=W)
         self.entryPathHopfieldNetwork.insert(0, self.applicationView.settings.pathHopfieldNetwork)
 
+        self.labelParticleSwarm = Label(self.framePaths, text="Particle swarm path (string)", anchor='w', bg=self.frameBG)
+        self.labelParticleSwarm.grid(column=0, row=4, sticky=W)
+        self.entryParticleSwarm = Entry(self.framePaths)
+        self.entryParticleSwarm.grid(column=1, row=4, padx=10, pady=5, sticky=W)
+        self.entryParticleSwarm.insert(0, self.applicationView.settings.pathParticleSwarm)
+
         self.labelPathChaos01 = Label(self.framePaths, text="Chaos01 path (string)", anchor='w', bg=self.frameBG)
-        self.labelPathChaos01.grid(column=0, row=4, sticky=W)
+        self.labelPathChaos01.grid(column=0, row=5, sticky=W)
         self.entryPathChaos01 = Entry(self.framePaths)
-        self.entryPathChaos01.grid(column=1, row=4, padx=10, pady=5, sticky=W)
+        self.entryPathChaos01.grid(column=1, row=5, padx=10, pady=5, sticky=W)
         self.entryPathChaos01.insert(0, self.applicationView.settings.pathChaos01)
 
         # Modules
@@ -142,14 +148,25 @@ class SettingsView(ViewBase):
     def __reset(self) -> None:
         pass
 
+    def __are_strings_empty(self, *strings) -> bool:
+        for string in strings:
+            if (not (string and not string.isspace())):
+                return True
+        return False
+
     def __apply(self) -> None:
         cellSizeStr = self.entrySize.get()
         entryPathMainStr = self.entryPathMain.get()
         entryPathCellularAutomatonStr = self.entryPathCellularAutomaton.get()
         entryPathHopfieldNetworkStr = self.entryPathHopfieldNetwork.get()
+        entryPathParticleSwarmStr = self.entryParticleSwarm.get()
         entryPathChaos01Str = self.entryPathChaos01.get()
         entryHopfieldNetworkCellSizeStr = self.entryHopfieldNetworkCellSize.get()
         if not cellSizeStr.isnumeric() or not entryHopfieldNetworkCellSizeStr.isnumeric():
+            return
+
+        if self.__are_strings_empty(entryPathMainStr, entryPathCellularAutomatonStr, 
+            entryPathHopfieldNetworkStr, entryPathParticleSwarmStr, entryPathChaos01Str):
             return
 
         cellSize = int(cellSizeStr)
@@ -160,6 +177,7 @@ class SettingsView(ViewBase):
         self.applicationView.settings.pathMain = entryPathMainStr
         self.applicationView.settings.pathCellularAutomaton = entryPathCellularAutomatonStr
         self.applicationView.settings.pathHopfieldNetwork = entryPathHopfieldNetworkStr
+        self.applicationView.settings.pathParticleSwarm = entryPathParticleSwarmStr
         self.applicationView.settings.pathChaos01 = entryPathChaos01Str
         self.applicationView.settings.hopfieldnetworkCellSize = hopfieldnetworkCellSize
         self.applicationView.settings.chaos01ColorDeterminism = Color(self.colorCodeDeterminism)
