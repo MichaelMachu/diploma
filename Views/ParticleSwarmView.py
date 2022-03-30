@@ -216,7 +216,7 @@ class ParticleSwarmView(ViewBase):
         if self.windowHandler.exists(self.exportView):
             return
 
-        transferObject = ParticleSwarmTransferObject()
+        transferObject = ParticleSwarmTransferObject(self.particleSwarm)
 
         path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathParticleSwarm + "/"
         self.exportView = ExportView(self, transferObject, path, "Particle Swarm data")
@@ -228,7 +228,16 @@ class ParticleSwarmView(ViewBase):
         if self._importData is None:
             return
 
+        transferObject = ParticleSwarmTransferObject.set_by_dict(self._importData)
         
+        self.particleSwarm.pop_size = transferObject.populationSize
+        self.particleSwarm.c_1 = transferObject.c1
+        self.particleSwarm.c_2 = transferObject.c2
+        self.particleSwarm.M_max = transferObject.maxGeneration
+
+        self.populationHistory = transferObject.history
+
+        self.draw()
 
     def on_closing(self) -> None:
         self.graph.close()

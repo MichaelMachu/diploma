@@ -6,6 +6,7 @@ class ParticleSwarm:
 
     def __init__(self, pop_size: int = 15, c_1: float = 2.0, c_2: float = 2.0, M_max: int = 50) -> None:
         self.population_history = []    # History of population
+        self.gBest                      # The best found individual
         self.pop_size = pop_size        # Size of population
         self.c_1 = c_1                  # Constant value for calculation of vector v
         self.c_2 = c_2                  # Constant value for calculation of vector v
@@ -20,9 +21,9 @@ class ParticleSwarm:
         # Vypočítaní hodnot na funkci pro všechny jedince
         swarm.CalculateIndividuals(func)
         # Nalezení nejlepšího jedince
-        gBest = deepcopy(swarm.GetBestIndividual())
+        self.gBest = deepcopy(swarm.GetBestIndividual())
         # Pro každého jedince se vypočítá vektor v
-        swarm.CalculateVectorOfIndividuals(self.c_1, self.c_2, gBest, velocity)
+        swarm.CalculateVectorOfIndividuals(self.c_1, self.c_2, self.gBest, velocity)
         m = 0
 
         # Pole historie populací pro vykreslení do animace
@@ -34,7 +35,7 @@ class ParticleSwarm:
             # Cyklus průchodu jednotlivých jedinců
             for i, x in enumerate(swarm.individuals): 
                 # Výpočet vektoru v na základě rychlost velocity
-                swarm.CalculateVectorOfIndividual(x, self.c_1, self.c_2, gBest, velocity)
+                swarm.CalculateVectorOfIndividual(x, self.c_1, self.c_2, self.gBest, velocity)
                 # Výpočet nové pozice a přepsání staré
                 swarm.CalculateNewPosition(x)
                 swarm.CalculateIndividual(func, x)
@@ -47,8 +48,8 @@ class ParticleSwarm:
                         x.pBest[j] = deepcopy(x.coordinates[j])
                     
                     # Pokud je nejlepší hodnota konkrétního jedince lepší, jak u globálně nejlepšího jedince, pak se globální nahradí za aktuálního
-                    if x.pBestf < gBest.pBestf:
-                        gBest = deepcopy(x)
+                    if x.pBestf < self.gBest.pBestf:
+                        self.gBest = deepcopy(x)
 
                 # Případné výstupy pro kontrolu hodnot
                 #print(i, ". f: ", x.f, " x: ", x.coordinates[0], " y: ", x.coordinates[1])
@@ -57,4 +58,4 @@ class ParticleSwarm:
             # Přidání populace do historie pro vykreslení
             self.population_history.append(deepcopy(swarm))
 
-        return gBest, self.population_history
+        return self.gBest, self.population_history

@@ -11,6 +11,7 @@ class Settings:
         self.pathMain = "TestData"
         self.pathCellularAutomaton = "ca"
         self.pathHopfieldNetwork = "hn"
+        self.pathParticleSwarm = "ps"
         self.pathChaos01 = "ch"
         self.hopfieldnetworkCellSize = 30
         self.chaos01ColorDeterminism = Color(((0,255,0),"#00ff00"))
@@ -40,6 +41,7 @@ class Settings:
         self.pathMain = "TestData"
         self.pathCellularAutomaton = "ca"
         self.pathHopfieldNetwork = "hn"
+        self.pathParticleSwarm = "ps"
         self.pathChaos01 = "ch"
         self.hopfieldnetworkCellSize = 30
         self.chaos01ColorDeterminism = Color(((0,255,0),"#00ff00"))
@@ -52,6 +54,7 @@ class Settings:
             "pathMain": self.pathMain,
             "pathCellularAutomaton": self.pathCellularAutomaton,
             "pathHopfieldNetwork": self.pathHopfieldNetwork,
+            "pathParticleSwarm": self.pathParticleSwarm,
             "pathChaos01": self.pathChaos01,
             "hopfieldnetworkCellSize": self.hopfieldnetworkCellSize,
             "chaos01ColorDeterminism": self.chaos01ColorDeterminism.colorObject,
@@ -72,6 +75,7 @@ class Settings:
         self.pathMain = dataDict["pathMain"]
         self.pathCellularAutomaton = dataDict["pathCellularAutomaton"]
         self.pathHopfieldNetwork = dataDict["pathHopfieldNetwork"]
+        self.pathParticleSwarm = dataDict["pathParticleSwarm"]
         self.pathChaos01 = dataDict["pathChaos01"]
         self.hopfieldnetworkCellSize = dataDict["hopfieldnetworkCellSize"]
         self.chaos01ColorDeterminism = Color(tuple(dataDict["chaos01ColorDeterminism"]))
