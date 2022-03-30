@@ -1,18 +1,22 @@
+from types import MethodType
+from typing import Tuple, List
+from copy import deepcopy
 from .Graph import Graph
 from .Population import Population
-from copy import deepcopy
+from .Interval import Interval
+from .Individual import Individual
 
 class ParticleSwarm:
 
     def __init__(self, pop_size: int = 15, c_1: float = 2.0, c_2: float = 2.0, M_max: int = 50) -> None:
         self.population_history = []    # History of population
-        self.gBest                      # The best found individual
+        self.gBest = None               # The best found individual
         self.pop_size = pop_size        # Size of population
         self.c_1 = c_1                  # Constant value for calculation of vector v
         self.c_2 = c_2                  # Constant value for calculation of vector v
         self.M_max = M_max              # Maximum number of generations
 
-    def execute(self, dimension, interval, func):
+    def execute(self, dimension: int, interval: Interval, func: MethodType) -> Tuple[Individual, List[Individual]]:
         velocity = [-interval.step*2, interval.step*2] # Aktuálně možná rychlost
 
         # Vytvoření populace jedinců

@@ -4,11 +4,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from .Interval import Interval
+from .Individual import Individual
 
 class Graph:
 
     # Konstruktor třídy Graph nastavuje základní hodnoty proměnných pro konstrukci vizualizace grafu
-    def __init__(self, figName: str = None, func: MethodType = None, interval: Interval = None):
+    def __init__(self, figName: str = None, func: MethodType = None, interval: Interval = None) -> None:
         self.figName = figName
         self.fig = plt.figure()
         self.ax = self.fig.add_subplot(111, projection='3d')
@@ -16,10 +17,10 @@ class Graph:
         self.interval = interval
         self.animation = None
 
-    def __set_name(self):
+    def __set_name(self) -> None:
         self.ax.set_title(self.figName)
 
-    def refresh(self):
+    def refresh(self) -> None:
         self.animation = None
         self.ax.clear()
         self.__set_name()
@@ -28,7 +29,7 @@ class Graph:
         plt.close()
 
     # Zobrazení grafu
-    def Show(self, points = None, points_history = None, interval_anim = 1):
+    def Show(self, points: list = None, points_history: list = None, interval_anim: int = 1) -> None:
         # Sestavení bodů pro x a y skrze interval s následným vytvořením meshgridu
         x = y = np.arange(self.interval.lowerBound, self.interval.upperBound, self.interval.step)
         x, y = np.meshgrid(x, y)
@@ -64,7 +65,7 @@ class Graph:
         #plt.show()
 
     # Zobrazení grafu včetně vykreslení historie průchodu celé populace
-    def ShowByPopulation(self, best_individual = None, population_history = None, interval_anim = 1):
+    def ShowByPopulation(self, best_individual: Individual = None, population_history: list = None, interval_anim: int = 1) -> None:
         # Sestavení bodů pro x a y skrze interval s následným vytvořením meshgridu
         x = y = np.arange(self.interval.lowerBound, self.interval.upperBound, self.interval.step)
         x, y = np.meshgrid(x, y)
@@ -99,7 +100,7 @@ class Graph:
         #plt.show()
 
     # Vykreslení animace
-    def anim(self, n):
+    def anim(self, n: int) -> None:
         # Pokud je již vykreslený přechozí bod, tak ho odstraň
         if self.path != None:
             self.path.remove()
@@ -108,7 +109,7 @@ class Graph:
         if self.points_to_anim != None:
             self.path = self.ax.scatter3D(self.points_to_anim[n].x, self.points_to_anim[n].y, self.points_to_anim[n].z, c = '#ff0000')
 
-    def animByPopulation(self, n):
+    def animByPopulation(self, n: int) -> None:
         # Pokud jsou již vykreslený předchozí body, tak ho odstraň
         if self.path:
             for i in range(len(self.path)):

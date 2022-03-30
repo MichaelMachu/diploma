@@ -2,7 +2,7 @@ from copy import deepcopy
 
 class Individual:
 
-    def __init__(self, coordinates):
+    def __init__(self, coordinates) -> None:
         self.coordinates = coordinates
         self.f = None
         self.v = [0] * len(coordinates)
