@@ -211,9 +211,9 @@ class CellularAutomaton:
 
                 #  Middle states
                 middleStateRightShift = np.roll(self.currentState[i], 1)
-                middleStateleftShift = np.roll(self.currentState[i], -1)
+                middleStateLeftShift = np.roll(self.currentState[i], -1)
 
-                stackOfNeighbors = np.vstack((previousStates, middleStateRightShift, self.currentState[i], middleStateleftShift, nextStates)).astype(np.int8)
+                stackOfNeighbors = np.vstack((previousStates, middleStateRightShift, self.currentState[i], middleStateLeftShift, nextStates)).astype(np.int8)
                 indexesOfNextStep = np.sum([2] * stackOfNeighbors, axis=0).astype(np.int8)
             
                 nextState[i,:] = self.rule[self.possibleStates - 1 - indexesOfNextStep]
@@ -230,7 +230,7 @@ class CellularAutomaton:
                     index = i - 1
                 previousStates = self.currentState[index]
                 previousStateRightShift = np.roll(self.currentState[index], 1)
-                previousStateleftShift = np.roll(self.currentState[index], -1)
+                previousStateLeftShift = np.roll(self.currentState[index], -1)
 
                 # Next states
                 if i == stateSize - 1:
@@ -239,15 +239,15 @@ class CellularAutomaton:
                     index = i + 1
                 nextStates = self.currentState[index]
                 nextStateRightShift = np.roll(self.currentState[index], 1)
-                nextStateleftShift = np.roll(self.currentState[index], -1)
+                nextStateLeftShift = np.roll(self.currentState[index], -1)
 
                 #  Middle states
                 middleStateRightShift = np.roll(self.currentState[i], 1)
-                middleStateleftShift = np.roll(self.currentState[i], -1)
+                middleStateLeftShift = np.roll(self.currentState[i], -1)
 
-                stackOfNeighbors = np.vstack((previousStateRightShift, previousStates, previousStateleftShift, 
-                                            middleStateRightShift, self.currentState[i], middleStateleftShift, 
-                                            nextStateRightShift, nextStates, nextStateleftShift)).astype(np.int8)
+                stackOfNeighbors = np.vstack((previousStateRightShift, previousStates, previousStateLeftShift, 
+                                            middleStateRightShift, self.currentState[i], middleStateLeftShift, 
+                                            nextStateRightShift, nextStates, nextStateLeftShift)).astype(np.int8)
                 indexesOfNextStep = np.sum([2] * stackOfNeighbors, axis=0).astype(np.int8)
 
                 nextState[i,:] = self.rule[self.possibleStates - 1 - indexesOfNextStep]
