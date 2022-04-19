@@ -9,7 +9,7 @@ class CellularAutomatonTransferObject(TransferObjectInterface):
         self.size = cellularAutomaton.size
         self.K = cellularAutomaton.K
         self.N = cellularAutomaton.N
-        self.λ = cellularAutomaton.λ
+        self.lambdaValue = cellularAutomaton.lambdaValue
         self.quiescentState = cellularAutomaton.quiescentState
         self.possibleStates = cellularAutomaton.possibleStates
         self.ruleNumber = cellularAutomaton.ruleNumber
@@ -26,7 +26,7 @@ class CellularAutomatonTransferObject(TransferObjectInterface):
         result.size = tuple(dictValue["size"]) if type(dictValue["size"]) is list else dictValue["size"]
         result.K = dictValue["K"]
         result.N = dictValue["N"]
-        result.λ = dictValue["λ"]
+        result.lambdaValue = dictValue["lambdaValue"]
         result.quiescentState = dictValue["quiescentState"]
         result.possibleStates = dictValue["possibleStates"]
         result.ruleNumber = dictValue["ruleNumber"]
@@ -44,7 +44,7 @@ class CellularAutomatonTransferObject(TransferObjectInterface):
             "size": self.size,
             "K": self.K,
             "N": self.N,
-            "λ": self.λ,
+            "lambdaValue": self.lambdaValue,
             "quiescentState": self.quiescentState,
             "possibleStates": self.possibleStates,
             "ruleNumber": self.ruleNumber,

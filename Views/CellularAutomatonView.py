@@ -254,7 +254,7 @@ class CellularAutomatonView(ViewBase):
 
     def __set_values_to_entries(self) -> None:
         if self.cellularAutomaton is not None:
-            if self.cellularAutomaton.λ is None:
+            if self.cellularAutomaton.lambdaValue is None:
                 if self.cellularAutomaton.dimension == 2:
                     self.__entry_set_value(self.entrySizeX, self.cellularAutomaton.size[0])
                     self.__entry_set_value(self.entrySizeY, self.cellularAutomaton.size[1])
@@ -269,7 +269,7 @@ class CellularAutomatonView(ViewBase):
                 self.__entry_set_value(self.entrySize, self.cellularAutomaton.size)
                 self.__entry_set_value(self.entryK, self.cellularAutomaton.K)
                 self.__entry_set_value(self.entryN, self.cellularAutomaton.N)
-                self.__entry_set_value(self.entryLambda, self.cellularAutomaton.λ)
+                self.__entry_set_value(self.entryLambda, self.cellularAutomaton.lambdaValue)
                 self.__entry_set_value(self.entrySeed, self.cellularAutomaton.seedNumber)
 
     def __selection_CA_type(self, event: EventType) -> None:
@@ -358,7 +358,7 @@ class CellularAutomatonView(ViewBase):
             random = self.comboboxRandom.get() == "True"
             selection = self.comboboxSelection.get()
 
-            self.cellularAutomaton = CellularAutomaton(size=size, K=sizeK, N=sizeN, λ=lambdaValue, seedNumber=seedNumber)
+            self.cellularAutomaton = CellularAutomaton(size=size, K=sizeK, N=sizeN, lambdaValue=lambdaValue, seedNumber=seedNumber)
 
             self.__set_ca(random, selection)
         elif self.comboboxCAType.get() == "2D":
@@ -408,7 +408,7 @@ class CellularAutomatonView(ViewBase):
 
             self.cellularAutomaton = CellularAutomaton(
                 CATransferObject.size, CATransferObject.ruleNumber, CATransferObject.K, 
-                CATransferObject.N, CATransferObject.λ, CATransferObject.seedNumber, CATransferObject.pattern2D)
+                CATransferObject.N, CATransferObject.lambdaValue, CATransferObject.seedNumber, CATransferObject.pattern2D)
             self.cellularAutomaton.quiescentState = CATransferObject.quiescentState
             self.cellularAutomaton.currentState = CATransferObject.currentState
             self.cellularAutomaton.cellHistory = CATransferObject.cellHistory

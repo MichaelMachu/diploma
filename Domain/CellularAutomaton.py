@@ -20,7 +20,7 @@ class CellularAutomaton:
         self.size = size                                    # Size of dimension (number of neighbors - world)
         self.K = K                                          # Number of states (colors)
         self.N = N                                          # Neighborhood - number of neighbors
-        self.λ = λ                                          # Lambda
+        self.lambdaValue = lambdaValue                      # Lambda λ
         self.quiescentState = None                          # Arbitrary state
         self.isQuiscentState = None                         # List of decisions if the state is quiescent
         self.possibleStates = 8 if K == 2 else 3 * K - 2    # Number of possible states -> elementary: 8 = 2^3 | totalistic: 3 * K - 2
@@ -33,7 +33,7 @@ class CellularAutomaton:
             self.seedNumber = randint(0, 2**32 - 1)
         seed(self.seedNumber)
 
-        if λ is None:
+        if lambdaValue is None:
             # Set CA to 2D
             if type(size) is tuple and len(size) > 1:
                 self.dimension = 2
@@ -43,7 +43,7 @@ class CellularAutomaton:
             else:
                 self.rule = self.__rule_calculation_binary(rule) if K == 2 else self.__rule_calculation(rule)
         else:
-            self.ruleNumber = CellularAutomaton.get_quiescent_trainsitions(self.λ, self.K, self.N)
+            self.ruleNumber = CellularAutomaton.get_quiescent_trainsitions(self.lambdaValue, self.K, self.N)
             self.possibleStates = N                         # possible states for the neighborhood pattern -> is_rule_valid returns K^N
             np.random.seed(self.seedNumber)
             print("seed: ", self.seedNumber)
@@ -65,16 +65,16 @@ class CellularAutomaton:
         KN = K**N
         return (KN - n) / KN
 
-    def get_quiescent_trainsitions(λ: float, K: int, N: int) -> int:
+    def get_quiescent_trainsitions(lambdaValue: float, K: int, N: int) -> int:
         """
         Returns value of a transition to special quiescent state
         Params:
-            - λ: characterized paramater of subspace D(K/N)
+            - lambdaValue: characterized paramater of subspace D(K/N)
             - K: number of cell states
             - N: size of the neighborhood
         """
         KN = K**N
-        return -int((λ * KN) - KN)
+        return -int((lambdaValue * KN) - KN)
 
     # Object functions
     def is_rule_valid(self) -> bool:
@@ -82,9 +82,9 @@ class CellularAutomaton:
 
     def is_state_quiescent(self) -> bool:
         """Returns false for a random value or true for a quiescent state based on probability of λ"""
-        if self.λ is None:
+        if self.lambdaValue is None:
             raise ValueError("λ is not set")
-        return bool(np.random.choice(a=[False, True], p=[self.λ, 1 - self.λ]))
+        return bool(np.random.choice(a=[False, True], p=[self.lambdaValue, 1 - self.lambdaValue]))
 
     def __solver_random_table(self) -> None:
         """neighborhood = []
@@ -156,7 +156,7 @@ class CellularAutomaton:
         #x = np.vstack(neighborhood).astype(np.int8)
         #print(x)
 
-        if self.λ is not None:
+        if self.lambdaValue is not None:
             result = []
             i, j, c = 0, 0, 0
             while j < self.size:
@@ -289,7 +289,7 @@ class CellularAutomaton:
     def execute(self) -> np.ndarray:
         self.currentState = self.__calculate_next_step() if self.dimension == 1 else self.__calculate_next_step_2D()
         #print(self.currentState)
-        #if self.λ is not None:
+        #if self.lambdaValue is not None:
         #    self.__solver_random_table()
         self.__insert_into_history()
         #print(self.currentState)
