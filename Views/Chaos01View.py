@@ -404,7 +404,7 @@ class Chaos01View(ViewBase):
 
                 self.__calculate_chaos01(Chaos01.execute_for_iteration, self.chaos01, self.dataDict[selectedParameter])
 
-                self.graph.figName = "Hopfield Network - Iteration over history with Chaos01"
+                self.graph.figName = ""
                 self.graph.refresh()
             return
 

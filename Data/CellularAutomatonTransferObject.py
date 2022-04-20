@@ -1,5 +1,6 @@
 from Interfaces.TransferObjectInterface import TransferObjectInterface
 from Domain.CellularAutomaton import CellularAutomaton
+from .DataProcess import DataProcess
 
 class CellularAutomatonTransferObject(TransferObjectInterface):
 
@@ -50,8 +51,8 @@ class CellularAutomatonTransferObject(TransferObjectInterface):
             "ruleNumber": self.ruleNumber,
             "pattern2D": self.pattern2D,
             "seedNumber": self.seedNumber,
-            "rule": self.rule.tolist(),
+            "rule": DataProcess.to_list(self.rule),
             "isQuiscentState": self.isQuiscentState,
-            "cellHistory": self.cellHistory.tolist(),
-            "currentState": self.currentState.tolist(),
+            "cellHistory": DataProcess.to_list(self.cellHistory),
+            "currentState": DataProcess.to_list(self.currentState),
         }
