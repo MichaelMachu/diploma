@@ -8,6 +8,7 @@ class Individual:
         self.coordinates = coordinates
         self.f = f
         self.v = [0] * len(coordinates)
+        self.w = 1
         self.pBest = None
         self.pBestf = None
 
@@ -22,7 +23,7 @@ class Individual:
     def CalculateV(self, c_1: float, c_2: float, r_1: float, r_2: float, gBest: "Individual", velocity: list, interval: Interval) -> None:
         length = len(self.v)
         for i in range(length):
-            self.v[i] = self.v[i] + r_1 * c_1 * (self.pBest[i] - self.coordinates[i]) + r_2 * c_2 * (gBest.pBest[i] - self.coordinates[i])
+            self.v[i] = self.w * self.v[i] + r_1 * c_1 * (self.pBest[i] - self.coordinates[i]) + r_2 * c_2 * (gBest.pBest[i] - self.coordinates[i])
             if self.v[i] < velocity[0]:
                 self.v[i] = velocity[0]
             elif self.v[i] > velocity[1]:
