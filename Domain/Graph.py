@@ -47,6 +47,8 @@ class Graph:
 
     def draw_course_of_K_values(self, data):
         x, y = [], []
+        self.ax.set_xlabel("time in iterations")
+        self.ax.set_ylabel("k")
 
         for i, item in enumerate(data):
             x.append(i)

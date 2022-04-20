@@ -4,7 +4,7 @@ from random import seed, randint
 
 class CellularAutomaton:
 
-    def __init__(self, size: int or tuple, rule: int = None, K: int = 2, N: int = 3, λ: float = None, seedNumber: int = None, pattern2D: str = "moore") -> None:
+    def __init__(self, size: int or tuple, rule: int = None, K: int = 2, N: int = 3, lambdaValue: float = None, seedNumber: int = None, pattern2D: str = "moore") -> None:
         """
         Cellular Automaton creates one step by method execute.
         Params:

@@ -419,9 +419,9 @@ class Chaos01View(ViewBase):
         if not self.data:
             return
 
-        selection = self.comboboxFunctionType.get()
-        if (not (selection and not selection.isspace())):
-            return
+        #selection = self.comboboxFunctionType.get()
+        #if (not (selection and not selection.isspace())):
+        #    return
 
         #self.set_data_type(self.dataTypePom)
         #self.dataType = GraphType(self.data["dataType"]) if "dataType" in self.data else GraphType.BIFURCATION if selection != "Load from file" else GraphType.ITERATION
