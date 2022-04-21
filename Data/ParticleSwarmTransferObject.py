@@ -40,4 +40,5 @@ class ParticleSwarmTransferObject(TransferObjectInterface):
             "bestFound": [self.bestFound.pBest, self.bestFound.f],
             "populations": [[[individual.pBest, individual.f] for individual in population.individuals] for population in self.populations],
             "historyF": [[individual.f for individual in population.individuals] for population in self.populations],
+            "historypBestF": [[individual.pBestf for individual in population.individuals] for population in self.populations],
         }
