@@ -26,7 +26,6 @@ class ApplicationView(ViewBase):
         self.windowHandler.register(self)
 
         # Singletons objects
-        #self.windowHandler = WindowHandler()
         self.settings = Settings()
         self.cellularAutomaton = None
         self.cellularAutomatonView = None
@@ -235,8 +234,6 @@ class ApplicationView(ViewBase):
             self.world = []
             self.create_world()
             self.draw_step(self.cellularAutomatonView.cellularAutomaton.currentState)
-            #for step in self.cellularAutomatonView.cellularAutomaton.currentState:
-            #    self.draw_step(step)
         else:
             for step in self.cellularAutomatonView.cellularAutomaton.cellHistory:
                 self.draw_step(step)
@@ -263,25 +260,11 @@ class ApplicationView(ViewBase):
         self.offsetY += self.settings.cellSize
 
     def __draw_step_2D(self, step: list) -> None:
-        #offsetX = 0
-        #print(self.world)
         for y in range(len(step)):
             for x in range(len(step[y])):
                 item = step[y][x]
                 color = "#ffffff" if item == 0 else self.settings.color.get_colors_by_K(self.cellularAutomatonView.cellularAutomaton.K - 1)[item - 1]
-                
-                # if cell is not in a state of "death" then draw state by color
-                #if x > 0:
-                
-                #print(self.world[y][x], y, x, item, color)
-                    #self.canvas.create_rectangle(
-                    #    0 + offsetX, 0 + self.offsetY, 
-                    #    self.animationSettings.cellSize + offsetX, self.animationSettings.cellSize + self.offsetY, 
-                    #    outline=color[item - 1], fill=color[item - 1]
-                    #)
-                self.canvas.itemconfig(self.world[y][x], outline=color, fill=color)#color[item]
-                #offsetX += self.animationSettings.cellSize
-            #self.offsetY += self.animationSettings.cellSize
+                self.canvas.itemconfig(self.world[y][x], outline=color, fill=color)
 
     def draw(self) -> None:
         if self.cellularAutomatonView.cellularAutomaton is not None:

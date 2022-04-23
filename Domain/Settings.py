@@ -23,16 +23,13 @@ class Settings:
 
     # Class functions
     def get_files_in_directory(path: str) -> dict:  # list
-        files = {}  # []
+        files = {}
         for (root, dirs, file) in walk(path):
             for f in file:
                 if ".json" in f:
                     f = f.removesuffix(".json")
-                    #files.append(f)
                     files[f] = join(root, f)
         return files
-
-    #def get_file_by_name(filename: str) -> dict
 
     # Object functions
     def set_default(self) -> None:

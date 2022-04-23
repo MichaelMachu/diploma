@@ -32,15 +32,6 @@ class NeuronMatrix:
 
     # Výpočet vah podle vzorce X*X^T kde X je vektor z původní matice
     def __create_weighted_matrix(self, serializedMatrix: list) -> list:
-        #result_array = []
-        #for i in range(len(serializedMatrix)):
-        #    array = []
-        #    for j in range(len(serializedMatrix)):
-        #        result = serializedMatrix[i] * serializedMatrix[j]
-        #        array.append(result)
-        #    result_array.append(array)
-
-        #return result_array
         length = len(serializedMatrix)
         return [[serializedMatrix[i] * serializedMatrix[j] for j in range(length)] for i in range(length)]
 
@@ -49,7 +40,6 @@ class NeuronMatrix:
         for i in range(len(weightMatrix)):
             for j in range(len(weightMatrix[i])):
                 if (i == j):
-                    weightMatrix[i][j] -= 1
-                    #weightMatrix[i][j] = 0
+                    weightMatrix[i][j] -= 1     # weightMatrix[i][j] = 0 <=> it should works in the same way
 
         return weightMatrix

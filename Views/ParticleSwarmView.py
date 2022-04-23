@@ -125,21 +125,15 @@ class ParticleSwarmView(ViewBase):
         self.comboboxFunctionType.grid(column=1, row=5, padx=0, pady=10, sticky=W)
 
         # Matplotlib Canvas
-        self.frameCanvas = Frame(self.frame, bg=self.frameBG) # "#ababab"
-        #self.frameCanvas.pack(side=TOP, fill=None, expand=False, padx=1, pady=1, sticky=N)
-        self.frameCanvas.grid(column=0, row=0, sticky="nsew") # rowspan=3
-        #self.frameCanvas.grid_rowconfigure(0, weight=1)
-        #self.frameCanvas.grid_columnconfigure(0, weight=1)
+        self.frameCanvas = Frame(self.frame, bg=self.frameBG)
+        self.frameCanvas.grid(column=0, row=0, sticky="nsew")
         self.frameCanvas.grid_rowconfigure(0, weight=1)
         self.frameCanvas.grid_columnconfigure(0, weight=1)
 
-        #self.frameCanvas.columnconfigure(1)
-        #self.frameCanvas.rowconfigure(1, weight=2)
 
         self.canvas = FigureCanvasTkAgg(self.graph.fig, master=self.frameCanvas)  # A tk.DrawingArea.
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-        #self.canvas.get_tk_widget().grid(column=0, row=0, sticky="nsew")
 
         self.canvasToolbar = NavigationToolbar2Tk(self.canvas, self.frameCanvas, pack_toolbar=False)
         self.canvasToolbar.config(background=self.frameBG)
@@ -147,7 +141,6 @@ class ParticleSwarmView(ViewBase):
             button.config(background=self.frameBG)
         self.canvasToolbar.update()
         self.canvasToolbar.pack(side=BOTTOM, fill=X)
-        #self.canvasToolbar.grid(column=0, row=1, sticky="nsew")
 
         # Show button
         self.buttonCalculateAndShow = Button(self.frameParticleSwarm, text="Calculate and show on graph", command=self.__calculate_and_show_graph)

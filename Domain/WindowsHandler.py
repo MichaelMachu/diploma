@@ -27,15 +27,3 @@ class WindowHandler:
 
     def get_index(self) -> int:
         return self.__index
-
-    """def open(self, view):
-        pass
-
-    def open_by_id(self, id):
-        pass
-
-    def get(self, id: int) -> GraphicalUserInterface:
-        return self.__views[id]
-
-    def get_id(self, view: GraphicalUserInterface) -> int:
-        return self.__views."""

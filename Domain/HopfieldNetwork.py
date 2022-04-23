@@ -59,7 +59,7 @@ class HopfieldNetwork:
             pom = 0
             for j in range(len(summedPatterns[i])):
                 pom = summedPatterns[i][j] * inputVector[j]
-            pom = func(pom)    # not sure
+            pom = func(pom)
             result.append(pom)
 
         # Výslednému vektoru převedu mínus jedničky na nuly
@@ -84,7 +84,6 @@ class HopfieldNetwork:
         change = deepcopy(inputVector)
         self.history = [deepcopy(inputVector)]
         areSame = False
-        #print(inputVector)
         self.iter = 0
 
         energy = self.energy(change)

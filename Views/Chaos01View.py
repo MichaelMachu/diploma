@@ -99,19 +99,11 @@ class Chaos01View(ViewBase):
 
         # Main frame
         self.frame = Frame(self.mainWindow, bg=self.frameBG)
-        self.frame.pack(side=TOP, fill=BOTH, expand=1, padx=1, pady=1) # fill=BOTH, expand=1    fill=None, expand=False
-        #self.frame.columnconfigure(1, weight=1)
-        #self.frame.columnconfigure(0)
-        #self.frame.rowconfigure(0, weight=1)
+        self.frame.pack(side=TOP, fill=BOTH, expand=1, padx=1, pady=1)
 
         # Chaos01
         self.frameChaos01 = Frame(self.frame, bg=self.frameBG)
-        #self.frameChaos01.pack(side=TOP, fill=None, expand=False, padx=1, pady=1)
         self.frameChaos01.grid(column=1, row=0, sticky="nsew", padx=(0, 10), pady=10)
-        #self.frameChaos01.columnconfigure(0, weight=1)
-        #self.frameChaos01.rowconfigure(0, weight=1)
-        #self.frameChaos01.rowconfigure(0, weight=1)
-        #self.frameChaos01.rowconfigure(1, weight=1)
 
         self.labelChaos01 = Label(self.frameChaos01, text="Chaos01", anchor='w', bg=self.frameBG)
         self.labelChaos01.grid(column=0, row=0, sticky=W, pady=(10, 0))
@@ -142,25 +134,17 @@ class Chaos01View(ViewBase):
 
         # Function
         self.frameFunction = Frame(self.frameChaos01, bg=self.frameBG)
-        #self.frameFunction.pack(side=TOP, fill=None, expand=False, padx=1, pady=1)
         self.frameFunction.grid(column=0, row=5, columnspan=2, padx=10, pady=5, sticky=W)
 
         # Matplotlib Canvas
-        self.frameCanvas = Frame(self.frame, bg=self.frameBG) # "#ababab"
-        #self.frameCanvas.pack(side=TOP, fill=None, expand=False, padx=1, pady=1, sticky=N)
-        self.frameCanvas.grid(column=0, row=0, sticky="nsew") # rowspan=3
-        #self.frameCanvas.grid_rowconfigure(0, weight=1)
-        #self.frameCanvas.grid_columnconfigure(0, weight=1)
+        self.frameCanvas = Frame(self.frame, bg=self.frameBG)
+        self.frameCanvas.grid(column=0, row=0, sticky="nsew")
         self.frameCanvas.grid_rowconfigure(0, weight=1)
         self.frameCanvas.grid_columnconfigure(0, weight=1)
-
-        #self.frameCanvas.columnconfigure(1)
-        #self.frameCanvas.rowconfigure(1, weight=2)
 
         self.canvas = FigureCanvasTkAgg(self.graph.fig, master=self.frameCanvas)  # A tk.DrawingArea.
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-        #self.canvas.get_tk_widget().grid(column=0, row=0, sticky="nsew")
 
         self.canvasToolbar = NavigationToolbar2Tk(self.canvas, self.frameCanvas, pack_toolbar=False)
         self.canvasToolbar.config(background=self.frameBG)
@@ -168,12 +152,10 @@ class Chaos01View(ViewBase):
             button.config(background=self.frameBG)
         self.canvasToolbar.update()
         self.canvasToolbar.pack(side=BOTTOM, fill=X)
-        #self.canvasToolbar.grid(column=0, row=1, sticky="nsew")
 
         # Show button
         self.buttonCalculateAndShow = Button(self.frameChaos01, text="Calculate and show on graph", command=self.__calculate_and_show_graph)
         self.buttonCalculateAndShow.grid(column=0, row=6, columnspan=2, padx=10, pady=5)
-        #self.buttonCalculateAndShow.pack(fill=None, expand=False, padx=10, pady=10)
         
         self.buttonShowGraphCourseK = Button(self.frameChaos01, text="Show course of K values on graph", command=self.__show_graph_course_of_K_values)
         self.buttonShowGraphCourseK.grid(column=1, row=7, padx=5, pady=50)
@@ -249,8 +231,6 @@ class Chaos01View(ViewBase):
         row = self.__clear_frame()
         self.labelFileName = Label(self.frameFunction, text="Filename", anchor='w', bg=self.frameBG) # (string)\n - without suffix
         self.labelFileName.grid(column=0, row=row, sticky=W)
-        #self.comboboxFileName = Entry(self.frameFunction)
-        #self.comboboxFileName.grid(column=1, row=row, padx=10, pady=5, sticky=W)
         path = self.applicationView.settings.pathMain + "/" # + self.applicationView.settings.pathCellularAutomaton + "/"
         self.paths = Settings.get_files_in_directory(path)
         self.comboboxFileName = ttk.Combobox(self.frameFunction)

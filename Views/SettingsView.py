@@ -122,11 +122,9 @@ class SettingsView(ViewBase):
 
         # Apply button
         self.buttonReset = Button(self.frame, text="Reset", command=self.__reset)
-        #self.buttonApply.grid(column=0, row=3, columnspan=2, padx=10, pady=5)
         self.buttonReset.pack(side=LEFT, fill=None, expand=False, padx=10, pady=10)
 
         self.buttonApply = Button(self.frame, text="Apply", command=self.__apply)
-        #self.buttonApply.grid(column=0, row=3, columnspan=2, padx=10, pady=5)
         self.buttonApply.pack(side=RIGHT, fill=None, expand=False, padx=10, pady=10)
 
     def draw(self) -> None:

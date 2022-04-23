@@ -33,8 +33,6 @@ class ImportView(ViewBase):
         # Filename
         self.labelFileName = Label(self.frame, text="Filename", anchor='w', bg=self.frameBG) #or full path with a filename\n - without file suffix name (string)
         self.labelFileName.grid(column=0, row=0, sticky=W)
-        #self.entryFileName = Entry(self.frame)
-        #self.entryFileName.grid(column=1, row=0, padx=10, pady=5, sticky=W)
         self.comboboxFileName = ttk.Combobox(self.frame, width=30)
         self.comboboxFileName["values"] = self.fileNames
         self.comboboxFileName["state"] = "readonly"

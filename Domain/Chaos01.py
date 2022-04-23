@@ -32,7 +32,6 @@ class Chaos01:
         N = len(phi)
         self.R = 628
         ncut = int(np.floor(N / self.cut))
-        x = 0
         Ephi = 0
         for j in range(N):
             Ephi = Ephi + (1 / N) * phi[j]
@@ -41,9 +40,7 @@ class Chaos01:
         PC = np.zeros((self.R, N))
         QC = np.zeros((self.R, N))
         for m in range(1, self.R):
-            #   x=x+1;
             c = m / 100
-            #print(m)
             pc = np.zeros(N)
             qc = np.zeros(N)
             pc[0] = phi[0] * np.cos(c)

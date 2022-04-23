@@ -222,8 +222,6 @@ class CellularAutomatonView(ViewBase):
         row = self.__clear_frame()
         self.labelFileName = Label(self.frameCA, text="Filename or full path with a filename\n - without file suffix name (string)", anchor='w', bg=self.frameBG)
         self.labelFileName.grid(column=0, row=row, sticky=W)
-        #self.entryFileName = Entry(self.frameCA)
-        #self.entryFileName.grid(column=1, row=row, padx=10, pady=5, sticky=W)
         path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathCellularAutomaton + "/"
         paths = Settings.get_files_in_directory(path)
         self.entryFileName = ttk.Combobox(self.frameCA)
@@ -263,8 +261,6 @@ class CellularAutomatonView(ViewBase):
                     self.__entry_set_value(self.entrySize, self.cellularAutomaton.size)
                 self.__entry_set_value(self.entryRule, self.cellularAutomaton.ruleNumber)
                 self.__entry_set_value(self.entryK, self.cellularAutomaton.K)
-                #self.__combobox_set_value(self.comboboxRandom, self.cellularAutomaton.K)
-                #self.__combobox_set_value(self.comboboxSelection, self.cellularAutomaton.K)
             else:
                 self.__entry_set_value(self.entrySize, self.cellularAutomaton.size)
                 self.__entry_set_value(self.entryK, self.cellularAutomaton.K)
@@ -382,7 +378,6 @@ class CellularAutomatonView(ViewBase):
             if not self.cellularAutomaton.is_rule_valid():
                 return
 
-            #self.__set_ca(random, selection)
             self.cellularAutomaton.generate_start(random, selection)
 
             self.applicationView.continueDraw = False
@@ -420,12 +415,8 @@ class CellularAutomatonView(ViewBase):
             self.applicationView.buttonAnimPause.configure(state=ACTIVE)
             self.applicationView.buttonAnimContinue.configure(state=ACTIVE)
             
-
         self.applicationView.buttonCaExport.configure(state=ACTIVE)
-
         self.applicationView.cellularAutomaton = self.cellularAutomaton
-
-        #self.on_closing()
     
     def __set_ca(self, random: bool, selection: str) -> None:
         self.cellularAutomaton.generate_start(random, selection)

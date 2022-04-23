@@ -86,30 +86,6 @@ class CellularAutomaton:
             raise ValueError("λ is not set")
         return bool(np.random.choice(a=[False, True], p=[self.lambdaValue, 1 - self.lambdaValue]))
 
-    def __solver_random_table(self) -> None:
-        """neighborhood = []
-        center = ceil(self.N / 2)
-        for i in reversed(range(1, self.N + 1)): # range(1, self.N)
-            if i < center:
-                neighborhood.append(np.roll(self.currentState, i - center))
-            elif i > center:
-                neighborhood.append(np.roll(self.currentState, i - center))
-            else:
-                neighborhood.append(self.currentState)
-
-        for i in range(len(self.currentState)):
-            if self.is_state_quiescent():
-        """
-        for i in range(len(self.currentState)):
-            if self.is_state_quiescent():
-                self.currentState[i] = self.quiescentState
-            #else:
-            #    self.currentState[i] = np.random.randint(self.K - 1) + 1
-
-
-    def __solver_table_walk_through(self) -> None:
-        pass
-
     def __insert_into_history(self) -> None:
         if self.dimension == 2:
             self.cellHistory = np.dstack((self.cellHistory, self.currentState))
@@ -139,23 +115,16 @@ class CellularAutomaton:
         return result
 
     def __calculate_next_step(self) -> np.ndarray:
-        #print(self.currentState)
         neighborhood = []
         center = ceil(self.N / 2)
-        for i in reversed(range(1, self.N + 1)): # range(1, self.N)
+        for i in reversed(range(1, self.N + 1)):
             if i < center:
                 neighborhood.append(np.roll(self.currentState, i - center))
-                #print(i - center)
             elif i > center:
                 neighborhood.append(np.roll(self.currentState, i - center))
-                #print(i - center)
             else:
                 neighborhood.append(self.currentState)
-                #print(0)
                 
-        #x = np.vstack(neighborhood).astype(np.int8)
-        #print(x)
-
         if self.lambdaValue is not None:
             result = []
             i, j, c = 0, 0, 0
@@ -175,12 +144,6 @@ class CellularAutomaton:
                 
             return result
 
-        #print(neighborhood)
-        #rightShift = np.roll(self.currentState, 1)
-        #leftShift = np.roll(self.currentState, -1)
-        #stackOfNeighbors = np.vstack((rightShift, self.currentState, leftShift)).astype(np.int8)
-
-        #print(stackOfNeighbors)
         stackOfNeighbors = np.vstack(neighborhood).astype(np.int8)
 
         # Indexes for the next step are calculated by two ways:
@@ -258,15 +221,13 @@ class CellularAutomaton:
 
     def generate_start(self, random: bool = True, selection: str = "center") -> None:
         """If random is set to False value, then it is needed to set also the type of selection, default value is center"""
-        #self.quiescentState = np.random.randint(self.K)
+        #self.quiescentState = np.random.randint(self.K)    # For random selection of quiescentState
         self.quiescentState = 0
 
         if self.dimension == 2:
             if random:
-                #self.currentState[:] = np.array(np.random.rand(self.size) < 0.5, dtype=np.int8)
                 self.currentState = np.random.randint(2, size=self.size)
                 self.__insert_into_history()
-                #print(self.currentState)
                 return
 
             self.currentState[self.size[0] // 2:self.size[1] // 2] = 1
@@ -288,9 +249,5 @@ class CellularAutomaton:
 
     def execute(self) -> np.ndarray:
         self.currentState = self.__calculate_next_step() if self.dimension == 1 else self.__calculate_next_step_2D()
-        #print(self.currentState)
-        #if self.lambdaValue is not None:
-        #    self.__solver_random_table()
         self.__insert_into_history()
-        #print(self.currentState)
         return self.currentState

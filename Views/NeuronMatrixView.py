@@ -57,52 +57,39 @@ class NeuronMatrixView(ViewBase):
         self.frameRight.rowconfigure(1, weight=1)
 
         # Buttons
-        #self.buttonExport = Button(self.frameRight, bg = "#b9ffad")
-        #self.buttonExport["text"] = "Export pattern"
-        #self.buttonExport["command"] = self.__show_export_neuron_matrix_menu
-        ##self.buttonExport.grid(row = 0, column = 0)
-        #self.buttonExport.pack(fill='x', pady=(0, 20))
-
         self.buttonPrint = Button(self.frameRight, bg = "#b9ffad")
         self.buttonPrint["text"] = "Print on network"
         self.buttonPrint["command"] = self.print_on_network
-        #self.buttonPrint.grid(row = 0, column = 0)
         self.buttonPrint.pack(fill='x', pady=(0, 20))
 
         self.buttonMatrix = Button(self.frameRight, bg = "#ade4ff")
         self.buttonMatrix["text"] = "Show matrix"
         self.buttonMatrix["command"] = lambda matrix = self.neuronMatrix.matrix, typeOfMatrix = "Matrix:": Print.print_matrix_2d(matrix, typeOfMatrix)
-        #self.buttonMatrix.grid(row = 0, column = 1)
         self.buttonMatrix.pack(fill='x')
 
         self.buttonMatrixWithoutZeros = Button(self.frameRight, bg = "#ade4ff")
         self.buttonMatrixWithoutZeros["text"] = "Show matrix without zeros"
         self.buttonMatrixWithoutZeros["command"] = lambda matrix = self.neuronMatrix.matrixWithoutZeros, typeOfMatrix = "Matrix without zeros:": Print.print_matrix_2d(matrix, typeOfMatrix)
-        #self.buttonMatrixWithoutZeros.grid(row = 1, column = 1, padx = 5)
         self.buttonMatrixWithoutZeros.pack(fill='x')
 
         self.buttonVector = Button(self.frameRight, bg = "#ade4ff")
         self.buttonVector["text"] = "Show vector"
         self.buttonVector["command"] = lambda vector = self.neuronMatrix.vector: Print.print_vector(vector)
-        #self.buttonVector.grid(row = 2, column = 1)
         self.buttonVector.pack(fill='x')
 
         self.buttonWeightedMatrix = Button(self.frameRight, bg = "#ade4ff")
         self.buttonWeightedMatrix["text"] = "Show weighted matrix"
         self.buttonWeightedMatrix["command"] = lambda matrix = self.neuronMatrix.weightMatrix, typeOfMatrix = "Weighted matrix:": Print.print_matrix_2d(matrix, typeOfMatrix)
-        #self.buttonWeightedMatrix.grid(row = 3, column = 1, padx = 5)
         self.buttonWeightedMatrix.pack(fill='x')
 
         self.buttonFullPattern = Button(self.frameRight, bg = "#ade4ff")
         self.buttonFullPattern["text"] = "Show full pattern"
         self.buttonFullPattern["command"] = lambda matrix = self.neuronMatrix.fullPattern, typeOfMatrix = "Full pattern matrix:": Print.print_matrix_2d(matrix, typeOfMatrix)
-        #self.buttonFullPattern.grid(row = 4, column = 1)
         self.buttonFullPattern.pack(fill='x')
 
         self.buttonForgetPattern = Button(self.frameRight, bg = "#ffb7ad")
         self.buttonForgetPattern["text"] = "Forget the pattern"
         self.buttonForgetPattern["command"] = self.forget_pattern
-        #self.buttonForgetPattern.grid(row = 5, column = 1)
         self.buttonForgetPattern.pack(fill='x', pady=(20, 0))
 
         # Canvas
@@ -144,12 +131,6 @@ class NeuronMatrixView(ViewBase):
         path = self.applicationView.settings.pathMain + "/" + self.applicationView.settings.pathHopfieldNetwork + "/"
         self.exportView = ExportView(self, NeuronMatrixTransferObject(self.neuronMatrix), path, "Neuron Matrix")
         self.windowHandler.register(self.exportView)
-
-        """if self.isExportNeuronMatrixExists:
-            return
-
-        self.isExportNeuronMatrixExists = True
-        self.exportNeuronMatrixView = ExportNeuronMatrixView(self)"""
 
     def print_on_network(self) -> None:
         self.hopfieldNetworkView.main_matrix = deepcopy(self.neuronMatrix.matrix)

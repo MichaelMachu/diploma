@@ -62,21 +62,16 @@ class HopfieldNetworkView(ViewBase):
             label="Import pattern",
             command=self.__show_import_neuron_matrix_menu
         )
-        self.menuFile.add_command(
-            label="Import image as pattern",
-            #command=self.__show_import_neuron_matrix_menu  # TODO
-        )
+        #self.menuFile.add_command(
+        #    label="Import image as pattern",
+            #command=  # TODO => Could be a new feature (just make a conversion of pixels into black/white points)
+        #)
         self.menuFile.add_command(
             label="Export history of repairing",
             command=self.__show_export_menu
         )
 
         self.menu.add_cascade(label="File", menu=self.menuFile)
-
-        #self.menu.add_command(
-        #    label="Settings",
-        #    command=self.__show_settings_menu
-        #)
 
         # Right menu
         self.frameRight = Frame(self.mainWindow, width=150, height=100, bg="#ababab")
@@ -86,50 +81,38 @@ class HopfieldNetworkView(ViewBase):
         self.frameRight.rowconfigure(1, weight=1)
 
         # Buttons
-        #self.buttonImport = Button(self.frameRight, bg = "#b9ffad")
-        #self.buttonImport["text"] = "Import pattern"
-        #self.buttonImport["command"] = self.__show_import_neuron_matrix_menu
-        #self.buttonImport.pack(fill='x', pady=(0, 10))
-
         self.buttonnSave = Button(self.frameRight, bg = "#b9ffad")
         self.buttonnSave["text"] = "Save pattern"
         self.buttonnSave["command"] = self.save_matrix
-        #self.buttonnSave.grid(row = 0, column = 0)
         self.buttonnSave.pack(fill='x', pady=(0, 20))
 
         self.buttonnSave = Button(self.frameRight, bg = "#b9ffad")
         self.buttonnSave["text"] = "Add 50 % noise"
         self.buttonnSave["command"] = self.__add_noise
-        #self.buttonnSave.grid(row = 0, column = 0)
         self.buttonnSave.pack(fill='x', pady=(0, 20))
 
         self.buttonRepairSync = Button(self.frameRight, bg = "#fff4ad")
         self.buttonRepairSync["text"] = "Repair pattern Sync"
         self.buttonRepairSync["command"] = self.repair_pattern_sync
-        #self.buttonRepairSync.grid(row = 1, column = 0, padx = 5)
         self.buttonRepairSync.pack(fill='x')
 
         self.buttonRepairAsync = Button(self.frameRight, bg = "#fff4ad")
         self.buttonRepairAsync["text"] = "Repair pattern Async"
         self.buttonRepairAsync["command"] = self.repair_pattern_async
-        #self.buttonRepairAsync.grid(row = 2, column = 0, padx = 5)
         self.buttonRepairAsync.pack(fill='x')
 
         self.buttonShowSavedPatterns = Button(self.frameRight, bg = "#ade4ff")
         self.buttonShowSavedPatterns["text"] = "Show saved patterns"
         self.buttonShowSavedPatterns["command"] = self.show_matrices
-        #self.buttonShowSavedPatterns.grid(row = 3, column = 0, padx = 5)
         self.buttonShowSavedPatterns.pack(fill='x', pady=(20, 10))
 
         self.buttonClearGrid = Button(self.frameRight, bg = "#ffb7ad")
         self.buttonClearGrid["text"] = "Clear grid"
         self.buttonClearGrid["command"] = self.clear_grid
-        #self.buttonClearGrid.grid(row = 4, column = 0)
         self.buttonClearGrid.pack(fill='x', pady=10)
 
         self.labelMaxPatterns = Label(self.frameRight, bg=self.mainBG)
         self.labelMaxPatterns["text"] = "Max recommended amount\n of saved patterns is " + str(self.max_patterns)
-        #self.labelMaxPatterns.grid(row = 5, column = 0)
         self.labelMaxPatterns.pack(fill='x', pady=10)
 
         # Canvas
@@ -202,7 +185,6 @@ class HopfieldNetworkView(ViewBase):
 
     # Opravení paternu synchronním způsobem
     def repair_pattern_sync(self) -> None:
-        #algorithms = HopfieldNetwork((self.n, self.m))
         vector = self.serialized_matrix(self.main_matrix)
         result_vector = self.hopfieldNetwork.HopfieldNetworkSync(2, ActivationFunctions.Signum, vector, self.saved_matrices)
 
@@ -215,7 +197,6 @@ class HopfieldNetworkView(ViewBase):
 
     # Opravení paternu asynchronním způsobem
     def repair_pattern_async(self) -> None:
-        #algorithms = HopfieldNetwork((self.n, self.m))
         vector = self.serialized_matrix(self.main_matrix)
         result_vector = self.hopfieldNetwork.HopfieldNetworkAsync(2, ActivationFunctions.Signum, vector, self.saved_matrices)
 
@@ -248,7 +229,6 @@ class HopfieldNetworkView(ViewBase):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def __add_noise(self) -> None:
-        #noise = np.array(np.random.rand() < 0.5, dtype=np.int8)
         noise = [[np.random.rand() < 0.5 for _ in range(self.networkSize[1])] for _ in range(self.networkSize[0])]
         self.main_matrix = [[int(bool(self.main_matrix[i][j]) != bool(noise[i][j])) for j in range(self.networkSize[1])] for i in range(self.networkSize[0])]
         self.refresh_grid()
@@ -267,7 +247,6 @@ class HopfieldNetworkView(ViewBase):
         neuronMatrix = NeuronMatrix(copy.deepcopy(self.main_matrix))
         self.saved_matrices.append(neuronMatrix)
 
-    #def import_matrix(self) -> None:
     def __show_import_neuron_matrix_menu(self) -> None:
         if self.windowHandler.exists(self.importView):
             return
